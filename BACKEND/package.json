@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Mental Health Support Platform for Personalized Self-Care",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js"
