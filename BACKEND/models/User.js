@@ -2,13 +2,13 @@ import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
     _id: { type: String },
-    name: { type: String},
-    email: { type: String},
-    password: { type: String},
+    name: { type: String },
+    email: { type: String },
+    password: { type: String },
     role: { type: String, default: 'user' },
-    dof:{type:String}
+    dob:{type:String}
 
-});
+}, { timestamps: true });
 
 userSchema.pre('save', function(next) {
     if (!this._id) {
