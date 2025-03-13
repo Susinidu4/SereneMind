@@ -5,6 +5,10 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser"); // Make sure to include this
 require('dotenv').config(); // Loads environment variables from the .env file
 
+
+//yasindu's code
+import UserRouter from './routes/UserRoute.js';
+
 const app = express();
 
 const PORT = process.env.PORT || 8070;
@@ -34,6 +38,8 @@ connection.once("open", () => {
 
 // Routes
 // app.use("/api/routeName", Router);
+//yasindu's code
+app.use('/user', UserRouter);
 
 app.listen(PORT, () => {
     console.log(`Server is up and running on port number: ${PORT}`);

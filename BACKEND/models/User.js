@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
 
 });
 
-AdminSchema.pre('save', function(next) {
+userSchema.pre('save', function(next) {
     if (!this._id) {
         this._id = generateCustomId();  // Replace with your custom ID generation logic
     }
