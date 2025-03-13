@@ -8,8 +8,8 @@ dotenv.config();
 
 
 //yasindu's code
-
 import UserRouter from './routes/UserRoute.js';
+import AdminRouter from './routes/AdminRoute.js';
 
 const app = express();
 const PORT = process.env.PORT || 8070;
@@ -41,6 +41,7 @@ connection.once("open", () => {
 // app.use("/api/routeName", Router);
 //yasindu's code
 app.use('/user', UserRouter);
+app.use('/admin', AdminRouter);
 
 app.listen(PORT, () => {
     console.log(`Server is up and running on port number: ${PORT}`);
