@@ -1,6 +1,5 @@
 import GlobalStyle from "./GlobalStyle";
 import React from "react";
-import download from "../Images/download.png";
 import { MdDownload } from "react-icons/md";
 import { FaSearch } from "react-icons/fa";
 
@@ -64,7 +63,7 @@ export const PrototypeA = () => {
         </select>
       </div>
 
-      {/* containor 1*/}
+      {/* container 1*/}
       <div className={`${GlobalStyle.cardContainer}`}>
         <h1>Card Box</h1>
         <p>Card Content</p>
@@ -73,8 +72,8 @@ export const PrototypeA = () => {
         <p>Card Content</p>
       </div>
 
-      {/* containor 2 */}
-      <div className={`${GlobalStyle.caseCountBar}`}>
+      {/* container 2 */}
+      <div className={`${GlobalStyle.pageContainer}`}>
         <h1>Case Count Bar</h1>
         <h1>Case Count Bar</h1>
         <h1>Case Count Bar</h1>
