@@ -6,6 +6,8 @@ import { PrototypeA } from './assets/Prototype/PrototypeA';
 import { User_Signup } from './pages/Main_Pages/User Account Management/User_Signup';
 import { User_Login } from './pages/Main_Pages/User Account Management/User_Login';
 import { User_Profile } from './pages/Main_Pages/User Account Management/User_Profile';
+import { Admin_Login } from './pages/Main_Pages/Admin/Admin_Login';
+import { Admin_Dashboard } from './pages/Main_Pages/Admin/Admin_Dashboard';
 
 
 function App() {
@@ -21,6 +23,8 @@ function App() {
         <Route path="/usersignup" element={<User_Signup/>} />
         <Route path="/login" element={<User_Login/>} />
         <Route path="/userprofile" element={<User_Profile/>} />
+        <Route path="/adminlogin" element={<Admin_Login/>} />
+        <Route path="/admindashboard" element={<Admin_Dashboard/>} />
       </Routes>
     </BrowserRouter>
   )
