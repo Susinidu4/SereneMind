@@ -7,7 +7,9 @@ import { User_Signup } from './pages/Main_Pages/User Account Management/User_Sig
 import { User_Login } from './pages/Main_Pages/User Account Management/User_Login';
 import { User_Profile } from './pages/Main_Pages/User Account Management/User_Profile';
 import { Admin_Login } from './pages/Main_Pages/Admin/Admin_Login';
+import { Sample } from './pages/Main_Pages/Mood Tracking/sample';
 import { Admin_Dashboard } from './pages/Main_Pages/Admin/Admin_Dashboard';
+
 
 
 function App() {
@@ -25,6 +27,7 @@ function App() {
         <Route path="/userprofile" element={<User_Profile/>} />
         <Route path="/adminlogin" element={<Admin_Login/>} />
         <Route path="/admindashboard" element={<Admin_Dashboard/>} />
+        <Route path="/sample" element={<Sample/>} />
       </Routes>
     </BrowserRouter>
   )

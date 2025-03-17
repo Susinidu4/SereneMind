@@ -8,6 +8,11 @@ export const Admin_Login = () => {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
+    const data = JSON.parse(localStorage.getItem("userData"));
+    if (data.role === "admin" || data.role === "Admin" || data.role === "ADMIN") {
+        window.location.href = "/admindashboard";
+    }    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
