@@ -7,9 +7,15 @@ import dotenv from "dotenv";
 dotenv.config();
 
 
+
 //yasindu's code
 import UserRouter from './routes/UserRoute.js';
 import AdminRouter from './routes/AdminRoute.js';
+
+
+// Import Routes
+import MoodJournaling from "./routes/MoodJournalingRoute.js";
+
 
 const app = express();
 const PORT = process.env.PORT || 8070;
@@ -17,7 +23,9 @@ const PORT = process.env.PORT || 8070;
 // Middlewares
 app.use(express.json()); // Fix for the deprecated use of json() from express
 app.use(cors({
-    origin: [process.env.CLIENT_URL || "http://localhost:5173", "http://localhost:5174"],
+
+    origin:  [process.env.CLIENT_URL || "http://localhost:5173", "http://localhost:5174"],
+
     credentials: true,
 }));
 app.use(bodyParser.json());
@@ -39,9 +47,14 @@ connection.once("open", () => {
 
 // Routes
 // app.use("/api/routeName", Router);
+
 //yasindu's code
 app.use('/user', UserRouter);
 app.use('/admin', AdminRouter);
+
+app.use("/api/mood_journaling", MoodJournaling);
+
+
 
 app.listen(PORT, () => {
     console.log(`Server is up and running on port number: ${PORT}`);
