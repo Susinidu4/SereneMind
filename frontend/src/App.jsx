@@ -5,6 +5,7 @@ import { Home } from './pages/Main_Pages/Home';
 import { PrototypeA } from './assets/Prototype/PrototypeA';
 import { InstructionPage } from './pages/Mood_Journaling/InstructionPage';
 import { MoodJournalingInsert } from './pages/Mood_Journaling/MoodJournalingInsert';
+import { ActivityTracking } from './pages/Activity_Tracking/ActivityTracking';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -19,6 +20,8 @@ function App() {
         <Route path="/MoodJournaling/InstructionPage" element={<InstructionPage/>} />
         <Route path="/MoodJournaling/MoodJournalingInsert" element={<MoodJournalingInsert/>} />
 
+        {/* Activity Tracking */}
+        <Route path="/Activity_Tracking/ActivityTracking" element={<ActivityTracking />} />
 
       </Routes>
     </BrowserRouter>
