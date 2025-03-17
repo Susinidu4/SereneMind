@@ -4,6 +4,12 @@ import { Bell, User } from "lucide-react";
 import { FaSearch } from "react-icons/fa";
 import logo from "../assets/Images/logo.png";
 
+//logout function to clear the local storage key userData
+const logout = () => {
+  localStorage.removeItem("userData");
+  window.location.href = "/";
+};
+
 export const Header = () => {
   return (
     <div>
