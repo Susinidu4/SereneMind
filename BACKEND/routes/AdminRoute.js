@@ -114,13 +114,18 @@ router.put('/:id', async (req, res) => {
 router.put('/update-password/:id', async (req, res) => {
     const { id } = req.params;
     const { password } = req.body;
+    
+    //hash the password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
     try {
         const admin = await Admin.findById(id);
         if (!admin) {
             return res.status(404).json({ message: 'Admin not found' });
         }
-        admin.password = password;
-        await admin.save();
+        admin.password = hashedPassword;
+        await admin.save();  
         res.status(200).json({ message: 'Password updated successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Error updating password', error });
