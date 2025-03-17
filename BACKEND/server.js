@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 8070;
 // Middlewares
 app.use(express.json()); // Fix for the deprecated use of json() from express
 app.use(cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5174",
+    origin: [process.env.CLIENT_URL || "http://localhost:5173", "http://localhost:5174"],
     credentials: true,
 }));
 app.use(bodyParser.json());
