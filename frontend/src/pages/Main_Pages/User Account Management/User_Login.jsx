@@ -12,20 +12,23 @@ export const User_Login = () => {
         e.preventDefault();
         setLoading(true);
         setError("");
-
+    
         try {
             const response = await axios.post("http://localhost:5000/user/login", {
                 email,
                 password,
             });
-
+    
             if (response.data.status) {
                 // Login successful
                 console.log("Login successful:", response.data);
                 alert("Login successful!");
-                // You can redirect the user or store the token in local storage
-                localStorage.setItem("token", response.data.token);
-                window.location.href = "/userprofile"; // Redirect to dashboard or home page
+    
+                // Store the entire response in local storage under a single key
+                localStorage.setItem("userData", JSON.stringify(response.data));
+    
+                // Redirect to the user profile page
+                window.location.href = "/userprofile";
             } else {
                 setError(response.data.message);
             }
