@@ -11,6 +11,8 @@ dotenv.config();
 import UserRouter from './routes/UserRoute.js';
 import AdminRouter from './routes/AdminRoute.js';
 import MoodLogRouter from './routes/Mood_tracking_Route.js'
+import SuggesionRouter from './routes/SuggesionsRoute.js';
+
 
 const app = express();
 const PORT = process.env.PORT || 8070;
@@ -44,6 +46,7 @@ connection.once("open", () => {
 app.use('/user', UserRouter);
 app.use('/admin', AdminRouter);
 app.use('/mood', MoodLogRouter);
+app.use('/suggestions', SuggesionRouter);
 
 app.listen(PORT, () => {
     console.log(`Server is up and running on port number: ${PORT}`);
