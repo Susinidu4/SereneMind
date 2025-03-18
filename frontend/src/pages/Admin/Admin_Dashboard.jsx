@@ -1,4 +1,5 @@
 import React from 'react'
+import { Header_2 } from '../../components/Header_2';
 
 
 export const Admin_Dashboard = () => {
@@ -9,7 +10,9 @@ export const Admin_Dashboard = () => {
      console.log("Error in parsing the data:", e);
    }
   return (
-    <div>Admin_Dashboard</div>
+    <div>
+      <Header_2 />
+    </div>
 
   )
 }

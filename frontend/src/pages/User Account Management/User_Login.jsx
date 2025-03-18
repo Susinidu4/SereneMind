@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { Header_2 } from "../../components/Header_2";
 
 export const User_Login = () => {
   const [email, setEmail] = useState("");
@@ -40,7 +41,9 @@ export const User_Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div>
+      <Header_2 />
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -74,6 +77,7 @@ export const User_Login = () => {
           </button>
         </form>
       </div>
+    </div>
     </div>
   );
 };

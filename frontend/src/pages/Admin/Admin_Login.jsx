@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { Header_2 } from "../../components/Header_2";
 
 export const Admin_Login = () => {
     const [email, setEmail] = useState("");
@@ -46,7 +47,7 @@ export const Admin_Login = () => {
 
     return (
         <div>
-
+            <Header_2 />
             <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
                 <h2 className="text-2xl font-bold mb-6 text-center">Admin Login</h2>
