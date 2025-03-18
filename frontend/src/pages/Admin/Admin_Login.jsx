@@ -45,7 +45,9 @@ export const Admin_Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div>
+
+            <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
                 <h2 className="text-2xl font-bold mb-6 text-center">Admin Login</h2>
                 <form onSubmit={handleSubmit}>
@@ -79,6 +81,7 @@ export const Admin_Login = () => {
                     </button>
                 </form>
             </div>
+        </div>
         </div>
     );
 };

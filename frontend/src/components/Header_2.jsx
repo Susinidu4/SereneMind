@@ -10,7 +10,7 @@ const logout = () => {
   window.location.href = "/";
 };
 
-export const Header = () => {
+export const Header_2 = () => {
   const data = JSON.parse(localStorage.getItem("userData"));
 
   return (
