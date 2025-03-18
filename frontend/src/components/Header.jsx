@@ -11,9 +11,11 @@ const logout = () => {
 };
 
 export const Header = () => {
+  const data = JSON.parse(localStorage.getItem("userData"));
+
   return (
     <div>
-      <div className={GlobalStyle.fontNunito}>
+      {data? (<div className={GlobalStyle.fontNunito}>
         <div className="container flex justify-between items-center m-8 px-12">
 
           {/* Logo Section */}
@@ -104,7 +106,7 @@ export const Header = () => {
             
           </div>
         </div>
-      </div>
+      </div>):""}
     </div>
   );
 };
