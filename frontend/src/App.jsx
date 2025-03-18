@@ -4,18 +4,18 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Home } from './pages/Main_Pages/Home';
 import { PrototypeA } from './assets/Prototype/PrototypeA';
 
-import { User_Signup } from './pages/Main_Pages/User Account Management/User_Signup';
-import { User_Login } from './pages/Main_Pages/User Account Management/User_Login';
-import { User_Profile } from './pages/Main_Pages/User Account Management/User_Profile';
-import { Admin_Login } from './pages/Main_Pages/Admin/Admin_Login';
-import { Sample } from './pages/Main_Pages/Mood Tracking/sample';
-import { Admin_Dashboard } from './pages/Main_Pages/Admin/Admin_Dashboard';
-
-
+{/* yasindu */}
+import { User_Signup } from './pages/User Account Management/User_Signup';
+import { User_Login } from './pages/User Account Management/User_Login';
+import { User_Profile } from './pages/User Account Management/User_Profile';
+import { Admin_Login } from './pages/Admin/Admin_Login';
+import { Admin_Dashboard } from './pages/Admin/Admin_Dashboard';
+import { Mood } from './pages/Mood Tracking/Mood';
+import { Sample } from './pages/Mood Tracking/Sample';
 
 import { InstructionPage } from './pages/Mood_Journaling/InstructionPage';
 import { MoodJournalingInsert } from './pages/Mood_Journaling/MoodJournalingInsert';
-import { Mood } from './pages/Main_Pages/Mood Tracking/Mood';
+
 
 
 function App() {
