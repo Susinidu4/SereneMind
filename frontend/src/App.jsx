@@ -15,6 +15,7 @@ import { Admin_Dashboard } from './pages/Main_Pages/Admin/Admin_Dashboard';
 
 import { InstructionPage } from './pages/Mood_Journaling/InstructionPage';
 import { MoodJournalingInsert } from './pages/Mood_Journaling/MoodJournalingInsert';
+import { Mood } from './pages/Main_Pages/Mood Tracking/Mood';
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
         <Route path="/adminlogin" element={<Admin_Login/>} />
         <Route path="/admindashboard" element={<Admin_Dashboard/>} />
         <Route path="/sample" element={<Sample/>} />
+        <Route path="/mood" element={<Mood/>} />
 
         {/* Mood_Journaling */}
         <Route path="/MoodJournaling/InstructionPage" element={<InstructionPage/>} />
