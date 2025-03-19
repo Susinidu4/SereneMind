@@ -10,10 +10,35 @@ import { Mood_History_Calendar } from "../Mood Tracking/Mood_History_Calendar";
 import { Header_2 } from "../../../components/Header_2";
 
 export const User_Profile = () => {
+
+  const user_data = JSON.parse(localStorage.getItem("userData"));
   const user_id = 1;
   const [activeTab, setActiveTab] = useState("Mood History");
   const [journalHistory, setJournalHistory] = useState([]);
   const [deleteStatus, setDeleteStatus] = useState("");
+  const [user, setUser] = useState("");
+
+  //fetch user data
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/user/${user_data.id}`
+        );
+        if (response.status === 200) {
+          setUser(response.data);
+          console.log("User data:", response.data);
+        } else {
+          console.error("Failed to fetch user data");
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUser();
+  }, [user_data.id]);
+
 
   useEffect(() => {
     // Fetch journal history on component mount
@@ -71,13 +96,13 @@ export const User_Profile = () => {
               className={`${GlobalStyle.headingLarge} mt-10`}
               style={{ fontSize: "30px" }}
             >
-              Abdhil Abash
+              {user?.name}
             </h3>
             <h3 className={`${GlobalStyle.headingMedium} mt-5`}>
-              abdhilabash@gmail.com
+              {user?.email}
             </h3>
             <h3 className={`${GlobalStyle.headingMedium} mt-5`}>
-              2001 - 01 - 01
+              {user?.dob}
             </h3>
           </div>
 

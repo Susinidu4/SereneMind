@@ -1,7 +1,29 @@
 import React from "react";
 import "./Calendar.css";
 import { IoCloseCircle } from "react-icons/io5";
+import { RiEdit2Fill } from "react-icons/ri";
+import { MdDelete } from "react-icons/md";
+import {Link} from "react-router-dom"
 
+const deleteMood = async (id) => {
+  try {
+    const response = await fetch(`http://localhost:5000/mood/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete mood");
+    }
+
+    const data = await response.json();
+    console.log("Mood deleted successfully:", data);
+  } catch (err) {
+    console.error("Error deleting mood:", err);
+  }
+};
 export const HistoryPopup = ({
   selectedDate,
   loading,
@@ -29,6 +51,7 @@ export const HistoryPopup = ({
                   <tr className="bg-gray-100 border-b-2 border-gray-200">
                     <th className="p-3 font-semibold">Emoji</th>
                     <th className="p-3 font-semibold">Time</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -38,6 +61,14 @@ export const HistoryPopup = ({
                         <td className="p-3">{mood.emoji}</td>
                         <td className="p-3">
                           {new Date(mood.createdAt).toLocaleTimeString()}
+                        </td>
+                        <td className="p-3">
+                          <Link to={`/moodtrackingupdate/${mood._id}`}><button className="text-blue-500 mr-2">
+                            <RiEdit2Fill size={20} />
+                          </button></Link>
+                          <button onClick={() => deleteMood(mood._id)} className="text-red-500">
+                            <MdDelete size={20} />
+                          </button>
                         </td>
                       </tr>
                     ))
