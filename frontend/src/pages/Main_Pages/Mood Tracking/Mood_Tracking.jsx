@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Header_2 } from "../../../components/Header_2";
+import Swal from 'sweetalert2'
+
 
 const emotionMap = {
   "😊": "happy",
@@ -44,8 +46,15 @@ export const Mood_Tracking = () => {
           user_id: user.id,
           createdAt: new Date().toISOString(), // Add timestamp
         }),
+        
       });
-
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Your work has been saved",
+        showConfirmButton: false,
+        timer: 1500
+      });
       if (!response.ok) {
         throw new Error("Failed to save mood");
       }

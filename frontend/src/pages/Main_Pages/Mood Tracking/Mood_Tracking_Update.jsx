@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Header_2 } from "../../../components/Header_2";
 import { useParams, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const emotionMap = {
   "😊": "happy",
@@ -77,6 +78,12 @@ export const Mood_Tracking_Update = () => {
 
       const data = await response.json();
       console.log("Mood updated successfully:", data);
+      Swal.fire({
+        title: "Update Successful !",
+        text: "Your mood has been updated successfully.",
+        icon: "success",
+        draggable: true
+      });
       navigate("/userprofile"); // Redirect to mood tracking page after update
     } catch (err) {
       setError(err.message);
