@@ -7,7 +7,6 @@ import { PrototypeA } from './assets/Prototype/PrototypeA';
 {/* yasindu */}
 import { User_Signup } from './pages/Main_Pages/User Account Management/User_Signup';
 import { User_Login } from './pages/Main_Pages/User Account Management/User_Login';
-
 import { InstructionPage } from './pages/Mood_Journaling/InstructionPage';
 import { MoodJournalingInsert } from './pages/Mood_Journaling/MoodJournalingInsert';
 import { User_Profile } from './pages/Main_Pages/User Account Management/User_Profile';

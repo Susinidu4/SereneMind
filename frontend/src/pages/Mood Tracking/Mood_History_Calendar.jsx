@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Calendar.css";
+import { HistoryPopup } from "./HistoryPopup";
 
 export const Mood_History_Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -118,32 +119,13 @@ export const Mood_History_Calendar = () => {
 
       {/* Popup for mood history */}
       {showPopup && (
-        <div className="popup-overlay">
-          <div className="popup">
-            <div className="popup-content">
-              <h3>Mood History for {selectedDate}</h3>
-              <button onClick={() => setShowPopup(false)}>Close</button>
-              {loading ? (
-                <p>Loading...</p>
-              ) : error ? (
-                <p>Error: {error}</p>
-              ) : (
-                <ul>
-                  {filteredMoodHistory.length > 0 ? (
-                    filteredMoodHistory.map((mood) => (
-                      <li key={mood._id}>
-                        <span>{mood.emoji}</span> -{" "}
-                        {new Date(mood.createdAt).toLocaleTimeString()}
-                      </li>
-                    ))
-                  ) : (
-                    <li>No mood history for this date.</li>
-                  )}
-                </ul>
-              )}
-            </div>
-          </div>
-        </div>
+        <HistoryPopup
+          selectedDate={selectedDate}
+          loading={loading}
+          error={error}
+          filteredMoodHistory={filteredMoodHistory}
+          onClose={() => setShowPopup(false)}
+        />
       )}
     </div>
   );
