@@ -15,6 +15,7 @@ import { Sample } from './pages/Mood Tracking/Sample';
 
 import { InstructionPage } from './pages/Mood_Journaling/InstructionPage';
 import { MoodJournalingInsert } from './pages/Mood_Journaling/MoodJournalingInsert';
+import { Mood_History_Calendar } from './pages/Mood Tracking/Mood_History_Calendar';
 
 
 
@@ -36,6 +37,7 @@ function App() {
         <Route path="/admindashboard" element={<Admin_Dashboard/>} />
         <Route path="/sample" element={<Sample/>} />
         <Route path="/mood" element={<Mood/>} />
+        <Route path="/moodhistorycalendar" element={<Mood_History_Calendar/>} />
 
         {/* Mood_Journaling */}
         <Route path="/MoodJournaling/InstructionPage" element={<InstructionPage/>} />
