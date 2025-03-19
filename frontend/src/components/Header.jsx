@@ -4,10 +4,18 @@ import { Bell, User } from "lucide-react";
 import { FaSearch } from "react-icons/fa";
 import logo from "../assets/Images/logo.png";
 
+//logout function to clear the local storage key userData
+const logout = () => {
+  localStorage.removeItem("userData");
+  window.location.href = "/";
+};
+
 export const Header = () => {
+  const data = JSON.parse(localStorage.getItem("userData"));
+
   return (
     <div>
-      <div className={GlobalStyle.fontNunito}>
+      {data || !data? (<div className={GlobalStyle.fontNunito}>
         <div className="container flex justify-between items-center m-8 px-12">
 
           {/* Logo Section */}
@@ -98,7 +106,7 @@ export const Header = () => {
             
           </div>
         </div>
-      </div>
+      </div>):""}
     </div>
   );
 };

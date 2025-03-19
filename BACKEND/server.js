@@ -11,6 +11,9 @@ dotenv.config();
 //yasindu's code
 import UserRouter from './routes/UserRoute.js';
 import AdminRouter from './routes/AdminRoute.js';
+import MoodLogRouter from './routes/Mood_tracking_Route.js'
+import SuggesionRouter from './routes/SuggesionsRoute.js';
+
 
 
 // Import Routes
@@ -51,6 +54,8 @@ connection.once("open", () => {
 //yasindu's code
 app.use('/user', UserRouter);
 app.use('/admin', AdminRouter);
+app.use('/mood', MoodLogRouter);
+app.use('/suggestions', SuggesionRouter);
 
 app.use("/api/mood_journaling", MoodJournaling);
 
