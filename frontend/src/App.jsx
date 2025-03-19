@@ -24,21 +24,24 @@ function App() {
   return (
     <BrowserRouter>
       <Routes> 
+
+        {/* Other pages */}
         <Route path="/" element={<Home/>} />
         <Route path="/PrototypeA" element={<PrototypeA/>} />
-
-
-        {/* yasindu */}
+        
         <Route path="/usersignup" element={<User_Signup/>} />
         <Route path="/login" element={<User_Login/>} />
         <Route path="/userprofile" element={<User_Profile/>} />
         <Route path="/adminlogin" element={<Admin_Login/>} />
         <Route path="/admindashboard" element={<Admin_Dashboard/>} />
+
+        {/* yasindu */}
         <Route path="/sample" element={<Sample/>} />
 
-        {/* Mood_Journaling */}
+        {/* Mood Journaling */}
         <Route path="/MoodJournaling/InstructionPage" element={<InstructionPage/>} />
         <Route path="/MoodJournaling/MoodJournalingInsert" element={<MoodJournalingInsert/>} />
+        
 
         {/* Activity Tracking */}
         <Route path="/Activity_Tracking/ActivityTracking" element={<ActivityTracking />} />
