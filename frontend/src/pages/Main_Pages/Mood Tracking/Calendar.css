@@ -36,7 +36,7 @@
     cursor: pointer;
   }
   
-  button {
+  .prev-month-btn, .next-month-btn {
     background: none;
     border: none;
     font-size: 1.5rem;
