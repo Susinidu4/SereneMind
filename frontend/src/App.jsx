@@ -5,17 +5,19 @@ import { Home } from './pages/Main_Pages/Home';
 import { PrototypeA } from './assets/Prototype/PrototypeA';
 
 {/* yasindu */}
-import { User_Signup } from './pages/User Account Management/User_Signup';
-import { User_Login } from './pages/User Account Management/User_Login';
-import { User_Profile } from './pages/User Account Management/User_Profile';
-import { Admin_Login } from './pages/Admin/Admin_Login';
-import { Admin_Dashboard } from './pages/Admin/Admin_Dashboard';
-import { Mood } from './pages/Mood Tracking/Mood';
-import { Sample } from './pages/Mood Tracking/Sample';
+import { User_Signup } from './pages/Main_Pages/User Account Management/User_Signup';
+import { User_Login } from './pages/Main_Pages/User Account Management/User_Login';
 
 import { InstructionPage } from './pages/Mood_Journaling/InstructionPage';
 import { MoodJournalingInsert } from './pages/Mood_Journaling/MoodJournalingInsert';
+import { User_Profile } from './pages/Main_Pages/User Account Management/User_Profile';
+import { Admin_Login } from './pages/Main_Pages/Admin/Admin_Login';
+import { Admin_Dashboard } from './pages/Main_Pages/Admin/Admin_Dashboard';
+import { Sample } from './pages/Mood Tracking/Sample';
+import { Mood } from './pages/Mood Tracking/Mood';
 import { Mood_History_Calendar } from './pages/Mood Tracking/Mood_History_Calendar';
+
+
 
 
 
@@ -30,13 +32,13 @@ function App() {
         <Route path="/" element={<Home/>} />
         <Route path="/PrototypeA" element={<PrototypeA/>} />
         
+
+         {/* yasindu */}
         <Route path="/usersignup" element={<User_Signup/>} />
         <Route path="/login" element={<User_Login/>} />
         <Route path="/userprofile" element={<User_Profile/>} />
         <Route path="/adminlogin" element={<Admin_Login/>} />
         <Route path="/admindashboard" element={<Admin_Dashboard/>} />
-
-        {/* yasindu */}
         <Route path="/sample" element={<Sample/>} />
         <Route path="/mood" element={<Mood/>} />
         <Route path="/moodhistorycalendar" element={<Mood_History_Calendar/>} />

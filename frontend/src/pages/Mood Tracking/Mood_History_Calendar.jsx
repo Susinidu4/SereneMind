@@ -58,15 +58,17 @@ export const Mood_History_Calendar = () => {
 
   // Handle date click
   const handleDateClick = (day) => {
-    const clickedDate = new Date(year, month, day).toISOString().split("T")[0];
-    setSelectedDate(clickedDate);
+    const clickedDate = new Date(year, month, day);
+    const localDateString = clickedDate.toLocaleDateString("en-CA"); // Format: YYYY-MM-DD
+    setSelectedDate(localDateString);
     setShowPopup(true);
   };
 
   // Filter mood history for the selected date
-  const filteredMoodHistory = moodHistory.filter((mood) =>
-    mood.createdAt.startsWith(selectedDate)
-  );
+  const filteredMoodHistory = moodHistory.filter((mood) => {
+    const moodDate = new Date(mood.createdAt).toLocaleDateString("en-CA"); // Convert to local date
+    return moodDate === selectedDate;
+  });
 
   const renderCalendar = () => {
     const calendarDays = [];
@@ -116,28 +118,30 @@ export const Mood_History_Calendar = () => {
 
       {/* Popup for mood history */}
       {showPopup && (
-        <div className="popup">
-          <div className="popup-content">
-            <h3>Mood History for {selectedDate}</h3>
-            <button onClick={() => setShowPopup(false)}>Close</button>
-            {loading ? (
-              <p>Loading...</p>
-            ) : error ? (
-              <p>Error: {error}</p>
-            ) : (
-              <ul>
-                {filteredMoodHistory.length > 0 ? (
-                  filteredMoodHistory.map((mood) => (
-                    <li key={mood._id}>
-                      <span>{mood.emoji}</span> -{" "}
-                      {new Date(mood.createdAt).toLocaleTimeString()}
-                    </li>
-                  ))
-                ) : (
-                  <li>No mood history for this date.</li>
-                )}
-              </ul>
-            )}
+        <div className="popup-overlay">
+          <div className="popup">
+            <div className="popup-content">
+              <h3>Mood History for {selectedDate}</h3>
+              <button onClick={() => setShowPopup(false)}>Close</button>
+              {loading ? (
+                <p>Loading...</p>
+              ) : error ? (
+                <p>Error: {error}</p>
+              ) : (
+                <ul>
+                  {filteredMoodHistory.length > 0 ? (
+                    filteredMoodHistory.map((mood) => (
+                      <li key={mood._id}>
+                        <span>{mood.emoji}</span> -{" "}
+                        {new Date(mood.createdAt).toLocaleTimeString()}
+                      </li>
+                    ))
+                  ) : (
+                    <li>No mood history for this date.</li>
+                  )}
+                </ul>
+              )}
+            </div>
           </div>
         </div>
       )}

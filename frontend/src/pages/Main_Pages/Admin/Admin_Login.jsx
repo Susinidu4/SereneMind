@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Header_2 } from "../../components/Header_2";
+import { Header_2 } from "../../../components/Header_2";
 
 export const Admin_Login = () => {
     const [email, setEmail] = useState("");
