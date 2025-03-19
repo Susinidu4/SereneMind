@@ -3,6 +3,7 @@ import "./Calendar.css";
 import { HistoryPopup } from "./HistoryPopup";
 
 export const Mood_History_Calendar = () => {
+  const user = JSON.parse(localStorage.getItem("userData"));
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
@@ -44,7 +45,7 @@ export const Mood_History_Calendar = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`http://localhost:5000/mood`);
+      const response = await fetch(`http://localhost:5000/mood/user/${user.id}`);
       if (!response.ok) {
         throw new Error("Failed to fetch mood history");
       }

@@ -21,11 +21,12 @@
   .calendar-day-header {
     font-weight: bold;
     padding: 10px;
-    background-color: #f0f0f0;
+    background-color: #92A079;
   }
   
   .calendar-day, .empty-day {
     padding: 10px;
+    background-color: #A3BF9F;
     border: 1px solid #ddd;
   }
   
@@ -68,9 +69,9 @@
 
 /* Popup container */
 .popup {
-  background-color: white;
+  background-color: #A4CDA7;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
   max-width: 400px;
   width: 100%;
   padding: 20px;
@@ -104,6 +105,7 @@
 .popup-content {
   max-height: 300px;
   overflow-y: auto;
+
 }
 
 .popup-content ul {
