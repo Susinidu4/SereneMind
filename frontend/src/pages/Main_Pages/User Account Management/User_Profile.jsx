@@ -7,7 +7,7 @@ import { MdDelete } from "react-icons/md";
 import { PiDotsThreeCircleFill } from "react-icons/pi";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { Mood_History_Calendar } from "../../Mood Tracking/Mood_History_Calendar";
+import { Mood_History_Calendar } from "../Mood Tracking/Mood_History_Calendar";
 
 export const User_Profile = () => {
   const user_id = 1;
