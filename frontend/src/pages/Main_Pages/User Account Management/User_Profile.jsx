@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import GlobalStyle from "../../../assets/Prototype/GlobalStyle";
-import { Header } from "../../../components/Header";
 import { Footer } from "../../../components/Footer";
 import { IoPersonCircle } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
@@ -8,6 +7,7 @@ import { PiDotsThreeCircleFill } from "react-icons/pi";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Mood_History_Calendar } from "../Mood Tracking/Mood_History_Calendar";
+import { Header_2 } from "../../../components/Header_2";
 
 export const User_Profile = () => {
   const user_id = 1;
@@ -56,7 +56,7 @@ export const User_Profile = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
-      <Header />
+      <Header_2 />
 
       <main className="flex-grow mx-20">
         <div className={GlobalStyle.fontNunito}>
