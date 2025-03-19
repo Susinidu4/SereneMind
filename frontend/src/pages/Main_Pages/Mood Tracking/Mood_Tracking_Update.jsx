@@ -79,7 +79,7 @@ export const Mood_Tracking_Update = () => {
       const data = await response.json();
       console.log("Mood updated successfully:", data);
       Swal.fire({
-        title: "Update Successful !",
+        title: `${selectedEmoji} Updated Successfully `,
         text: "Your mood has been updated successfully.",
         icon: "success",
         draggable: true
