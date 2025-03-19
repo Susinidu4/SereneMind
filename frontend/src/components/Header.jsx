@@ -32,7 +32,7 @@ export const Header = () => {
             <a href="#">
               <Bell className="w-6 h-6 text-gray-600 cursor-pointer" />
             </a>
-            <a href="#">
+            <a href="/userprofile">
               <User className="w-6 h-6 text-gray-600 cursor-pointer" />
             </a>
           </div>

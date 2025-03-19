@@ -23,7 +23,7 @@ const GlobalStyle = {
   inputText:
     "px-5 py-1 opacity-80 border-2 border-[#92A079] border-opacity-30 rounded-lg bg-white text-[#0B120E]-600",
   remark:
-    "px-5 py-1 opacity-80 border-2 border-[#92A079] border-opacity-30 rounded-lg bg-white text-[#0B120E]-600 w-2/4",
+    "px-5 py-1 opacity-80 border-2 border-[#92A079] border-opacity-30 rounded-lg bg-white text-[#0B120E]-600 w-300",
 
   // Select/Dropdown Styles
   selectBox:
