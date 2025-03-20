@@ -62,8 +62,8 @@ router.get("/mood-journal/:user_id", async (req, res) => {
         const { user_id } = req.params;
 
         // Fetch all mood journaling entries for the given user_id
-        const userEntries = await MoodJournaling.find({ user_id });
-
+        // const userEntries = await MoodJournaling.find({ user_id });
+        const userEntries = await MoodJournaling.find({ user_id }).sort({ createdAt: -1 });
         // Check if entries exist
         if (!userEntries.length) {
             return res.status(404).json({ 
