@@ -128,6 +128,7 @@ router.get('/analyze/:userId', async (req, res) => {
 
     // Extract only the required fields (title, plain, time duration per day)
     const response = suggestions.map(suggestion => ({
+      id: suggestion.id,
       title: suggestion.title,
       plain: suggestion.plain,
       "time duration per day": suggestion["time duration per day"]

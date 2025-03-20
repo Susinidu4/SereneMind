@@ -55,7 +55,7 @@ function App() {
         
 
         {/* Activity Tracking */}
-        <Route path="/Activity_Tracking/ActivityTracking" element={<ActivityTracking />} />
+        <Route path="/Activity_Tracking/ActivityTracking/:id" element={<ActivityTracking />} />
         <Route path="/selfcareplanes" element={<SelfCarePlanes />} />
 
 

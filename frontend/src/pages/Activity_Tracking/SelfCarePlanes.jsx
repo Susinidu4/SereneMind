@@ -52,14 +52,14 @@ export const SelfCarePlanes = () => {
         <div className='title-section flex justify-between items-center px-4'>
           <h1 className='text-3xl font-bold'>Self Care Activities</h1>
           {/* Conditionally render the button based on buttonStatus */}
-          {buttonStatus && (
+         
             <button
               className='bg-[#A4CDA7] px-4 py-2 rounded-md hover:bg-[#8cb48f] transition-colors'
               onClick={handleGenerateClick} // Call handleGenerateClick on button click
             >
               Generate Plains
             </button>
-          )}
+         
         </div>
 
         {/* Grid Section */}
@@ -67,7 +67,7 @@ export const SelfCarePlanes = () => {
           {isGenerated ? ( // Check if the button is clicked
             <div className='grid-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-20'>
               {randomSuggestions.map((suggestion, index) => (
-                <Link to={``} key={index}>
+                <Link to={`/Activity_Tracking/ActivityTracking/${suggestion.id}`} key={index}>
                   <div className="plane-cards my-4 bg-[#A4CDA7] w-[300px] h-[300px] p-4 flex justify-center shadow-lg rounded-xl">
                     <h2 className="text-[20px] font-semibold text-center">{suggestion.title}</h2>
                   </div>
