@@ -130,7 +130,7 @@ router.get('/analyze/:userId', async (req, res) => {
     const response = suggestions.map(suggestion => ({
       id: suggestion.id,
       title: suggestion.title,
-      plain: suggestion.plain,
+      plane: suggestion.plane,
       "time duration per day": suggestion["time duration per day"]
     }));
 
