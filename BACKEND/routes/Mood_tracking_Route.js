@@ -49,6 +49,29 @@ router.get('/user/:userId', async (req, res) => {
     }
 });
 
+//update mood
+router.put('/:id', async (req, res) => {
+    try {
+        await Mood.findByIdAndUpdate(req.params.id, req.body);
+        res.status(200).json({ message: 'Mood updated successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: error.message });
+    }
+});
+
+
+//delete mood
+router.delete('/:id', async (req, res) => {
+    try {
+        await Mood.findByIdAndDelete(req.params.id);
+        res.status(200).json({ message: 'Mood deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: error.message });
+    }
+});
+
 
 
 // Emoji to Emotion Mapping
