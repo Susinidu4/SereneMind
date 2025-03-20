@@ -47,9 +47,7 @@ function App() {
         <Route path="/adminlogin" element={<Admin_Login/>} />
         <Route path="/admindashboard" element={<Admin_Dashboard/>} />
         <Route path="/sample" element={<Sample/>} />
-
         <Route path="/moodtracking" element={<Mood_Tracking/>} />
-
         <Route path="/moodhistorycalendar" element={<Mood_History_Calendar/>} />
         <Route path="/moodtrackingupdate/:id" element={<Mood_Tracking_Update/>} />
 
