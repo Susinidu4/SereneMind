@@ -21,6 +21,7 @@ import { MoodJournalingInsert } from './pages/Mood_Journaling/MoodJournalingInse
 
 import { ActivityTracking } from './pages/Activity_Tracking/ActivityTracking';
 import { SelfCarePlanes } from './pages/Activity_Tracking/SelfCarePlanes';
+import { Update_User } from './pages/Main_Pages/User Account Management/update_user';
 
 
 
@@ -48,6 +49,7 @@ function App() {
         <Route path="/moodtracking" element={<Mood_Tracking/>} />
         <Route path="/moodhistorycalendar" element={<Mood_History_Calendar/>} />
         <Route path="/moodtrackingupdate/:id" element={<Mood_Tracking_Update/>} />
+        <Route path="update-user/:id" element={<Update_User/>} />
 
         {/* Mood Journaling */}
         <Route path="/MoodJournaling/InstructionPage" element={<InstructionPage/>} />

@@ -18,6 +18,10 @@ export const User_Profile = () => {
   const [deleteStatus, setDeleteStatus] = useState("");
   const [user, setUser] = useState("");
 
+  if (!(user_data)) {
+    window.location.href = "/";
+  }
+
   //fetch user data
   useEffect(() => {
     const fetchUser = async () => {
