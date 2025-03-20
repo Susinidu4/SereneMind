@@ -7,6 +7,7 @@ import { MdDelete } from "react-icons/md";
 import { PiDotsThreeCircleFill } from "react-icons/pi";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { Mood_History_Calendar } from "../Mood Tracking/Mood_History_Calendar";
 
 export const User_Profile = () => {
   const user_id = 1;
@@ -110,23 +111,7 @@ export const User_Profile = () => {
               <div className="bg-green-50 p-4 rounded-b-lg overflow-y-auto h-140">
                 {activeTab === "Mood History" ? (
                   // Mood History Content
-                  <div>
-                    <h2 className="text-xl font-semibold text-gray-700 mb-4">
-                      Mood History Overview
-                    </h2>
-                    {/* Example mood history content */}
-                    <ul className="list-disc pl-5">
-                      <li className="mb-2 text-gray-700">
-                        Happy - 10th March, 2025
-                      </li>
-                      <li className="mb-2 text-gray-700">
-                        Sad - 9th March, 2025
-                      </li>
-                      <li className="mb-2 text-gray-700">
-                        Excited - 8th March, 2025
-                      </li>
-                    </ul>
-                  </div>
+                 <Mood_History_Calendar />
                 ) : (
                   // Journal History Content
                   journalHistory.map((item) => (
