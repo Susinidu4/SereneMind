@@ -63,7 +63,7 @@ export const Header = () => {
                   Journaling
                 </a>
                 <a
-                  href="/mood-tracking"
+                  href="/moodtracking"
                   className="hover:font-bold hover:underline"
                 >
                   Mood Tracking
