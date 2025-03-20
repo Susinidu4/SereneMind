@@ -19,10 +19,7 @@ import { Mood_Tracking_Update } from './pages/Main_Pages/Mood Tracking/Mood_Trac
 import { InstructionPage } from './pages/Mood_Journaling/InstructionPage';
 import { MoodJournalingInsert } from './pages/Mood_Journaling/MoodJournalingInsert';
 
-
-
 import { ActivityTracking } from './pages/Activity_Tracking/ActivityTracking';
-
 
 
 
