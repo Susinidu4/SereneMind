@@ -20,6 +20,7 @@ import { InstructionPage } from './pages/Mood_Journaling/InstructionPage';
 import { MoodJournalingInsert } from './pages/Mood_Journaling/MoodJournalingInsert';
 
 import { ActivityTracking } from './pages/Activity_Tracking/ActivityTracking';
+import { SelfCarePlanes } from './pages/Activity_Tracking/SelfCarePlanes';
 
 
 
@@ -55,6 +56,7 @@ function App() {
 
         {/* Activity Tracking */}
         <Route path="/Activity_Tracking/ActivityTracking" element={<ActivityTracking />} />
+        <Route path="/selfcareplanes" element={<SelfCarePlanes />} />
 
 
       </Routes>
