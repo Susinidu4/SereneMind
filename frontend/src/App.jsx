@@ -12,12 +12,14 @@ import { Admin_Login } from './pages/Main_Pages/Admin/Admin_Login';
 import { Admin_Dashboard } from './pages/Main_Pages/Admin/Admin_Dashboard';
 import { Sample } from './pages/Main_Pages/Mood Tracking/Sample';
 import { Mood_History_Calendar } from './pages/Main_Pages/Mood Tracking/Mood_History_Calendar';
+import { Mood_Tracking } from './pages/Main_Pages/Mood Tracking/Mood_Tracking';
+import { Mood_Tracking_Update } from './pages/Main_Pages/Mood Tracking/Mood_Tracking_Update';
+
 
 import { InstructionPage } from './pages/Mood_Journaling/InstructionPage';
 import { MoodJournalingInsert } from './pages/Mood_Journaling/MoodJournalingInsert';
 
-import { Mood_Tracking } from './pages/Main_Pages/Mood Tracking/Mood_Tracking';
-import { Mood_Tracking_Update } from './pages/Main_Pages/Mood Tracking/Mood_Tracking_Update';
+
 
 import { ActivityTracking } from './pages/Activity_Tracking/ActivityTracking';
 
