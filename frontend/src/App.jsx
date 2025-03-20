@@ -15,7 +15,12 @@ import { Mood_History_Calendar } from './pages/Main_Pages/Mood Tracking/Mood_His
 
 import { InstructionPage } from './pages/Mood_Journaling/InstructionPage';
 import { MoodJournalingInsert } from './pages/Mood_Journaling/MoodJournalingInsert';
+
+import { Mood_Tracking } from './pages/Main_Pages/Mood Tracking/Mood_Tracking';
+import { Mood_Tracking_Update } from './pages/Main_Pages/Mood Tracking/Mood_Tracking_Update';
+
 import { ActivityTracking } from './pages/Activity_Tracking/ActivityTracking';
+
 
 
 
@@ -40,7 +45,11 @@ function App() {
         <Route path="/adminlogin" element={<Admin_Login/>} />
         <Route path="/admindashboard" element={<Admin_Dashboard/>} />
         <Route path="/sample" element={<Sample/>} />
+
+        <Route path="/moodtracking" element={<Mood_Tracking/>} />
+
         <Route path="/moodhistorycalendar" element={<Mood_History_Calendar/>} />
+        <Route path="/moodtrackingupdate/:id" element={<Mood_Tracking_Update/>} />
 
         {/* Mood Journaling */}
         <Route path="/MoodJournaling/InstructionPage" element={<InstructionPage/>} />

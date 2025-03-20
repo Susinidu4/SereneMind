@@ -7,6 +7,15 @@ export const User_Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const user = JSON.parse(localStorage.getItem("userData"));
+
+  try {
+    if (user.role === "user" || user.role === "USER" || user.role === "User") {
+      window.location.href = "/userprofile";
+    }
+  } catch (err) {
+    console.error("Error checking user role:", err);
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -103,11 +103,11 @@ export const Mood_History_Calendar = () => {
   return (
     <div className="calendar">
       <div className="calendar-header">
-        <button onClick={goToPreviousMonth}>&lt;</button>
+        <button className="prev-month-btn" onClick={goToPreviousMonth}>&lt;</button>
         <h2>
           {monthNames[month]} {year}
         </h2>
-        <button onClick={goToNextMonth}>&gt;</button>
+        <button className="next-month-btn" onClick={goToNextMonth}>&gt;</button>
       </div>
       <div className="calendar-grid">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
