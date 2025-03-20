@@ -71,7 +71,7 @@ export const Header = () => {
                   Mood Tracking
                 </a>
                 <a
-                  href="/Activity_Tracking/ActivityTracking"
+                  href="/selfcareplanes"
                   className="hover:font-bold hover:underline"
                 >
                   Activity Tracking

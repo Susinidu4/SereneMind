@@ -1,19 +1,42 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import GlobalStyle from "../../assets/Prototype/GlobalStyle";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Header } from "../../components/Header";
 import { Footer } from "../../components/Footer";
 import bg_image1 from "../../assets/Images/activity1.png";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { IoArrowBack } from "react-icons/io5";
 import { IoClose } from "react-icons/io5"; // Import Close Icon
+import { Link } from "react-router-dom";
 
 export const ActivityTracking = () => {
+  const {id} = useParams();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [selectedDay, setSelectedDay] = useState(null);
   const [activityData, setActivityData] = useState("");
   const [progress, setProgress] = useState(0); // Add progress state
+  const [plane, setPlane] = useState([])
+
+
+  //fetch plane by id
+  const fetchPlane = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/suggestions/${id}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch plane');
+      }
+      const data = await response.json();
+      console.log('API Response:', data); // Log the full API response
+      setPlane(data);
+    } catch (error) {
+      console.error('Error fetching plane:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPlane();
+  }, []);
 
   const openModal = (day) => {
     setSelectedDay(day);
@@ -44,18 +67,18 @@ export const ActivityTracking = () => {
       <main className="flex-grow mx-20">
         <div className={GlobalStyle.fontNunito}>
           <h1 className={`${GlobalStyle.headingLarge}`}>Self Care Activity Tracking</h1>
-          <IoArrowBack className="text-gray-700 cursor-pointer" size={24} />
+          <Link to={`/selfcareplanes`}><IoArrowBack className="text-gray-700 cursor-pointer" size={24} /></Link>
           <br />
         </div>
 
         <main className="flex-grow flex justify-center items-center">
           <div className={`${GlobalStyle.pageContainer} px-25`}>
             <div className="flex justify-between items-center">
-              <p className={GlobalStyle.headingMedium}>Title - Lorem ipsum dolor</p>
+              <p className={GlobalStyle.headingMedium}>{plane.title}</p>
               <p className={GlobalStyle.headingMedium}>Duration: 1 Week</p>
             </div>
             <p className={GlobalStyle.paragraph}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum id turpis nec nisl laoreet faucibus.
+              {plane.plane}
             </p>
             <div className="mt-6 space-y-3">
               {[...Array(7)].map((_, index) => (
@@ -100,6 +123,7 @@ export const ActivityTracking = () => {
             </div>
             
             <h2 className="text-lg font-bold mb-4">Log Activity for Day {selectedDay}</h2>
+            <h2>{plane.time_per_day} for day</h2>
             <p className={GlobalStyle.headingMedium}>Notes</p>
             <textarea
               className="w-full border p-2 mt-2 rounded-md bg-white"
