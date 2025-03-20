@@ -40,23 +40,26 @@ export const SelfCarePlanes = () => {
   }, []);
 
   return (
-    <div>
+    <div className='bg-[FFFDF7]'>
       <Header />
       <div className='main_section' style={{ fontFamily: "Nunito" }}>
-        <h1 className='text-3xl font-bold px-4'>Self Care Activities</h1>
-        <div className="px-4 flex justify-center mt-20">
+        {/* Title Section with Button Aligned to the Right */}
+        <div className='title-section flex justify-between items-center px-4'>
+          <h1 className='text-3xl font-bold'>Self Care Activities</h1>
+          <button className='bg-[#A4CDA7] px-4 py-2 rounded-md'>Generate Plains</button>
+        </div>
 
+        {/* Grid Section */}
+        <div className="px-4 flex justify-center mt-20">
           <div className='grid-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-20'>
-          {randomSuggestions.map((suggestion, index) => (
-            <Link to={``}>
-              <div key={index} className="my-4 bg-[#A4CDA7] w-[200px] h-[200px] p-4 flex justify-center shadow-lg rounded-xl ">
-                <h2 className="text-[16px] font-semibold text-center">{suggestion.title}</h2>
-                
-              </div>
-            </Link>
-          ))}
+            {randomSuggestions.map((suggestion, index) => (
+              <Link to={``} key={index}>
+                <div className="my-4 bg-[#A4CDA7] w-[300px] h-[300px] p-4 flex justify-center shadow-lg rounded-xl">
+                  <h2 className="text-[20px] font-semibold text-center">{suggestion.title}</h2>
+                </div>
+              </Link>
+            ))}
           </div>
-         
         </div>
       </div>
     </div>
