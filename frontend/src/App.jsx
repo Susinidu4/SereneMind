@@ -11,11 +11,12 @@ import { User_Profile } from './pages/Main_Pages/User Account Management/User_Pr
 import { Admin_Login } from './pages/Main_Pages/Admin/Admin_Login';
 import { Admin_Dashboard } from './pages/Main_Pages/Admin/Admin_Dashboard';
 import { Sample } from './pages/Main_Pages/Mood Tracking/Sample';
-import { Mood } from './pages/Main_Pages/Mood Tracking/Mood';
 import { Mood_History_Calendar } from './pages/Main_Pages/Mood Tracking/Mood_History_Calendar';
 
 import { InstructionPage } from './pages/Mood_Journaling/InstructionPage';
 import { MoodJournalingInsert } from './pages/Mood_Journaling/MoodJournalingInsert';
+import { Mood_Tracking } from './pages/Main_Pages/Mood Tracking/Mood_Tracking';
+import { Mood_Tracking_Update } from './pages/Main_Pages/Mood Tracking/Mood_Tracking_Update';
 
 
 
@@ -40,8 +41,9 @@ function App() {
         <Route path="/adminlogin" element={<Admin_Login/>} />
         <Route path="/admindashboard" element={<Admin_Dashboard/>} />
         <Route path="/sample" element={<Sample/>} />
-        <Route path="/mood" element={<Mood/>} />
+        <Route path="/moodtracking" element={<Mood_Tracking/>} />
         <Route path="/moodhistorycalendar" element={<Mood_History_Calendar/>} />
+        <Route path="/moodtrackingupdate/:id" element={<Mood_Tracking_Update/>} />
 
         {/* Mood Journaling */}
         <Route path="/MoodJournaling/InstructionPage" element={<InstructionPage/>} />
