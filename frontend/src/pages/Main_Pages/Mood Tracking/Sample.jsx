@@ -1,6 +1,5 @@
 // Sample.jsx
 import React from 'react';
-import mential_health_suggesion from './mential_health_suggesion.js'; // Import the default export
 
 export const Sample = () => {
     return (

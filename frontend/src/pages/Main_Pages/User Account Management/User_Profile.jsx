@@ -1,18 +1,44 @@
 import React, { useState, useEffect } from "react";
 import GlobalStyle from "../../../assets/Prototype/GlobalStyle";
-import { Header } from "../../../components/Header";
 import { Footer } from "../../../components/Footer";
 import { IoPersonCircle } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
 import { PiDotsThreeCircleFill } from "react-icons/pi";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { Mood_History_Calendar } from "../Mood Tracking/Mood_History_Calendar";
+import { Header_2 } from "../../../components/Header_2";
 
 export const User_Profile = () => {
+
+  const user_data = JSON.parse(localStorage.getItem("userData"));
   const user_id = 1;
   const [activeTab, setActiveTab] = useState("Mood History");
   const [journalHistory, setJournalHistory] = useState([]);
   const [deleteStatus, setDeleteStatus] = useState("");
+  const [user, setUser] = useState("");
+
+  //fetch user data
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/user/${user_data.id}`
+        );
+        if (response.status === 200) {
+          setUser(response.data);
+          console.log("User data:", response.data);
+        } else {
+          console.error("Failed to fetch user data");
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUser();
+  }, [user_data.id]);
+
 
   useEffect(() => {
     // Fetch journal history on component mount
@@ -55,7 +81,7 @@ export const User_Profile = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
-      <Header />
+      <Header_2 />
 
       <main className="flex-grow mx-20">
         <div className={GlobalStyle.fontNunito}>
@@ -70,13 +96,13 @@ export const User_Profile = () => {
               className={`${GlobalStyle.headingLarge} mt-10`}
               style={{ fontSize: "30px" }}
             >
-              Abdhil Abash
+              {user?.name}
             </h3>
             <h3 className={`${GlobalStyle.headingMedium} mt-5`}>
-              abdhilabash@gmail.com
+              {user?.email}
             </h3>
             <h3 className={`${GlobalStyle.headingMedium} mt-5`}>
-              2001 - 01 - 01
+              {user?.dob}
             </h3>
           </div>
 
@@ -110,23 +136,7 @@ export const User_Profile = () => {
               <div className="bg-green-50 p-4 rounded-b-lg overflow-y-auto h-140">
                 {activeTab === "Mood History" ? (
                   // Mood History Content
-                  <div>
-                    <h2 className="text-xl font-semibold text-gray-700 mb-4">
-                      Mood History Overview
-                    </h2>
-                    {/* Example mood history content */}
-                    <ul className="list-disc pl-5">
-                      <li className="mb-2 text-gray-700">
-                        Happy - 10th March, 2025
-                      </li>
-                      <li className="mb-2 text-gray-700">
-                        Sad - 9th March, 2025
-                      </li>
-                      <li className="mb-2 text-gray-700">
-                        Excited - 8th March, 2025
-                      </li>
-                    </ul>
-                  </div>
+                 <Mood_History_Calendar />
                 ) : (
                   // Journal History Content
                   journalHistory.map((item) => (
