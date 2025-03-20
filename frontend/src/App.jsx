@@ -15,6 +15,8 @@ import { Mood_History_Calendar } from './pages/Main_Pages/Mood Tracking/Mood_His
 import { Mood_Tracking } from './pages/Main_Pages/Mood Tracking/Mood_Tracking';
 import { Mood_Tracking_Update } from './pages/Main_Pages/Mood Tracking/Mood_Tracking_Update';
 
+import { InstructionPage } from './pages/Mood_Journaling/InstructionPage';
+import { MoodJournalingInsert } from './pages/Mood_Journaling/MoodJournalingInsert';
 
 import { InstructionPage } from './pages/Mood_Journaling/InstructionPage';
 import { MoodJournalingInsert } from './pages/Mood_Journaling/MoodJournalingInsert';
