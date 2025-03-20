@@ -38,8 +38,9 @@ export const Header = () => {
             </a>
           </div>
         </div>
+        
 
-        <div>
+        <div className="flex justify-center">
           <hr className="border-t-2 border-black-200 w-370 mx-auto" />
         </div>
 
@@ -52,7 +53,7 @@ export const Header = () => {
                   Home
                 </a>
                 <a
-                  href="/resources"
+                  href="/ResourceManagement/OnlineResource"
                   className="hover:font-bold hover:underline"
                 >
                   Resources
@@ -70,7 +71,7 @@ export const Header = () => {
                   Mood Tracking
                 </a>
                 <a
-                  href="/Activity_Tracking/ActivityTracking"
+                  href="/selfcareplanes"
                   className="hover:font-bold hover:underline"
                 >
                   Activity Tracking

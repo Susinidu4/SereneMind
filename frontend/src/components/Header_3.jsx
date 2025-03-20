@@ -62,7 +62,7 @@ export const Header_3 = () => {
                 <a href="/moodtracking">Mood Tracking</a>
               </li>
               <li className="text-[18px] font-semibold hover:font-bold hover:underline">
-                <a href="/activity-tracking">Activity Tracking</a>
+                <a href="/selfcareplanes">Activity Tracking</a>
               </li>
             </ul>
 
@@ -112,7 +112,7 @@ export const Header_3 = () => {
               <a href="/moodtracking">Mood Tracking</a>
             </li>
             <li className="text-[18px] font-semibold hover:font-bold hover:underline">
-              <a href="/activity-tracking">Activity Tracking</a>
+              <a href="/selfcareplanes">Activity Tracking</a>
             </li>
           </ul>
 
