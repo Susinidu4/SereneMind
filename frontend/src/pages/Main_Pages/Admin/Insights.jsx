@@ -1,23 +1,25 @@
 import React from "react";
+import GlobalStyle from "../../../assets/Prototype/GlobalStyle";
 
 export const Insights = () => {
   return (
-    <div className=" min-h-screen flex flex-col items-center justify-center p-4">
-      
+    <div className=" gap-10 min-h-screen flex flex-col items-center justify-center p-4">
       {/* Customer Reviews Section */}
-      <div className="bg-gray-50 rounded-xl shadow-lg p-6 w-full max-w-[800px] h-110 mb-8">
-        <h2 className="text-[35px] font-semibold mb-8">Customer Reviews</h2>
+      <div className="bg-gray-50 rounded-xl shadow-lg p-12 w-full max-w-[600px] h-110 mb-4">
+        <h2 className={`${GlobalStyle.headingMedium} pb-10`}>
+          Customer Reviews
+        </h2>
         <div className="space-y-8">
           {[5, 4, 3, 2, 1].map((rating) => (
-            <div key={rating} className="flex items-center space-x-2">
+            <div key={rating} className="flex items-center space-x-2 ">
               <span className="text-lg font-medium w-6 text-right">
                 {rating}.0
               </span>
-              <div className="flex-grow bg-gray-200 rounded-full h4 w-80">
+              <div className="flex-grow bg-gray-200 rounded-full h-3 w-80">
                 {" "}
                 {/* Adjust width here */}
                 <div
-                  className="bg-green-800 h-4 rounded-full"
+                  className="bg-green-800 h-3 rounded-full"
                   style={{ width: `${rating * 20}%` }}
                 ></div>
               </div>

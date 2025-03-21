@@ -9,7 +9,6 @@ import { Mood_History_Calendar } from "../Mood Tracking/Mood_History_Calendar";
 import { Header_2 } from "../../../components/Header_2";
 import Swal from "sweetalert2";
 import { EditJournal } from "../../Mood_Journaling/EditJournal";
-import { JournalDetailModal } from "../../Mood_Journaling/JournalDetailModal"; // Import the new component
 
 export const User_Profile = () => {
   const user_data = JSON.parse(localStorage.getItem("userData"));
@@ -140,45 +139,73 @@ export const User_Profile = () => {
 
       <main className="flex-grow mx-20">
         <div className={GlobalStyle.fontNunito}>
-          <h1 className={GlobalStyle.headingLarge}>User Profile</h1>
-
-          <div className="mt-20 flex items-center justify-center space-x-4">
-            <IoPersonCircle className="w-60 h-60 text-gray-600" />
+          <div className="mt-10 flex items-center space-x-6">
+            {/* Use flex to align items horizontally */}
+            <IoPersonCircle
+              className="text-gray-600"
+              style={{ width: "200px", height: "200px" }}
+            />
           </div>
-
-          <div className="flex flex-col items-center justify-center ">
-            <h3
-              className={`${GlobalStyle.headingLarge} mt-10`}
-              style={{ fontSize: "30px" }}
-            >
-              {user?.name}
-            </h3>
-            <h3 className={`${GlobalStyle.headingMedium} mt-5`}>
-              {user?.email}
-            </h3>
-            <h3 className={`${GlobalStyle.headingMedium} mt-5`}>{user?.dob}</h3>
-          </div>
+          <table className="border-none">
+            <tbody>
+              <tr>
+                <td
+                  className={`${GlobalStyle.headingLarge} w-50`}
+                  style={{ fontSize: "25px" }}
+                >
+                  UserName
+                </td>
+                <td className={`${GlobalStyle.headingMedium} pl-2`}>
+                  : {user?.name}
+                </td>
+              </tr>
+              <tr>
+                <td
+                  className={`${GlobalStyle.headingLarge} w-50`}
+                  style={{ fontSize: "25px" }}
+                >
+                  Email
+                </td>
+                <td className={`${GlobalStyle.headingMedium} pl-2`}>
+                  : {user?.email}
+                </td>
+              </tr>
+              <tr>
+                <td
+                  className={`${GlobalStyle.headingLarge} w-50`}
+                  style={{ fontSize: "25px" }}
+                >
+                  Date of Birth
+                </td>
+                <td className={`${GlobalStyle.headingMedium} pl-2`}>
+                  : {user?.dob}
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
           <div className="flex items-center justify-center mt-20">
-            <div className="w-3/4 bg-[#A4CDA7] rounded-lg shadow-lg p-4">
+            <div
+              className={`${GlobalStyle.pageContainer} border-none w-2000 p-4`}
+            >
               {/* Tabs */}
-              <div className="flex">
+              <div className="flex ">
                 <button
                   onClick={() => setActiveTab("Mood History")}
-                  className={`w-50 h-15 text-center py-2 font-semibold rounded-tl-lg ${
+                  className={`flex-grow text-center py-2 font-semibold rounded-tl-lg ${
                     activeTab === "Mood History"
-                      ? "bg-green-50 text-black "
-                      : "bg-green-100 text-gray-500"
+                      ? " text-black border-b-4 border-[#005457] "
+                      : " text-gray-500"
                   }`}
                 >
                   Mood History
                 </button>
                 <button
                   onClick={() => setActiveTab("Journal History")}
-                  className={`w-50 text-center py-2 font-semibold rounded-tr-lg ${
+                  className={`flex-grow text-center py-2 font-semibold rounded-tr-lg ${
                     activeTab === "Journal History"
-                      ? "bg-green-50 text-black"
-                      : "bg-green-100 text-gray-500"
+                      ? "text-black border-b-4 border-[#005457]"
+                      : "text-gray-500"
                   }`}
                 >
                   Journal History
@@ -186,7 +213,7 @@ export const User_Profile = () => {
               </div>
 
               {/* Content */}
-              <div className="bg-green-50 p-4 rounded-b-lg overflow-y-auto h-140">
+              <div className=" p-4 rounded-b-lg overflow-y-auto h-140">
                 {activeTab === "Mood History" ? (
                   // Mood History Content
                   <Mood_History_Calendar />
@@ -195,10 +222,11 @@ export const User_Profile = () => {
                   journalHistory.map((item) => (
                     <div
                       key={item._id}
-                      className="flex items-center justify-between bg-green-100 p-5 rounded-lg mb-4 shadow h-15"
+                      className="flex items-center justify-between bg-white p-5 rounded-lg mb-4 shadow-md transition-shadow hover:shadow-lg w-300 mx-auto"
+
                     >
                       <div>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-md font-medium">
                           {new Date(item.createdAt).toLocaleString("en-US", {
                             year: "numeric",
                             month: "long",
@@ -209,16 +237,16 @@ export const User_Profile = () => {
                           })}
                         </p>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-3">
                         <button
-                          className="text-gray-600 hover:text-gray-800"
+                          className="p-2 rounded-full text-[#007579] hover:text-[#005457] hover:bg-red-100 transition"
                           onClick={() => handleDelete(item._id)}
                           title="Delete"
                         >
                           <MdDelete size={20} />
                         </button>
                         <button
-                          className="text-gray-600 hover:text-gray-800"
+                          className="p-2 rounded-full text-[#007579] hover:text-[#005457] hover:bg-[#AEDBD8] transition"
                           title="More"
                           onClick={() => handleOpenDetailModal(item)}
                         >
@@ -235,15 +263,6 @@ export const User_Profile = () => {
       </main>
 
       <Footer />
-
-      {/* Modal for EditJournal
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] sm:w-[800px] relative">
-            <EditJournal data={selectedJournal} onClose={handleCloseModal} />
-          </div>
-        </div>
-      )} */}
 
       {/* Modal for Journal Details */}
       {isDetailModalOpen && (

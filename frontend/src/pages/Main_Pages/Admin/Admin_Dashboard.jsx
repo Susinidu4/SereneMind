@@ -45,48 +45,49 @@ export const Admin_Dashboard = () => {
 
       <main className="flex-grow mx-20">
         <div className={GlobalStyle.fontNunito}>
-          <h1 className={`${GlobalStyle.headingLarge} `}>Admin Dashboard</h1>
-
           {/* Profile picture */}
-          <div className="mt-20 flex items-center justify-center space-x-4">
+          <div className="mt-10 flex items-center justify-center space-x-4">
             <IoPersonCircle className="w-60 h-60 text-gray-600" />
           </div>
 
           {/* Tabs */}
-          <div className="bg-[#DFF3E3] rounded-lg shadow-lg p-8 mt-20">
-            <div className="flex justify-center mb-8 space-x-4">
+          <div className=" p-8 mt-20">
+            <div className="flex justify-center mb-8 space-x-6">
               <button
-                className={`px-4 py-2 rounded-lg font-semibold ${
+                className={`px-6 h-12 rounded-full text-lg font-semibold transition-colors duration-300 ease-in-out ${
                   activeTab === "Insights"
-                    ? "bg-[#143109] text-white"
-                    : "bg-white text-[#143109] border border-[#143109]"
+                    ? "bg-gradient-to-t from-[#007579] to-[#00B4A6] text-white shadow-lg"
+                    : "bg-white text-[#143109] border-2 border-[#143109] hover:bg-[#00998F] hover:text-white hover:border-[#143109] focus:outline-none"
                 }`}
                 onClick={() => setActiveTab("Insights")}
               >
                 Insights
               </button>
               <button
-                className={`px-4 py-2 rounded-lg font-semibold ${
+                className={`px-6 h-12 rounded-full text-lg font-semibold transition-colors duration-300 ease-in-out ${
                   activeTab === "Articles"
-                    ? "bg-[#143109] text-white"
-                    : "bg-white text-[#143109] border border-[#143109]"
+                    ? "bg-gradient-to-t from-[#007579] to-[#00B4A6] text-white shadow-lg"
+                    : "bg-white text-[#143109] border-2 border-[#143109] hover:bg-[#00998F] hover:text-white focus:outline-none"
                 }`}
                 onClick={() => setActiveTab("Articles")}
               >
                 Articles
               </button>
               <button
-                className={`px-4 py-2 rounded-lg font-semibold ${
+                className={`px-6 h-12 rounded-full text-lg font-semibold transition-colors duration-300 ease-in-out ${
                   activeTab === "Add New"
-                    ? "bg-[#143109] text-white"
-                    : "bg-white text-[#143109] border border-[#143109]"
+                    ? "bg-gradient-to-t from-[#007579] to-[#00B4A6] text-white shadow-lg"
+                    : "bg-white text-[#143109] border-2 border-[#143109] hover:bg-[#00998F] hover:text-white hover:border-[#143109] focus:outline-none"
                 }`}
                 onClick={() => setActiveTab("Add New")}
               >
                 Add New
               </button>
             </div>
-            <div className="bg-[#DFF3E3] rounded-lg p-8">
+
+            <div
+              className={`${GlobalStyle.pageContainer} border-none p-4 mx-auto`}
+            >
               {renderContent()}
             </div>
           </div>

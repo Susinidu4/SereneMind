@@ -6,7 +6,6 @@ import { FaSearch } from "react-icons/fa";
 export const PrototypeA = () => {
   return (
     <div>
-
       {/* font styles */}
       <p className={GlobalStyle.fontNunito}>Hello</p>
       <p className={GlobalStyle.headingLarge}>Hello</p>
@@ -22,9 +21,15 @@ export const PrototypeA = () => {
         <button className={GlobalStyle.buttonPrimary}>Submit</button>
       </div>
 
+      {/* button 2*/}
+      <div className="flex gap-4">
+        <h1>Button 02</h1>
+        <button className={GlobalStyle.buttonSecondary}>Save</button>
+      </div>
+
       {/* download button */}
       <div className="flex gap-4">
-        <h1>Button 01</h1>
+        <h1>Download</h1>
         <button
           className={`${GlobalStyle.buttonPrimary} flex items-center gap-2`}
         >

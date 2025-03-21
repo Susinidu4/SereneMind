@@ -38,7 +38,7 @@ export const Articles = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
       {/* Scrollable Content Area */}
-      <div className="w-full bg-green-100 p-6 rounded-b-lg shadow-md overflow-y-auto h-[80vh]">
+      <div className="w-full p-6 overflow-y-auto h-[80vh]">
         {data.slice(0, visibleItems).map((item, index) => (
           <div
             key={index}

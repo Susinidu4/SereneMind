@@ -19,7 +19,7 @@ export const AddNew = () => {
         <div className="rounded-lg p-8 w-full max-w-3xl">
           <form>
             {/* textbox */}
-            <div className="mb-4">
+            <div className="mb-6">
               <h1 className={GlobalStyle.remarkTopic}>Title :</h1>
               <input
                 type="text"
@@ -49,7 +49,7 @@ export const AddNew = () => {
             {/* image upload */}
             <div className="mb-6">
               <label className={GlobalStyle.remarkTopic}>Snaps</label>
-              <div className="w-full px-8 pt-6">
+              <div className="w-full ">
                 <label htmlFor="image-upload" className="cursor-pointer w-full">
                   <input
                     id="image-upload"
@@ -59,7 +59,7 @@ export const AddNew = () => {
                     className="hidden"
                     multiple
                   />
-                  <div className="flex items-center rounded-[10px] border border-gray-300 bg-white overflow-hidden h-14">
+                  <div className="flex items-center rounded-[10px] border-2 border-[#005457] bg-white overflow-hidden h-14">
                     <div className="px-4 flex-grow truncate">
                       {selectedImages.length > 0
                         ? `${selectedImages.length} files selected`
@@ -74,22 +74,22 @@ export const AddNew = () => {
             </div>
 
             {/* author name */}
-            <div className="mb-4">
-              <h1>Author Name :</h1>
+            <div className="mb-6">
+              <h1 className={GlobalStyle.remarkTopic}>Author Name :</h1>
               <input
                 type="text"
                 placeholder="Text here"
-                className={`${GlobalStyle.remarkTopic} w-full`}
+                className={`${GlobalStyle.inputText} w-full`}
               />
             </div>
 
             {/* author designation */}
-            <div className="mb-4">
-              <h1>Author Designation :</h1>
+            <div className="mb-6">
+              <h1 className={GlobalStyle.remarkTopic}>Author Designation :</h1>
               <input
                 type="text"
                 placeholder="Text here"
-                className={`${GlobalStyle.remarkTopic} w-full`}
+                className={`${GlobalStyle.inputText} w-full`}
               />
             </div>
 

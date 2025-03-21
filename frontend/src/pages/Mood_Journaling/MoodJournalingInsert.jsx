@@ -151,27 +151,27 @@ export const MoodJournalingInsert = () => {
         <div className={GlobalStyle.fontNunito}>
           <h1 className={`${GlobalStyle.headingLarge} `}>Mood Journaling</h1>
 
-          <div className={`${GlobalStyle.pageContainer} px-25 mt-20`}>
+          <div className={`${GlobalStyle.pageContainer} px-25 mt-20 mx-auto`}>
             <form onSubmit={handleSubmit}>
               {/* Date & Time*/}
               <div className="flex justify-end mx-10 mt-6 flex-col items-end">
                 <div className="gap-2 flex flex-col">
-                  <h1 className={GlobalStyle.remarkTopic}>
-                    Date: {getCurrentDate()}
+                  <h1 className={`font-semibold ${GlobalStyle.headingSmall}`}>
+                    Date : {getCurrentDate()}
                   </h1>
-                  <h1 className={GlobalStyle.remarkTopic}>
-                    Time: {getCurrentTime()}
+                  <h1 className={`font-semibold ${GlobalStyle.headingSmall}`}>
+                    Time : {getCurrentTime()}
                   </h1>
                 </div>
               </div>
 
               {/* Overall mood */}
               <div>
-                <label className={GlobalStyle.remarkTopic}>
+                <label className={`font-semibold ${GlobalStyle.headingSmall}`}>
                   Overall Mood : How are you feeling right now ?
                 </label>
                 <label
-                  className={`${GlobalStyle.remarkTopic} flex flex-col space-y-4 pt-6`}
+                  className={`${GlobalStyle.headingSmall} flex flex-col space-y-4 pt-6`}
                 >
                   {[
                     { label: "Very Happy", value: "Very Happy" },
@@ -205,7 +205,7 @@ export const MoodJournalingInsert = () => {
 
               {/* Mood Intensity */}
               <div>
-                <label className={GlobalStyle.remarkTopic}>
+                <label className={`font-semibold ${GlobalStyle.headingSmall}`}>
                   Mood Intensity : On a scale of 1 (low) to 10 (high), how
                   intense is your mood ?
                 </label>
@@ -237,10 +237,10 @@ export const MoodJournalingInsert = () => {
 
               {/* Emotions */}
               <div>
-                <label className={GlobalStyle.remarkTopic}>
+                <label className={`font-semibold ${GlobalStyle.headingSmall}`}>
                   What emotions are you feeling?
                 </label>
-                <div className={GlobalStyle.remarkTopic}>
+                <div className={GlobalStyle.headingSmall}>
                   <div className="grid grid-cols-5 gap-6 px-8 pt-6">
                     {emotionsList.map((emotion, index) => (
                       <label
@@ -265,7 +265,7 @@ export const MoodJournalingInsert = () => {
               {/* Trigger */}
               <div>
                 <div className="mb-6">
-                  <label className={GlobalStyle.remarkTopic}>
+                  <label className={`font-semibold ${GlobalStyle.headingSmall}`}>
                     What triggered your mood?
                   </label>
                   <div className="px-8 pt-6">
@@ -283,7 +283,7 @@ export const MoodJournalingInsert = () => {
               {/* Cope */}
               <div>
                 <div className="mb-6">
-                  <label className={GlobalStyle.remarkTopic}>
+                  <label className={`font-semibold ${GlobalStyle.headingSmall}`}>
                     How did you cope with this mood ?
                   </label>
                   <div className="px-8 pt-6">
@@ -301,7 +301,7 @@ export const MoodJournalingInsert = () => {
               {/* Notes */}
               <div>
                 <div className="mb-6">
-                  <label className={GlobalStyle.remarkTopic}>Notes</label>
+                  <label className={`font-semibold ${GlobalStyle.headingSmall}`}>Notes</label>
                   <div className="px-8 pt-6">
                     <textarea
                       className={`${GlobalStyle.remark} w-full`}
@@ -317,7 +317,7 @@ export const MoodJournalingInsert = () => {
               {/* Reflection */}
               <div>
                 <div className="mb-6">
-                  <label className={GlobalStyle.remarkTopic}>Reflection</label>
+                  <label className={`font-semibold ${GlobalStyle.headingSmall}`}>Reflection</label>
                   <div className="px-8 pt-6">
                     <textarea
                       className={`${GlobalStyle.remark} w-full`}
@@ -333,7 +333,7 @@ export const MoodJournalingInsert = () => {
               {/* Image upload */}
               <div>
                 <div className="mb-6">
-                  <label className={GlobalStyle.remarkTopic}>Snaps</label>
+                  <label className={`font-semibold ${GlobalStyle.headingSmall}`}>Snaps</label>
                   <div className="w-full px-8 pt-6">
                     <label
                       htmlFor="image-upload"
@@ -347,7 +347,7 @@ export const MoodJournalingInsert = () => {
                         className="hidden"
                         multiple
                       />
-                      <div className="flex items-center rounded-full border border-gray-300 bg-white overflow-hidden h-14">
+                      <div className="flex items-center rounded-[10px] border-2 border-[#005457] bg-white overflow-hidden h-14">
                         <div className="px-4 flex-grow truncate">
                           {selectedImages.length > 0
                             ? `${selectedImages.length} files selected`
