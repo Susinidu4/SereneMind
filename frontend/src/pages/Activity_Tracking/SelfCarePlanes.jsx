@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Header } from '../../components/Header';
+import { Footer } from "../../components/Footer";
 import { Link } from 'react-router-dom';
 import GlobalStyle from "../../assets/Prototype/GlobalStyle";
 import { PieChart, Pie, Cell, Tooltip } from 'recharts';
@@ -129,6 +130,7 @@ export const SelfCarePlanes = () => {
           )}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

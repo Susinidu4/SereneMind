@@ -23,8 +23,10 @@ import { EditJournal } from './pages/Mood_Journaling/EditJournal';
 import { OnlineResource } from './pages/Resourse_Management/OnlineResource';
 import { ReadResource } from './pages/Resourse_Management/ReadResource';
 
+{/* Oshi */}
 import { ActivityTracking } from './pages/Activity_Tracking/ActivityTracking';
 import { SelfCarePlanes } from './pages/Activity_Tracking/SelfCarePlanes';
+import { ActivityProgress } from './pages/Activity_Tracking/ActivityProgress';
 
 
 
@@ -61,6 +63,7 @@ function App() {
         {/* Activity Tracking */}
         <Route path="/Activity_Tracking/ActivityTracking/:id" element={<ActivityTracking />} />
         <Route path="/selfcareplanes" element={<SelfCarePlanes />} />
+        <Route path="/activityProgress" element={<ActivityProgress />} />
 
         {/* Resource Management */}
         <Route path="/ResourceManagement/OnlineResource" element={<OnlineResource/>} />
