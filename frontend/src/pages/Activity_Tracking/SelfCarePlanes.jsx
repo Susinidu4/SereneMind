@@ -5,12 +5,24 @@ import { Link } from 'react-router-dom';
 export const SelfCarePlanes = () => {
   const [planes, setPlanes] = useState([]);
   const [randomSuggestions, setRandomSuggestions] = useState([]);
-  const [isGenerated, setIsGenerated] = useState(false); // State to track if the button is clicked
   const user = JSON.parse(localStorage.getItem('userData'));
   const [buttonStatus, setButtonStatus] = useState(true); // State to track button visibility
 
+  const localButton = JSON.parse(localStorage.getItem('generate_button'))
+  const sessionSuggesions = JSON.parse(sessionStorage.getItem('storedDate'));
+  console.log(sessionSuggesions)
+
+  // Get the current date
+  const currentDate = new Date();
+
+
   // Fetch self-care plans
   const fetchPlanes = async () => {
+
+    // Set expiration to 1 week from now
+    const expirationDate = new Date();
+    expirationDate.setDate(expirationDate.getDate() + 7); // 7 days = 1 week
+
     try {
       const response = await fetch(`http://localhost:5000/mood/analyze/${user.id}`);
       if (!response.ok) {
@@ -24,6 +36,16 @@ export const SelfCarePlanes = () => {
       const shuffledSuggestions = shuffleArray(data.suggestions).slice(0, 6);
       setRandomSuggestions(shuffledSuggestions);
       setIsGenerated(true); // Set the state to true after fetching data
+      
+      const dateData = {
+        suggestions: shuffledSuggestions,
+        date: currentDate.toISOString(), // Store the date in ISO format
+        expires: expirationDate.toISOString(), // Store the expiration date
+      };
+      
+      // Convert the object to a string and store it in session storage
+      sessionStorage.setItem('storedDate', JSON.stringify(dateData));
+
     } catch (error) {
       console.error('Error fetching planes:', error);
     }
@@ -42,6 +64,7 @@ export const SelfCarePlanes = () => {
   const handleGenerateClick = () => {
     fetchPlanes(); // Fetch planes when the button is clicked
     setButtonStatus(false); // Hide the button after clicking
+    localStorage.setItem("generate_button", buttonStatus)
   };
 
   return (
@@ -53,20 +76,22 @@ export const SelfCarePlanes = () => {
           <h1 className='text-3xl font-bold'>Self Care Activities</h1>
           {/* Conditionally render the button based on buttonStatus */}
          
+          {!localButton && (
             <button
-              className='bg-[#A4CDA7] px-4 py-2 rounded-md hover:bg-[#8cb48f] transition-colors'
-              onClick={handleGenerateClick} // Call handleGenerateClick on button click
+              className="bg-[#A4CDA7] text-white px-4 py-2 rounded-md"
+              onClick={handleGenerateClick}
             >
-              Generate Plains
+              Generate
             </button>
+          )}
          
         </div>
 
         {/* Grid Section */}
         <div className="px-4 flex justify-center mt-20">
-          {isGenerated ? ( // Check if the button is clicked
+          {sessionSuggesions ? ( // Check if the button is clicked
             <div className='grid-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-20'>
-              {randomSuggestions.map((suggestion, index) => (
+              {sessionSuggesions.suggestions.map((suggestion, index) => (
                 <Link to={`/Activity_Tracking/ActivityTracking/${suggestion.id}`} key={index}>
                   <div className="plane-cards my-4 bg-[#A4CDA7] w-[300px] h-[300px] p-4 flex justify-center shadow-lg rounded-xl">
                     <h2 className="text-[20px] font-semibold text-center">{suggestion.title}</h2>
