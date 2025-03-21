@@ -4,7 +4,9 @@ import { Header } from "../../components/Header";
 import { Footer } from "../../components/Footer";
 import { FaUpload, FaTimes } from "react-icons/fa";
 import { IoIosCloseCircle } from "react-icons/io";
-import axios from "axios"; // Import axios for making HTTP requests
+import axios from "axios"; 
+import Swal from "sweetalert2";
+
 
 export const MoodJournalingInsert = () => {
   const [selectedValue, setSelectedValue] = useState(null);
@@ -15,6 +17,27 @@ export const MoodJournalingInsert = () => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [overallMood, setOverallMood] = useState("");
   const [emotions, setEmotions] = useState([]);
+
+  const getCurrentDate = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const getCurrentTime = () => {
+    const now = new Date();
+    let hours = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    const period = hours >= 12 ? "PM" : "AM";
+
+    // Convert hours from 24-hour format to 12-hour format
+    hours = hours % 12;
+    hours = hours ? hours : 12; // Handle the case for 0 hours (midnight)
+
+    return `${String(hours).padStart(2, "0")}:${minutes} ${period}`;
+  };
 
   const handleImageChange = (e) => {
     if (e.target.files) {
@@ -47,7 +70,7 @@ export const MoodJournalingInsert = () => {
     setSelectedImages(updatedImages);
   };
 
-  const user_id = "1";
+  const user_id = "UID-6599";
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -73,7 +96,12 @@ export const MoodJournalingInsert = () => {
         formData // Ensure formData contains all necessary fields
       );
       console.log("Response:", response); // Log the response from the server
-      alert("Mood journal entry added successfully!");
+      Swal.fire({
+        icon: "success",
+        title: "Mood Journal Entry Added!",
+        text: "Your mood journal has been successfully recorded.",
+        confirmButtonColor: "#45553D",
+      });
 
       // Reset form fields after successful submission
       setOverallMood(""); // Reset overall mood state
@@ -87,7 +115,13 @@ export const MoodJournalingInsert = () => {
     } catch (error) {
       // Handle any errors that occur during submission
       console.error("Error submitting form:", error); // Log the error
-      alert("Failed to submit mood journal entry. Please try again."); // Alert user
+      // Show error alert
+    Swal.fire({
+      icon: "error",
+      title: "Submission Failed",
+      text: "Failed to submit mood journal entry. Please try again.",
+      confirmButtonColor: "#d33",
+    });// Alert user
     }
   };
 
@@ -117,23 +151,27 @@ export const MoodJournalingInsert = () => {
         <div className={GlobalStyle.fontNunito}>
           <h1 className={`${GlobalStyle.headingLarge} `}>Mood Journaling</h1>
 
-          <div className={`${GlobalStyle.pageContainer} px-25 mt-20`}>
+          <div className={`${GlobalStyle.pageContainer} px-25 mt-20 mx-auto`}>
             <form onSubmit={handleSubmit}>
-              {/* Date */}
-              <div className="flex justify-end mx-10 mt-6">
-                <div className="gap-4 flex items-center">
-                  <h1 className={GlobalStyle.remarkTopic}>Date : </h1>
-                  <h1 className={GlobalStyle.remarkTopic}>2022-01-01</h1>
+              {/* Date & Time*/}
+              <div className="flex justify-end mx-10 mt-6 flex-col items-end">
+                <div className="gap-2 flex flex-col">
+                  <h1 className={`font-semibold ${GlobalStyle.headingSmall}`}>
+                    Date : {getCurrentDate()}
+                  </h1>
+                  <h1 className={`font-semibold ${GlobalStyle.headingSmall}`}>
+                    Time : {getCurrentTime()}
+                  </h1>
                 </div>
               </div>
 
               {/* Overall mood */}
               <div>
-                <label className={GlobalStyle.remarkTopic}>
+                <label className={`font-semibold ${GlobalStyle.headingSmall}`}>
                   Overall Mood : How are you feeling right now ?
                 </label>
                 <label
-                  className={`${GlobalStyle.remarkTopic} flex flex-col space-y-4 pt-6`}
+                  className={`${GlobalStyle.headingSmall} flex flex-col space-y-4 pt-6`}
                 >
                   {[
                     { label: "Very Happy", value: "Very Happy" },
@@ -167,7 +205,7 @@ export const MoodJournalingInsert = () => {
 
               {/* Mood Intensity */}
               <div>
-                <label className={GlobalStyle.remarkTopic}>
+                <label className={`font-semibold ${GlobalStyle.headingSmall}`}>
                   Mood Intensity : On a scale of 1 (low) to 10 (high), how
                   intense is your mood ?
                 </label>
@@ -199,10 +237,10 @@ export const MoodJournalingInsert = () => {
 
               {/* Emotions */}
               <div>
-                <label className={GlobalStyle.remarkTopic}>
+                <label className={`font-semibold ${GlobalStyle.headingSmall}`}>
                   What emotions are you feeling?
                 </label>
-                <div className={GlobalStyle.remarkTopic}>
+                <div className={GlobalStyle.headingSmall}>
                   <div className="grid grid-cols-5 gap-6 px-8 pt-6">
                     {emotionsList.map((emotion, index) => (
                       <label
@@ -227,7 +265,7 @@ export const MoodJournalingInsert = () => {
               {/* Trigger */}
               <div>
                 <div className="mb-6">
-                  <label className={GlobalStyle.remarkTopic}>
+                  <label className={`font-semibold ${GlobalStyle.headingSmall}`}>
                     What triggered your mood?
                   </label>
                   <div className="px-8 pt-6">
@@ -245,7 +283,7 @@ export const MoodJournalingInsert = () => {
               {/* Cope */}
               <div>
                 <div className="mb-6">
-                  <label className={GlobalStyle.remarkTopic}>
+                  <label className={`font-semibold ${GlobalStyle.headingSmall}`}>
                     How did you cope with this mood ?
                   </label>
                   <div className="px-8 pt-6">
@@ -263,7 +301,7 @@ export const MoodJournalingInsert = () => {
               {/* Notes */}
               <div>
                 <div className="mb-6">
-                  <label className={GlobalStyle.remarkTopic}>Notes</label>
+                  <label className={`font-semibold ${GlobalStyle.headingSmall}`}>Notes</label>
                   <div className="px-8 pt-6">
                     <textarea
                       className={`${GlobalStyle.remark} w-full`}
@@ -279,7 +317,7 @@ export const MoodJournalingInsert = () => {
               {/* Reflection */}
               <div>
                 <div className="mb-6">
-                  <label className={GlobalStyle.remarkTopic}>Reflection</label>
+                  <label className={`font-semibold ${GlobalStyle.headingSmall}`}>Reflection</label>
                   <div className="px-8 pt-6">
                     <textarea
                       className={`${GlobalStyle.remark} w-full`}
@@ -295,7 +333,7 @@ export const MoodJournalingInsert = () => {
               {/* Image upload */}
               <div>
                 <div className="mb-6">
-                  <label className={GlobalStyle.remarkTopic}>Snaps</label>
+                  <label className={`font-semibold ${GlobalStyle.headingSmall}`}>Snaps</label>
                   <div className="w-full px-8 pt-6">
                     <label
                       htmlFor="image-upload"
@@ -309,7 +347,7 @@ export const MoodJournalingInsert = () => {
                         className="hidden"
                         multiple
                       />
-                      <div className="flex items-center rounded-full border border-gray-300 bg-white overflow-hidden h-14">
+                      <div className="flex items-center rounded-[10px] border-2 border-[#005457] bg-white overflow-hidden h-14">
                         <div className="px-4 flex-grow truncate">
                           {selectedImages.length > 0
                             ? `${selectedImages.length} files selected`

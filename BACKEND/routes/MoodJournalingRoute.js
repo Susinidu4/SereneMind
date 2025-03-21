@@ -26,7 +26,7 @@ router.post("/mood-journal-insert", async (req, res) => {
 
         // Create a new MoodJournaling document
         const newEntry = new MoodJournaling({
-            user_id : "1",
+            user_id : "UID-6599",
             Overall_mood : Overall_mood,
             mood_intensity : mood_intensity,
             emotion : emotion,
@@ -62,8 +62,8 @@ router.get("/mood-journal/:user_id", async (req, res) => {
         const { user_id } = req.params;
 
         // Fetch all mood journaling entries for the given user_id
-        const userEntries = await MoodJournaling.find({ user_id });
-
+        // const userEntries = await MoodJournaling.find({ user_id });
+        const userEntries = await MoodJournaling.find({ user_id }).sort({ createdAt: -1 });
         // Check if entries exist
         if (!userEntries.length) {
             return res.status(404).json({ 
