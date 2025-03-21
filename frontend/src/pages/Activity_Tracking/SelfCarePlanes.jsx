@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Header } from '../../components/Header';
 import { Link } from 'react-router-dom';
 import GlobalStyle from "../../assets/Prototype/GlobalStyle";
+import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 
 export const SelfCarePlanes = () => {
   const [planes, setPlanes] = useState([]);
   const [randomSuggestions, setRandomSuggestions] = useState([]);
-  const [isGenerated, setIsGenerated] = useState(false); // State to track if the button is clicked
+  const [isGenerated, setIsGenerated] = useState(false);
   const user = JSON.parse(localStorage.getItem('userData'));
-  const [buttonStatus, setButtonStatus] = useState(true); // State to track button visibility
+  const [buttonStatus, setButtonStatus] = useState(true);
 
   // Fetch self-care plans
   const fetchPlanes = async () => {
@@ -18,13 +19,21 @@ export const SelfCarePlanes = () => {
         throw new Error('Failed to fetch planes');
       }
       const data = await response.json();
-      console.log('API Response:', data); // Log the full API response
-      setPlanes(data);
+      console.log('API Response:', data);
+      
+      // Ensure each suggestion has `completed` and `remaining`, and they sum to 100%
+      const enrichedSuggestions = data.suggestions.map(suggestion => {
+        const completed = suggestion.completed ?? Math.floor(Math.random() * 101);
+        return {
+          ...suggestion,
+          completed,
+          remaining: 100 - completed, // Ensures sum is always 100%
+        };
+      });
 
-      // Randomly pick 6 suggestions
-      const shuffledSuggestions = shuffleArray(data.suggestions).slice(0, 6);
+      const shuffledSuggestions = shuffleArray(enrichedSuggestions).slice(0, 6);
       setRandomSuggestions(shuffledSuggestions);
-      setIsGenerated(true); // Set the state to true after fetching data
+      setIsGenerated(true);
     } catch (error) {
       console.error('Error fetching planes:', error);
     }
@@ -39,46 +48,69 @@ export const SelfCarePlanes = () => {
     return array;
   };
 
-  // Handle Generate Button Click
   const handleGenerateClick = () => {
-    fetchPlanes(); // Fetch planes when the button is clicked
-    setButtonStatus(false); // Hide the button after clicking
+    fetchPlanes();
+    setButtonStatus(false);
   };
 
   return (
     <div className='bg-[#FFFDF7] min-h-screen'>
       <Header />
       <div className="flex-grow mx-20">
-        {/* Title Section with Button Aligned to the Right */}
         <div className={GlobalStyle.fontNunito}>
           <h1 className={`${GlobalStyle.headingLarge}`}>Self Care Activities</h1>
-          {/* Conditionally render the button based on buttonStatus */}
-         
-            <button
-              className='bg-[#A4CDA7] px-4 py-2 rounded-md hover:bg-[#8cb48f] transition-colors'
-              onClick={handleGenerateClick} // Call handleGenerateClick on button click
-            >
-              Generate Plans
-            </button>
-         
+          <button
+            className='bg-[#A4CDA7] px-4 py-2 rounded-md hover:bg-[#8cb48f] transition-colors'
+            onClick={handleGenerateClick}
+          >
+            Generate Plans
+          </button>
         </div>
 
-        {/* Grid Section */}
         <div className="px-4 flex justify-center mt-20">
-          {isGenerated ? ( // Check if the button is clicked
+          {isGenerated ? (
             <div className='grid-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-20'>
-              {randomSuggestions.map((suggestion, index) => (
-                <Link to={`/Activity_Tracking/ActivityTracking/${suggestion.id}`} key={index}>
-                  <div className="plane-cards my-4 bg-[#A4CDA7] w-[600px] h-[400px] p-4 flex justify-center shadow-lg rounded-xl">
-                    <h2 className="text-[20px] font-semibold text-center">{suggestion.title}</h2>
-                  </div>
-                </Link>
-              ))}
+              {randomSuggestions.map((suggestion, index) => {
+                const data = [
+                  { name: 'Completed', value: suggestion.completed },
+                  { name: 'Remaining', value: suggestion.remaining },
+                ];
+
+                const COLORS = ['#4CAF50', '#D3D3D3']; // Green for Completed, Light Gray for Remaining
+
+                return (
+                  <Link to={`/Activity_Tracking/ActivityTracking/${suggestion.id}`} key={index}>
+                    <div className="plane-cards my-4 bg-[#A4CDA7] w-[600px] h-[400px] p-4 flex flex-col items-center shadow-lg rounded-xl">
+                      <h2 className="text-[20px] font-semibold text-center mb-4">{suggestion.title}</h2>
+                      <PieChart width={200} height={200}>
+                        <Pie
+                          data={data}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={50}
+                          outerRadius={80}
+                          fill="#8884d8"
+                          dataKey="value"
+                          label
+                        >
+                          {data.map((entry, i) => (
+                            <Cell key={`cell-${i}`} fill={COLORS[i]} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                      <p className="text-center mt-2">
+                        <span className="text-green-600 font-bold">{suggestion.completed}%</span> Completed | 
+                        <span className="text-gray-500 font-bold"> {suggestion.remaining}%</span> Remaining
+                      </p>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           ) : (
-            // Display a message if the button is not clicked
             <div className="flex justify-center items-center h-64">
-              <p className="text-2xl text-gray-600">Click the Generate button to View Your Plains</p>
+              <p className="text-2xl text-gray-600">Click the Generate button to View Your Plans</p>
             </div>
           )}
         </div>
