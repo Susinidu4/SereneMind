@@ -8,7 +8,7 @@ export const SelfCarePlanes = () => {
   const [randomSuggestions, setRandomSuggestions] = useState([]);
   const user = JSON.parse(localStorage.getItem('userData'));
 
-  const sessionSuggesions = JSON.parse(sessionStorage.getItem('storedDate'));
+  const sessionSuggesions = JSON.parse(localStorage.getItem('storedDate'));
   const buttonStatus = JSON.parse(localStorage.getItem('isGenerated'));
   console.log(sessionSuggesions)
   if (sessionSuggesions) {
@@ -59,7 +59,7 @@ export const SelfCarePlanes = () => {
       };
       
       // Convert the object to a string and store it in session storage
-      sessionStorage.setItem('storedDate', JSON.stringify(dateData));
+      localStorage.setItem('storedDate', JSON.stringify(dateData));
 
     } catch (error) {
       console.error('Error fetching planes:', error);
