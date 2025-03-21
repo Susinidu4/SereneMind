@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Header } from '../../components/Header';
+import { Footer } from "../../components/Footer";
 import { Link } from 'react-router-dom';
+import GlobalStyle from "../../assets/Prototype/GlobalStyle";
+import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 
 
 export const SelfCarePlanes = () => {
   const [planes, setPlanes] = useState([]);
   const [randomSuggestions, setRandomSuggestions] = useState([]);
+
   const user = JSON.parse(localStorage.getItem('userData'));
 
   const sessionSuggesions = JSON.parse(localStorage.getItem('storedDate'));
@@ -32,7 +36,26 @@ export const SelfCarePlanes = () => {
   const currentDate = new Date();
 
 
-  // Fetch self-care plans
+  const [isGenerated, setIsGenerated] = useState(false);
+  const user = JSON.parse(localStorage.getItem('userData'));
+  const [buttonStatus, setButtonStatus] = useState(true);
+
+  const encouragementMessages = [
+    "You're doing amazing—keep it up! 💪",
+    "Every small step counts! 🌱",
+    "Your mental health matters! 💖",
+    "Believe in yourself—you got this! 🌟",
+    "Progress is progress, no matter how small! 🚀",
+    "Self-care isn't selfish, it's necessary! 🧘",
+    "One day at a time—you're making a difference! ☀️",
+    "You're stronger than you think! 💪",
+    "Keep going, you're creating a better you! 🌸",
+    "Your well-being is a priority, not an option! 🌿",
+    "Celebrate your small wins—they add up! 🎉",
+    "Take a deep breath, you've got this! 😌"
+  ];
+
+
   const fetchPlanes = async () => {
 
     // Set expiration to 1 week from now
@@ -45,12 +68,20 @@ export const SelfCarePlanes = () => {
         throw new Error('Failed to fetch planes');
       }
       const data = await response.json();
-      console.log('API Response:', data); // Log the full API response
-      setPlanes(data);
+      console.log('API Response:', data);
+      
+      const enrichedSuggestions = data.suggestions.map(suggestion => {
+        const completed = suggestion.completed ?? Math.floor(Math.random() * 101);
+        return {
+          ...suggestion,
+          completed,
+          remaining: 100 - completed, 
+        };
+      });
 
-      // Randomly pick 6 suggestions
-      const shuffledSuggestions = shuffleArray(data.suggestions).slice(0, 6);
+      const shuffledSuggestions = shuffleArray(enrichedSuggestions).slice(0, 6);
       setRandomSuggestions(shuffledSuggestions);
+
       
       const dateData = {
         suggestions: shuffledSuggestions,
@@ -61,12 +92,14 @@ export const SelfCarePlanes = () => {
       // Convert the object to a string and store it in session storage
       localStorage.setItem('storedDate', JSON.stringify(dateData));
 
+
+      setIsGenerated(true);
+
     } catch (error) {
       console.error('Error fetching planes:', error);
     }
   };
 
-  // Function to shuffle an array
   const shuffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -75,52 +108,82 @@ export const SelfCarePlanes = () => {
     return array;
   };
 
-  // Handle Generate Button Click
   const handleGenerateClick = () => {
+
     fetchPlanes(); // Fetch planes when the button is clicked
     localStorage.setItem('isGenerated', 'true');
+
   };
 
   return (
     <div className='bg-[#FFFDF7] min-h-screen'>
       <Header />
-      <div className='main_section' style={{ fontFamily: "Nunito" }}>
-        {/* Title Section with Button Aligned to the Right */}
-        <div className='title-section flex justify-between items-center px-4'>
-          <h1 className='text-3xl font-bold'>Self Care Activities</h1>
-          {/* Conditionally render the button based on buttonStatus */}
-         
-          {!buttonStatus && (
-            <button
-              className="bg-[#A4CDA7] text-white px-4 py-2 rounded-md"
-              onClick={handleGenerateClick}
-            >
-              Generate
-            </button>
-          )}
-         
+
+      <div className="flex-grow mx-20">
+        <div className={GlobalStyle.fontNunito}>
+          <h1 className={`${GlobalStyle.headingLarge}`}>Self Care Activities</h1>
+          <button
+            className='bg-[#A4CDA7] px-4 py-2 rounded-md hover:bg-[#8cb48f] transition-colors'
+            onClick={handleGenerateClick}
+          >
+            Generate Plans
+          </button>
+
         </div>
 
-        {/* Grid Section */}
         <div className="px-4 flex justify-center mt-20">
-          {sessionSuggesions ? ( // Check if the button is clicked
+
+          {isGenerated ? (
             <div className='grid-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-20'>
-              {sessionSuggesions.suggestions.map((suggestion, index) => (
-                <Link to={`/Activity_Tracking/ActivityTracking/${suggestion.id}`} key={index}>
-                  <div className="plane-cards my-4 bg-[#A4CDA7] w-[300px] h-[300px] p-4 flex justify-center shadow-lg rounded-xl">
-                    <h2 className="text-[20px] font-semibold text-center">{suggestion.title}</h2>
-                  </div>
-                </Link>
-              ))}
+              {randomSuggestions.map((suggestion, index) => {
+                const data = [
+                  { name: 'Completed', value: suggestion.completed },
+                  { name: 'Remaining', value: suggestion.remaining },
+                ];
+
+                const COLORS = ['#4CAF50', '#D3D3D3']; 
+                const randomMessage = encouragementMessages[Math.floor(Math.random() * encouragementMessages.length)];
+
+                return (
+                  <Link to={`/Activity_Tracking/ActivityTracking/${suggestion.id}`} key={index}>
+                    <div className="plane-cards my-4 bg-[#A4CDA7] w-[600px] h-[400px] p-4 flex flex-col items-center shadow-lg rounded-xl">
+                      <h2 className="text-[20px] font-semibold text-center mb-4">{suggestion.title}</h2>
+                      <PieChart width={200} height={200}>
+                        <Pie
+                          data={data}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={50}
+                          outerRadius={80}
+                          fill="#8884d8"
+                          dataKey="value"
+                          label
+                        >
+                          {data.map((entry, i) => (
+                            <Cell key={`cell-${i}`} fill={COLORS[i]} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                      <p className="text-center mt-2">
+                        <span className="text-green-600 font-bold">{suggestion.completed}%</span> Completed | 
+                        <span className="text-gray-500 font-bold"> {suggestion.remaining}%</span> Remaining
+                      </p>
+                      <p className="text-center mt-4 text-blue-700 font-semibold text-lg italic">{randomMessage}</p>
+                    </div>
+                  </Link>
+                );
+              })}
+
             </div>
           ) : (
-            // Display a message if the button is not clicked
             <div className="flex justify-center items-center h-64">
-              <p className="text-2xl text-gray-600">Click the Generate button to View Your Plains</p>
+              <p className="text-2xl text-gray-600">Click the Generate button to View Your Plans</p>
             </div>
           )}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

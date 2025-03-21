@@ -1,36 +1,34 @@
-import React, { useState , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import GlobalStyle from "../../assets/Prototype/GlobalStyle";
 import { useNavigate, useParams } from "react-router-dom";
 import { Header } from "../../components/Header";
 import { Footer } from "../../components/Footer";
-import bg_image1 from "../../assets/Images/activity1.png";
+import bg_image1 from "../../assets/Images/tracking.png";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { IoArrowBack } from "react-icons/io5";
-import { IoClose } from "react-icons/io5"; // Import Close Icon
+import { IoArrowBack, IoClose } from "react-icons/io5";
 import { Link } from "react-router-dom";
 
 export const ActivityTracking = () => {
-  const {id} = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [selectedDay, setSelectedDay] = useState(null);
   const [activityData, setActivityData] = useState("");
-  const [progress, setProgress] = useState(0); // Add progress state
-  const [plane, setPlane] = useState([])
+  const [progress, setProgress] = useState(0);
+  const [plane, setPlane] = useState([]);
+  const [actualTime, setActualTime] = useState("");
 
-
-  //fetch plane by id
   const fetchPlane = async () => {
     try {
       const response = await fetch(`http://localhost:5000/suggestions/${id}`);
       if (!response.ok) {
-        throw new Error('Failed to fetch plane');
+        throw new Error("Failed to fetch plane");
       }
       const data = await response.json();
-      console.log('API Response:', data); // Log the full API response
+      console.log("API Response:", data);
       setPlane(data);
     } catch (error) {
-      console.error('Error fetching plane:', error);
+      console.error("Error fetching plane:", error);
     }
   };
 
@@ -41,24 +39,20 @@ export const ActivityTracking = () => {
   const openModal = (day) => {
     setSelectedDay(day);
     setShowModal(true);
-    setProgress(0); // Reset progress when modal is opened
+    setProgress(0);
+    setActualTime("");
   };
 
   const closeModal = () => {
     setShowModal(false);
     setSelectedDay(null);
     setActivityData("");
+    setActualTime("");
   };
 
   const handleSave = () => {
-    console.log(`Activity for Day ${selectedDay}:`, activityData);
+    console.log(`Activity for Day ${selectedDay}:`, activityData, `Actual Time Spent: ${actualTime}`);
     closeModal();
-  };
-
-  // Function to simulate progress (you can replace this with real-time updates based on user input)
-  const handleProgressChange = (event) => {
-    const newProgress = Math.min(100, Math.max(0, event.target.value)); // Limit between 0 and 100
-    setProgress(newProgress);
   };
 
   return (
@@ -67,7 +61,9 @@ export const ActivityTracking = () => {
       <main className="flex-grow mx-20">
         <div className={GlobalStyle.fontNunito}>
           <h1 className={`${GlobalStyle.headingLarge}`}>Self Care Activity Tracking</h1>
-          <Link to={`/selfcareplanes`}><IoArrowBack className="text-gray-700 cursor-pointer" size={24} /></Link>
+          <Link to={`/selfcareplanes`}>
+            <IoArrowBack className="text-gray-700 cursor-pointer" size={24} />
+          </Link>
           <br />
         </div>
 
@@ -77,9 +73,7 @@ export const ActivityTracking = () => {
               <p className={GlobalStyle.headingMedium}>{plane.title}</p>
               <p className={GlobalStyle.headingMedium}>Duration: 1 Week</p>
             </div>
-            <p className={GlobalStyle.paragraph}>
-              {plane.plane}
-            </p>
+            <p className={GlobalStyle.paragraph}>{plane.plane}</p>
             <div className="mt-6 space-y-3">
               {[...Array(7)].map((_, index) => (
                 <div
@@ -93,14 +87,9 @@ export const ActivityTracking = () => {
                     <FaTrash className="text-red-500" />
                   </div>
                 </div>
-                
               ))}
-          <br/>
-          <br/>
-
             </div>
           </div>
-
         </main>
 
         <div>
@@ -109,21 +98,16 @@ export const ActivityTracking = () => {
       </main>
       <Footer />
 
-      {/* Conditionally Render Form as Part of the Page */}
       {showModal && (
         <div className="fixed inset-0 flex justify-center items-center backdrop-blur-lg">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full border border-gray-300 relative">
-            {/* Close Icon inside the Popup Container */}
             <div className="absolute top-2 right-2">
-              <IoClose 
-                className="text-gray-500 cursor-pointer" 
-                size={24} 
-                onClick={closeModal} 
-              />
+              <IoClose className="text-gray-500 cursor-pointer" size={24} onClick={closeModal} />
             </div>
             
             <h2 className="text-lg font-bold mb-4">Log Activity for Day {selectedDay}</h2>
-            <h2>{plane.time_per_day} for day</h2>
+            <h2>Assigned Time: {plane.time_per_day} per day</h2>
+            
             <p className={GlobalStyle.headingMedium}>Notes</p>
             <textarea
               className="w-full border p-2 mt-2 rounded-md bg-white"
@@ -132,34 +116,17 @@ export const ActivityTracking = () => {
               onChange={(e) => setActivityData(e.target.value)}
             ></textarea>
             
-            {/* Time Duration Progress Bar */}
-            <div className="mt-4">
-            <p className={GlobalStyle.headingMedium}>Time Progress </p>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={progress}
-                onChange={handleProgressChange}
-                className="w-full mt-2"
-              />
-              <div className="flex justify-between text-sm text-gray-500">
-                <span>0%</span>
-                <span>100%</span>
-              </div>
-              <div className="h-2 bg-blue-200 rounded-full mt-2">
-                <div
-                  className="h-full bg-blue-500 rounded-full"
-                  style={{ width: `${progress}%` }}
-                ></div>
-              </div>
-            </div>
-
+            <p className={GlobalStyle.headingMedium}>Actual Time Spent (minutes)</p>
+            <input
+              type="number"
+              className="w-full border p-2 mt-2 rounded-md bg-white"
+              placeholder="Enter actual time spent"
+              value={actualTime}
+              onChange={(e) => setActualTime(e.target.value)}
+            />
+            
             <div className="flex justify-end space-x-3 mt-4">
-            <div className="flex gap-4">
-        
-            <button className={GlobalStyle.buttonPrimary} onClick={handleSave}>Submit</button>
-          </div>
+              <button className={GlobalStyle.buttonPrimary} onClick={handleSave}>Submit</button>
             </div>
           </div>
         </div>
