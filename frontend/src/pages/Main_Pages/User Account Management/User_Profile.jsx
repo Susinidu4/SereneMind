@@ -6,9 +6,15 @@ import { MdDelete } from "react-icons/md";
 import { PiDotsThreeCircleFill } from "react-icons/pi";
 import axios from "axios";
 import { Mood_History_Calendar } from "../Mood Tracking/Mood_History_Calendar";
+
 import { Header_2 } from "../../../components/Header_2";
 import Swal from "sweetalert2";
 import { EditJournal } from "../../Mood_Journaling/EditJournal";
+
+import { Header } from "../../../components/Header";
+import { ActivityProgress } from "../../Activity_Tracking/ActivityProgress";
+
+
 
 export const User_Profile = () => {
   const user_data = JSON.parse(localStorage.getItem("userData"));
@@ -22,7 +28,13 @@ export const User_Profile = () => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedJournalDetail, setSelectedJournalDetail] = useState(null);
 
-  // Fetch user data
+
+  if (!(user_data)) {
+    window.location.href = "/";
+  }
+
+  //fetch user data
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -135,7 +147,7 @@ export const User_Profile = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
-      <Header_2 />
+     <Header />
 
       <main className="flex-grow mx-20">
         <div className={GlobalStyle.fontNunito}>
@@ -202,7 +214,9 @@ export const User_Profile = () => {
                 </button>
                 <button
                   onClick={() => setActiveTab("Journal History")}
+
                   className={`flex-grow text-center py-2 font-semibold rounded-tr-lg ${
+
                     activeTab === "Journal History"
                       ? "text-black border-b-4 border-[#005457]"
                       : "text-gray-500"
@@ -210,14 +224,26 @@ export const User_Profile = () => {
                 >
                   Journal History
                 </button>
+                <button
+                  onClick={() => setActiveTab("Activity Progress")}
+                  className={`w-50 text-center py-2 font-semibold rounded-tr-lg ${
+                    activeTab === "Activity Progress"
+                      ? "bg-green-50 text-black"
+                      : "bg-green-100 text-gray-500"
+                  }`}
+                >
+                  Activity Progress
+                </button>
               </div>
 
               {/* Content */}
               <div className=" p-4 rounded-b-lg overflow-y-auto h-140">
                 {activeTab === "Mood History" ? (
                   // Mood History Content
+
                   <Mood_History_Calendar />
                 ) : (
+
                   // Journal History Content
                   journalHistory.map((item) => (
                     <div
@@ -255,7 +281,7 @@ export const User_Profile = () => {
                       </div>
                     </div>
                   ))
-                )}
+                ): activeTab === "Activity Progress" ? (<ActivityProgress />) : ""}
               </div>
             </div>
           </div>
