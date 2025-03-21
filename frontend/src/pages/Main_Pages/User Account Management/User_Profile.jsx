@@ -224,16 +224,6 @@ export const User_Profile = () => {
                 >
                   Journal History
                 </button>
-                <button
-                  onClick={() => setActiveTab("Activity Progress")}
-                  className={`w-50 text-center py-2 font-semibold rounded-tr-lg ${
-                    activeTab === "Activity Progress"
-                      ? "bg-green-50 text-black"
-                      : "bg-green-100 text-gray-500"
-                  }`}
-                >
-                  Activity Progress
-                </button>
               </div>
 
               {/* Content */}
@@ -281,7 +271,7 @@ export const User_Profile = () => {
                       </div>
                     </div>
                   ))
-                ): activeTab === "Activity Progress" ? (<ActivityProgress />) : ""}
+                )}
               </div>
             </div>
           </div>
