@@ -5,9 +5,37 @@ import { Link } from 'react-router-dom';
 import GlobalStyle from "../../assets/Prototype/GlobalStyle";
 import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 
+
 export const SelfCarePlanes = () => {
   const [planes, setPlanes] = useState([]);
   const [randomSuggestions, setRandomSuggestions] = useState([]);
+
+  const user = JSON.parse(localStorage.getItem('userData'));
+
+  const sessionSuggesions = JSON.parse(sessionStorage.getItem('storedDate'));
+  const buttonStatus = JSON.parse(localStorage.getItem('isGenerated'));
+  console.log(sessionSuggesions)
+  if (sessionSuggesions) {
+    const dateData = sessionSuggesions;
+    const cTime = new Date();
+    const eTime = new Date(dateData.expires);
+  
+    // Check if the data has expired
+    if (cTime > eTime) {
+      console.log('The stored date has expired.');
+      sessionStorage.removeItem('storedDate'); // Remove expired data
+      localStorage.removeItem('isGenerated');
+    } else {
+      console.log('Stored date:', new Date(dateData.date));
+    }
+  } else {
+    console.log('No date found in session storage.');
+  }
+  
+  // Get the current date
+  const currentDate = new Date();
+
+
   const [isGenerated, setIsGenerated] = useState(false);
   const user = JSON.parse(localStorage.getItem('userData'));
   const [buttonStatus, setButtonStatus] = useState(true);
@@ -27,7 +55,13 @@ export const SelfCarePlanes = () => {
     "Take a deep breath, you've got this! 😌"
   ];
 
+
   const fetchPlanes = async () => {
+
+    // Set expiration to 1 week from now
+    const expirationDate = new Date();
+    expirationDate.setDate(expirationDate.getDate() + 7); // 7 days = 1 week
+
     try {
       const response = await fetch(`http://localhost:5000/mood/analyze/${user.id}`);
       if (!response.ok) {
@@ -47,7 +81,20 @@ export const SelfCarePlanes = () => {
 
       const shuffledSuggestions = shuffleArray(enrichedSuggestions).slice(0, 6);
       setRandomSuggestions(shuffledSuggestions);
+
+      
+      const dateData = {
+        suggestions: shuffledSuggestions,
+        date: currentDate.toISOString(), // Store the date in ISO format
+        expires: expirationDate.toISOString(), // Store the expiration date
+      };
+      
+      // Convert the object to a string and store it in session storage
+      sessionStorage.setItem('storedDate', JSON.stringify(dateData));
+
+
       setIsGenerated(true);
+
     } catch (error) {
       console.error('Error fetching planes:', error);
     }
@@ -62,13 +109,16 @@ export const SelfCarePlanes = () => {
   };
 
   const handleGenerateClick = () => {
-    fetchPlanes();
-    setButtonStatus(false);
+
+    fetchPlanes(); // Fetch planes when the button is clicked
+    localStorage.setItem('isGenerated', 'true');
+
   };
 
   return (
     <div className='bg-[#FFFDF7] min-h-screen'>
       <Header />
+
       <div className="flex-grow mx-20">
         <div className={GlobalStyle.fontNunito}>
           <h1 className={`${GlobalStyle.headingLarge}`}>Self Care Activities</h1>
@@ -78,9 +128,11 @@ export const SelfCarePlanes = () => {
           >
             Generate Plans
           </button>
+
         </div>
 
         <div className="px-4 flex justify-center mt-20">
+
           {isGenerated ? (
             <div className='grid-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-20'>
               {randomSuggestions.map((suggestion, index) => {
@@ -122,6 +174,7 @@ export const SelfCarePlanes = () => {
                   </Link>
                 );
               })}
+
             </div>
           ) : (
             <div className="flex justify-center items-center h-64">

@@ -7,7 +7,8 @@ import { PiDotsThreeCircleFill } from "react-icons/pi";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Mood_History_Calendar } from "../Mood Tracking/Mood_History_Calendar";
-import { Header_2 } from "../../../components/Header_2";
+import { Header } from "../../../components/Header";
+
 
 export const User_Profile = () => {
 
@@ -17,6 +18,10 @@ export const User_Profile = () => {
   const [journalHistory, setJournalHistory] = useState([]);
   const [deleteStatus, setDeleteStatus] = useState("");
   const [user, setUser] = useState("");
+
+  if (!(user_data)) {
+    window.location.href = "/";
+  }
 
   //fetch user data
   useEffect(() => {
@@ -81,7 +86,7 @@ export const User_Profile = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
-      <Header_2 />
+     <Header />
 
       <main className="flex-grow mx-20">
         <div className={GlobalStyle.fontNunito}>
