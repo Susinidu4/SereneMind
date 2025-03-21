@@ -16,6 +16,27 @@ export const MoodJournalingInsert = () => {
   const [overallMood, setOverallMood] = useState("");
   const [emotions, setEmotions] = useState([]);
 
+  const getCurrentDate = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const getCurrentTime = () => {
+    const now = new Date();
+    let hours = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    const period = hours >= 12 ? "PM" : "AM";
+
+    // Convert hours from 24-hour format to 12-hour format
+    hours = hours % 12;
+    hours = hours ? hours : 12; // Handle the case for 0 hours (midnight)
+
+    return `${String(hours).padStart(2, "0")}:${minutes} ${period}`;
+  };
+
   const handleImageChange = (e) => {
     if (e.target.files) {
       const newImages = Array.from(e.target.files);
@@ -119,11 +140,15 @@ export const MoodJournalingInsert = () => {
 
           <div className={`${GlobalStyle.pageContainer} px-25 mt-20`}>
             <form onSubmit={handleSubmit}>
-              {/* Date */}
-              <div className="flex justify-end mx-10 mt-6">
-                <div className="gap-4 flex items-center">
-                  <h1 className={GlobalStyle.remarkTopic}>Date : </h1>
-                  <h1 className={GlobalStyle.remarkTopic}>2022-01-01</h1>
+              {/* Date & Time*/}
+              <div className="flex justify-end mx-10 mt-6 flex-col items-end">
+                <div className="gap-2 flex flex-col">
+                  <h1 className={GlobalStyle.remarkTopic}>
+                    Date: {getCurrentDate()}
+                  </h1>
+                  <h1 className={GlobalStyle.remarkTopic}>
+                    Time: {getCurrentTime()}
+                  </h1>
                 </div>
               </div>
 

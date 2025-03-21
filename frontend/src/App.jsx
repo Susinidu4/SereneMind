@@ -18,6 +18,10 @@ import { Mood_Tracking_Update } from './pages/Main_Pages/Mood Tracking/Mood_Trac
 
 import { InstructionPage } from './pages/Mood_Journaling/InstructionPage';
 import { MoodJournalingInsert } from './pages/Mood_Journaling/MoodJournalingInsert';
+import { EditJournal } from './pages/Mood_Journaling/EditJournal';
+
+import { OnlineResource } from './pages/Resourse_Management/OnlineResource';
+import { ReadResource } from './pages/Resourse_Management/ReadResource';
 
 import { ActivityTracking } from './pages/Activity_Tracking/ActivityTracking';
 import { SelfCarePlanes } from './pages/Activity_Tracking/SelfCarePlanes';
@@ -54,11 +58,16 @@ function App() {
         {/* Mood Journaling */}
         <Route path="/MoodJournaling/InstructionPage" element={<InstructionPage/>} />
         <Route path="/MoodJournaling/MoodJournalingInsert" element={<MoodJournalingInsert/>} />
-        
+        <Route path="/MoodJournaling/EditJournaling" element={<EditJournal/>} />
 
         {/* Activity Tracking */}
         <Route path="/Activity_Tracking/ActivityTracking/:id" element={<ActivityTracking />} />
         <Route path="/selfcareplanes" element={<SelfCarePlanes />} />
+
+        {/* Resource Management */}
+        <Route path="/ResourceManagement/OnlineResource" element={<OnlineResource/>} />
+        <Route path="/ResourceManagement/ReadResource" element={<ReadResource/>} />
+
 
 
       </Routes>
