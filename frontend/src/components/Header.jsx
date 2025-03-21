@@ -15,7 +15,8 @@ export const Header = () => {
 
   return (
     <div>
-      {data || !data? (<div className={GlobalStyle.fontNunito}>
+      {data || 
+      !data? (<div className={GlobalStyle.fontNunito}>
         <div className="container flex justify-between items-center m-8 px-12">
 
           {/* Logo Section */}
