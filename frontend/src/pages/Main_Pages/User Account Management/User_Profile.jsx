@@ -9,6 +9,7 @@ import { Mood_History_Calendar } from "../Mood Tracking/Mood_History_Calendar";
 import { Header_2 } from "../../../components/Header_2";
 import Swal from "sweetalert2";
 import { EditJournal } from "../../Mood_Journaling/EditJournal";
+import { JournalDetailModal } from "../../Mood_Journaling/JournalDetailModal"; // Import the new component
 
 export const User_Profile = () => {
   const user_data = JSON.parse(localStorage.getItem("userData"));
@@ -16,11 +17,13 @@ export const User_Profile = () => {
   const [activeTab, setActiveTab] = useState("Mood History");
   const [journalHistory, setJournalHistory] = useState([]);
   const [deleteStatus, setDeleteStatus] = useState("");
-  const [user, setUser] = useState("");  
+  const [user, setUser] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedJournal, setSelectedJournal] = useState(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [selectedJournalDetail, setSelectedJournalDetail] = useState(null);
 
-  //fetch user data
+  // Fetch user data
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -41,8 +44,8 @@ export const User_Profile = () => {
     fetchUser();
   }, [user_data.id]);
 
+  // Fetch journal history on component mount
   useEffect(() => {
-    // Fetch journal history on component mount
     const fetchJournalHistory = async () => {
       try {
         const response = await axios.get(
@@ -50,6 +53,7 @@ export const User_Profile = () => {
         );
         if (response.status === 200) {
           setJournalHistory(response.data.data);
+          console.log("Journal history:", response.data.data);
         } else {
           console.error("Failed to fetch journal history");
         }
@@ -61,25 +65,6 @@ export const User_Profile = () => {
     fetchJournalHistory();
   }, [user_id]);
 
-  useEffect(() => {
-    const fetchJournalHistory = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:5000/api/mood_journaling/mood-journal/${user_id}`
-        );
-        if (response.status === 200) {
-          setJournalHistory(response.data.data);
-        } else {
-          console.error("Failed to fetch journal history");
-        }
-      } catch (error) {
-        console.error("Error fetching journal history:", error);
-      }
-    };
-
-    fetchJournalHistory();
-  }, [user_id]);
-  
   // Handle delete
   const handleDelete = async (id) => {
     Swal.fire({
@@ -125,16 +110,28 @@ export const User_Profile = () => {
     });
   };
 
-  // Handle open modal
+  // Handle open modal for editing
   const handleOpenModal = (journal) => {
-    setSelectedJournal(journal); // Store clicked journal entry data
+    setSelectedJournal(journal);
     setIsModalOpen(true);
   };
 
-  // Handle close modal
+  // Handle close modal for editing
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedJournal(null);
+  };
+
+  // Handle open detail modal
+  const handleOpenDetailModal = (journal) => {
+    setSelectedJournalDetail(journal);
+    setIsDetailModalOpen(true);
+  };
+
+  // Handle close detail modal
+  const handleCloseDetailModal = () => {
+    setIsDetailModalOpen(false);
+    setSelectedJournalDetail(null);
   };
 
   return (
@@ -197,10 +194,9 @@ export const User_Profile = () => {
                   // Journal History Content
                   journalHistory.map((item) => (
                     <div
-                      key={item._id} // Assuming `_id` is unique for each journal entry
+                      key={item._id}
                       className="flex items-center justify-between bg-green-100 p-5 rounded-lg mb-4 shadow h-15"
                     >
-                      {/* Display specific properties of the journal entry */}
                       <div>
                         <p className="text-sm text-gray-600">
                           {new Date(item.createdAt).toLocaleString("en-US", {
@@ -224,11 +220,10 @@ export const User_Profile = () => {
                         <button
                           className="text-gray-600 hover:text-gray-800"
                           title="More"
-                          onClick={() => handleOpenModal(item)} 
+                          onClick={() => handleOpenDetailModal(item)}
                         >
                           <PiDotsThreeCircleFill size={20} />
                         </button>
-
                       </div>
                     </div>
                   ))
@@ -241,15 +236,22 @@ export const User_Profile = () => {
 
       <Footer />
 
-      {/* Modal for EditJournal */}
+      {/* Modal for EditJournal
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] sm:w-[800px] relative">
             <EditJournal data={selectedJournal} onClose={handleCloseModal} />
           </div>
         </div>
-      )}
+      )} */}
 
+      {/* Modal for Journal Details */}
+      {isDetailModalOpen && (
+        <EditJournal
+          journal={selectedJournalDetail}
+          onClose={handleCloseDetailModal}
+        />
+      )}
     </div>
   );
 };
