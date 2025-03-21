@@ -45,8 +45,8 @@ export const OnlineResource = () => {
           </h1>
 
           <div className="flex items-center justify-center min-h-screen">
-            <div className="mx-auto max-w-6xl w-full">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-20">
+            <div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-20 gap-y-20">
                 {[...Array(totalItems)]
                   .slice(startIndex, endIndex)
                   .map((_, index) => {
@@ -54,11 +54,11 @@ export const OnlineResource = () => {
                     return (
                       <div
                         key={resourceId}
-                        className="bg-green-100 p-6 rounded-[25px] shadow "
+                        className="bg-green-100 p-10 rounded-[25px] shadow w-[600px] h-[350px] "
                       >
                         <Link to={`/ResourceManagement/ReadResource`}> {/* Link to the detailed page */}
                         {/* /${resourceId} */}
-                          <h3 className={`${GlobalStyle.remarkTopic} underline hover:text-gray-500`}>
+                          <h3 className={`${GlobalStyle.headingMedium} underline hover:text-gray-500`}>
                             Title - Lorem ipsum dolor
                           </h3>
                         </Link>
@@ -94,7 +94,7 @@ export const OnlineResource = () => {
                   onClick={handlePreviousPage}
                   disabled={currentPage === 1}
                 >
-                  <FaCircleArrowLeft className="w-8 h-8" />
+                  <FaCircleArrowLeft className="w-8 h-10" />
                 </button>
                 <button
                   onClick={handleNextPage}
