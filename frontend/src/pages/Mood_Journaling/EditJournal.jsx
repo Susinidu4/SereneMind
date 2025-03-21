@@ -1,5 +1,7 @@
 import React from "react";
 import GlobalStyle from "../../assets/Prototype/GlobalStyle";
+import { IoClose } from "react-icons/io5";
+import { IoMdCloseCircle } from "react-icons/io";
 
 export const EditJournal = ({ data, onClose }) => {
   // Destructure the data prop with default values
@@ -33,50 +35,56 @@ export const EditJournal = ({ data, onClose }) => {
     <div>
       <main className="flex-grow mx-20">
         <div className={GlobalStyle.fontNunito}>
-          <div className={`${GlobalStyle.pageContainer}bg-[#C8E6C9] rounded-lg shadow-lg w-[90%] sm:w-[800px] p-6 relative`}>
+          <div className="flex justify-center items-center min-h-screen">
+          <div
+            className={`${GlobalStyle.pageContainer} rounded-lg shadow-lg w-[90%] sm:w-[800px] p-10 relative`}
+          >
             <button
-              className="absolute top-2 right-2 text-red-500"
+              className="absolute top-3 right-3 text-red-900"
               onClick={onClose}
               aria-label="Close"
             >
-              Edit
+              <IoMdCloseCircle  size={30} />
             </button>
 
-            <h2
-              id="moodDetailsTitle"
-              className="text-2xl font-bold text-center mb-4"
-            >
-              Mood Details
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-4 bg-[#A5D6A7] rounded-lg">
-                <p>Date: {date}</p>
-                <p>Time: {time}</p>
-                <p>Overall Mood: {mood}</p>
-                <p>Mood Intensity: {intensity}</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-10">
+              <div>
+                <p className="text-lg font-semibold">Date: {date}</p>
+                <p className="text-lg font-semibold">Time: {time}</p>
+                <div className="p-4 bg-[#A5D6A7] rounded-lg shadow-md mt-5">
+                  <p className="text-lg font-semibold">Overall Mood: {mood}</p>
+                  <p className="text-lg font-semibold">
+                    Mood Intensity: {intensity}
+                  </p>
+                </div>
               </div>
-              <div className="p-4 bg-[#A5D6A7] rounded-lg">
-                <h3 className="font-semibold">What Emotions You Felt:</h3>
-                <ul className="list-disc ml-5">
+
+              <div className="p-4 bg-[#A5D6A7] rounded-lg shadow-md">
+                <h3 className="text-lg font-semibold">
+                  What Emotions You Felt:
+                </h3>
+                <ul className="list-disc ml-5 mt-2">
                   {emotions.map((emotion, index) => (
-                    <li key={index}>{emotion}</li>
+                    <li key={index} className="text-lg">
+                      {emotion}
+                    </li>
                   ))}
                 </ul>
               </div>
             </div>
 
-            <div className="mt-4 bg-[#A5D6A7] p-4 rounded-lg">
+            <div className="mt-4 bg-[#A5D6A7] p-4 rounded-lg shadow-md">
               <h3 className="font-semibold">What Triggered This Mood:</h3>
               <p>{triggers}</p>
             </div>
 
-            <div className="mt-4 bg-[#A5D6A7] p-4 rounded-lg">
+            <div className="mt-4 bg-[#A5D6A7] p-4 rounded-lg shadow-md">
               <h3 className="font-semibold">What You Coped With This Mood:</h3>
               <p>{coping}</p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-              <div className="p-4 bg-[#A5D6A7] rounded-lg">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 ">
+              <div className="p-4 bg-[#A5D6A7] rounded-lg shadow-md">
                 <h3 className="font-semibold">Notes:</h3>
                 <ul className="list-disc ml-5">
                   {notes.map((note, index) => (
@@ -84,7 +92,7 @@ export const EditJournal = ({ data, onClose }) => {
                   ))}
                 </ul>
               </div>
-              <div className="p-4 bg-[#A5D6A7] rounded-lg">
+              <div className="p-4 bg-[#A5D6A7] rounded-lg shadow-md">
                 <h3 className="font-semibold">Reflections:</h3>
                 <ul className="list-disc ml-5">
                   {reflections.map((reflection, index) => (
@@ -94,11 +102,11 @@ export const EditJournal = ({ data, onClose }) => {
               </div>
             </div>
 
-            <div className="flex space-x-2 mt-4">
+            <div className="flex space-x-2 mt-4 bg-[#A5D6A7] p-4 rounded-lg shadow-md">
               {images.map((src, index) => (
                 <div
                   key={index}
-                  className="w-20 h-20 bg-gray-300 flex items-center justify-center rounded-lg relative"
+                  className="w-20 h-20 flex items-center justify-center rounded-lg relative"
                 >
                   <img
                     src={src}
@@ -106,15 +114,16 @@ export const EditJournal = ({ data, onClose }) => {
                     className="w-full h-full object-cover rounded-lg"
                   />
                   <button
-                    className="absolute top-1 right-1 text-red-500"
+                    className="absolute top-1 right-1 text-red-900"
                     onClick={() => removeImage(index)}
                     aria-label="Remove"
                   >
-                    Delete
+                    <IoMdCloseCircle  size={20} />
                   </button>
                 </div>
               ))}
             </div>
+          </div>
           </div>
         </div>
       </main>

@@ -4,7 +4,9 @@ import { Header } from "../../components/Header";
 import { Footer } from "../../components/Footer";
 import { FaUpload, FaTimes } from "react-icons/fa";
 import { IoIosCloseCircle } from "react-icons/io";
-import axios from "axios"; // Import axios for making HTTP requests
+import axios from "axios"; 
+import Swal from "sweetalert2";
+
 
 export const MoodJournalingInsert = () => {
   const [selectedValue, setSelectedValue] = useState(null);
@@ -68,7 +70,7 @@ export const MoodJournalingInsert = () => {
     setSelectedImages(updatedImages);
   };
 
-  const user_id = "1";
+  const user_id = "UID-6599";
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -94,7 +96,12 @@ export const MoodJournalingInsert = () => {
         formData // Ensure formData contains all necessary fields
       );
       console.log("Response:", response); // Log the response from the server
-      alert("Mood journal entry added successfully!");
+      Swal.fire({
+        icon: "success",
+        title: "Mood Journal Entry Added!",
+        text: "Your mood journal has been successfully recorded.",
+        confirmButtonColor: "#45553D",
+      });
 
       // Reset form fields after successful submission
       setOverallMood(""); // Reset overall mood state
@@ -108,7 +115,13 @@ export const MoodJournalingInsert = () => {
     } catch (error) {
       // Handle any errors that occur during submission
       console.error("Error submitting form:", error); // Log the error
-      alert("Failed to submit mood journal entry. Please try again."); // Alert user
+      // Show error alert
+    Swal.fire({
+      icon: "error",
+      title: "Submission Failed",
+      text: "Failed to submit mood journal entry. Please try again.",
+      confirmButtonColor: "#d33",
+    });// Alert user
     }
   };
 
