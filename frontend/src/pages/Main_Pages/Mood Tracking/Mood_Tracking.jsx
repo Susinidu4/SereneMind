@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Header_2 } from "../../../components/Header_2";
 import Swal from 'sweetalert2'
+import { useNavigate } from "react-router-dom";
 
 
 const emotionMap = {
@@ -18,6 +19,14 @@ const emotionMap = {
 
 export const Mood_Tracking = () => {
   const user = JSON.parse(localStorage.getItem("userData"));
+
+  try{
+    if (!(user)) {
+     window.location.href = "/";
+    }
+  } catch (err) {
+    console.error("Error checking user role:", err);
+  }
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
