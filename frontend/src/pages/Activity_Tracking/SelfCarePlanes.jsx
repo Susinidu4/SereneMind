@@ -2,35 +2,35 @@ import React, { useState, useEffect } from 'react';
 import { Header } from '../../components/Header';
 import { Link } from 'react-router-dom';
 
+
 export const SelfCarePlanes = () => {
   const [planes, setPlanes] = useState([]);
   const [randomSuggestions, setRandomSuggestions] = useState([]);
   const user = JSON.parse(localStorage.getItem('userData'));
-  const [buttonStatus, setButtonStatus] = useState(true); // State to track button visibility
 
-  const localButton = JSON.parse(localStorage.getItem('generate_button'))
   const sessionSuggesions = JSON.parse(sessionStorage.getItem('storedDate'));
+  const buttonStatus = JSON.parse(localStorage.getItem('isGenerated'));
   console.log(sessionSuggesions)
-
-  // Get the current date
-  const currentDate = new Date();
-
   if (sessionSuggesions) {
-    const dateData = JSON.parse(storedData);
-    const currentTime = new Date();
-    const expirationTime = new Date(dateData.expires);
+    const dateData = sessionSuggesions;
+    const cTime = new Date();
+    const eTime = new Date(dateData.expires);
   
     // Check if the data has expired
-    if (currentTime > expirationTime) {
+    if (cTime > eTime) {
       console.log('The stored date has expired.');
       sessionStorage.removeItem('storedDate'); // Remove expired data
-      localStorage.removeItem('generate_button');
+      localStorage.removeItem('isGenerated');
     } else {
       console.log('Stored date:', new Date(dateData.date));
     }
   } else {
     console.log('No date found in session storage.');
   }
+  
+  // Get the current date
+  const currentDate = new Date();
+
 
   // Fetch self-care plans
   const fetchPlanes = async () => {
@@ -51,7 +51,6 @@ export const SelfCarePlanes = () => {
       // Randomly pick 6 suggestions
       const shuffledSuggestions = shuffleArray(data.suggestions).slice(0, 6);
       setRandomSuggestions(shuffledSuggestions);
-      setIsGenerated(true); // Set the state to true after fetching data
       
       const dateData = {
         suggestions: shuffledSuggestions,
@@ -79,8 +78,7 @@ export const SelfCarePlanes = () => {
   // Handle Generate Button Click
   const handleGenerateClick = () => {
     fetchPlanes(); // Fetch planes when the button is clicked
-    setButtonStatus(false); // Hide the button after clicking
-    localStorage.setItem("generate_button", buttonStatus)
+    localStorage.setItem('isGenerated', 'true');
   };
 
   return (
@@ -92,7 +90,7 @@ export const SelfCarePlanes = () => {
           <h1 className='text-3xl font-bold'>Self Care Activities</h1>
           {/* Conditionally render the button based on buttonStatus */}
          
-          {!localButton && (
+          {!buttonStatus && (
             <button
               className="bg-[#A4CDA7] text-white px-4 py-2 rounded-md"
               onClick={handleGenerateClick}
