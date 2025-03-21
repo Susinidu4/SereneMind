@@ -1,123 +1,135 @@
 import React from "react";
+import { IoMdCloseCircle } from "react-icons/io";
 import GlobalStyle from "../../assets/Prototype/GlobalStyle";
+import { FaEdit } from "react-icons/fa";
 
-export const EditJournal = ({ data, onClose }) => {
-  // Destructure the data prop with default values
-  const {
-    date = "2025-03-19",
-    time = "2:30 PM",
-    mood = "Happy",
-    intensity = 5,
-    emotions = ["Excited", "Content", "Relaxed"],
-    triggers = "A surprise birthday party organized by friends.",
-    coping = "Enjoyed the moment, expressed gratitude, and wrote about the experience in a journal.",
-    notes = [
-      "Met an old friend",
-      "Tried a new dessert",
-      "Enjoyed the ambiance",
-    ],
-    reflections = [
-      "Grateful for the thoughtful gesture",
-      "Realized the value of friendships",
-      "Inspired to plan surprises for others",
-    ],
-    images = [
-      "https://via.placeholder.com/150?text=Image1",
-      "https://via.placeholder.com/150?text=Image2",
-      "https://via.placeholder.com/150?text=Image3",
-      "https://via.placeholder.com/150?text=Image4",
-    ],
-  } = data || {}; // Use passed data or fallback to default
-
+export const EditJournal = ({ journal, onClose }) => {
+  if (!journal) return null;
+  console.log(journal);
   return (
-    <div>
-      <main className="flex-grow mx-20">
-        <div className={GlobalStyle.fontNunito}>
-          <div className={`${GlobalStyle.pageContainer}bg-[#C8E6C9] rounded-lg shadow-lg w-[90%] sm:w-[800px] p-6 relative`}>
-            <button
-              className="absolute top-2 right-2 text-red-500"
-              onClick={onClose}
-              aria-label="Close"
-            >
-              Edit
-            </button>
+    <div className="fixed inset-0 flex items-center justify-center bg backdrop-blur-sm z-50">
+      {/* <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] sm:w-[800px] relative">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold">Journal Details</h2>
+          <button
+            onClick={onClose}
+            className="text-gray-600 hover:text-gray-800"
+          >
+            &times;
+          </button>
+        </div>
+        <div>
+          <p>
+            <strong>Overall Mood:</strong> {journal.Overall_mood}
+          </p>
+          <p>
+            <strong>Mood Intensity:</strong> {journal.mood_intensity}
+          </p>
+          <p>
+            <strong>Emotions:</strong> {journal.emotion.join(", ")}
+          </p>
+          <p>
+            <strong>Journal Entry:</strong> {journal.journal_entry}
+          </p>
+          <p>
+            <strong>Created At:</strong>{" "}
+            {new Date(journal.createdAt).toLocaleString()}
+          </p>
+        </div>
+      </div> */}
 
-            <h2
-              id="moodDetailsTitle"
-              className="text-2xl font-bold text-center mb-4"
-            >
-              Mood Details
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-4 bg-[#A5D6A7] rounded-lg">
-                <p>Date: {date}</p>
-                <p>Time: {time}</p>
-                <p>Overall Mood: {mood}</p>
-                <p>Mood Intensity: {intensity}</p>
-              </div>
-              <div className="p-4 bg-[#A5D6A7] rounded-lg">
-                <h3 className="font-semibold">What Emotions You Felt:</h3>
-                <ul className="list-disc ml-5">
-                  {emotions.map((emotion, index) => (
-                    <li key={index}>{emotion}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <div className="mt-4 bg-[#A5D6A7] p-4 rounded-lg">
-              <h3 className="font-semibold">What Triggered This Mood:</h3>
-              <p>{triggers}</p>
-            </div>
-
-            <div className="mt-4 bg-[#A5D6A7] p-4 rounded-lg">
-              <h3 className="font-semibold">What You Coped With This Mood:</h3>
-              <p>{coping}</p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-              <div className="p-4 bg-[#A5D6A7] rounded-lg">
-                <h3 className="font-semibold">Notes:</h3>
-                <ul className="list-disc ml-5">
-                  {notes.map((note, index) => (
-                    <li key={index}>{note}</li>
-                  ))}
-                </ul>
-              </div>
-              <div className="p-4 bg-[#A5D6A7] rounded-lg">
-                <h3 className="font-semibold">Reflections:</h3>
-                <ul className="list-disc ml-5">
-                  {reflections.map((reflection, index) => (
-                    <li key={index}>{reflection}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <div className="flex space-x-2 mt-4">
-              {images.map((src, index) => (
-                <div
-                  key={index}
-                  className="w-20 h-20 bg-gray-300 flex items-center justify-center rounded-lg relative"
-                >
-                  <img
-                    src={src}
-                    alt={`Item ${index}`}
-                    className="w-full h-full object-cover rounded-lg"
-                  />
-                  <button
-                    className="absolute top-1 right-1 text-red-500"
-                    onClick={() => removeImage(index)}
-                    aria-label="Remove"
-                  >
-                    Delete
+      <div className="mt-10">
+        <main className="flex-grow mx-20">
+          <div className={GlobalStyle.fontNunito}>
+            <div className="flex justify-center items-center min-h-screen">
+              <div
+                className={`${GlobalStyle.pageContainer} rounded-lg shadow-lg w-[90%] sm:w-[800px] p-10 relative`}
+              >
+                <div>
+                  <button className="absolute top-3 left-3 rounded-full text-[#007579] hover:text-[#005457] hover:bg-[#AEDBD8] text-2xl p-3">
+                    <FaEdit />
                   </button>
                 </div>
-              ))}
+
+                <button
+                  className="absolute top-3 right-3 text-red-900"
+                  onClick={onClose}
+                  aria-label="Close"
+                >
+                  <IoMdCloseCircle size={30} />
+                </button>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-10">
+                  <div>
+                    <p className="text-lg font-semibold">
+                      Date: {new Date(journal.updatedAt).toLocaleDateString()}
+                    </p>
+                    <p className="text-lg font-semibold">
+                      Time: {new Date(journal.updatedAt).toLocaleTimeString()}
+                    </p>
+                    <div className="p-4 bg-[#AEDBD8] rounded-lg shadow-md mt-5">
+                      <p className="text-lg font-semibold">
+                        Overall Mood: {journal.Overall_mood}{" "}
+                      </p>
+                      <p className="text-lg font-semibold">
+                        Mood Intensity: {journal.mood_intensity}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="p-4 bg-[#AEDBD8] rounded-lg shadow-md">
+                    <h3 className="text-lg font-semibold">
+                      What Emotions You Felt:
+                    </h3>
+                    <ul className="list-disc ml-5 mt-2">
+                      {journal.emotion.map((emotion, index) => (
+                        <li key={index}>{emotion}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="mt-4 bg-[#AEDBD8] p-4 rounded-lg shadow-md">
+                  <h3 className="font-semibold">What Triggered This Mood:</h3>
+                  <p>{journal.mood_trigger}</p>
+                </div>
+
+                <div className="mt-4 bg-[#AEDBD8] p-4 rounded-lg shadow-md">
+                  <h3 className="font-semibold">
+                    What You Coped With This Mood:
+                  </h3>
+                  <p>{journal.cope_mood}</p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 ">
+                  <div className="p-4 bg-[#AEDBD8] rounded-lg shadow-md">
+                    <h3 className="font-semibold">Notes:</h3>
+                    <ul className="list-disc ml-5">
+                      <li>{journal.notes}</li>
+                    </ul>
+                  </div>
+                  <div className="p-4 bg-[#AEDBD8] rounded-lg shadow-md">
+                    <h3 className="font-semibold">Reflections:</h3>
+                    <ul className="list-disc ml-5">
+                      <li>{journal.reflection}</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="flex space-x-2 mt-4 bg-[#AEDBD8] p-4 rounded-lg shadow-md"></div>
+                {/* button 2*/}
+                <div className="flex gap-4">
+                  <button
+                    className={`${GlobalStyle.buttonPrimary} px-2 py-1 text-sm ml-auto`}
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 };

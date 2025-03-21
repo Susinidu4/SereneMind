@@ -6,7 +6,7 @@ import { IoPersonCircle } from "react-icons/io5";
 import banner1 from "../../assets/Images/banner1.png";
 import { FaStar } from "react-icons/fa";
 import { MdDownload } from "react-icons/md";
-import { FaCheck } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 export const ReadResource = () => {
   const [rating, setRating] = useState(0); // State to store the selected rating
@@ -15,14 +15,26 @@ export const ReadResource = () => {
   // Function to handle rating submission
   const handleSubmit = () => {
     if (rating === 0) {
-      alert("Please select a rating before submitting.");
+      Swal.fire({
+        icon: "error",
+        title: "Submission Failed",
+        text: "Please select a rating before submitting.",
+        confirmButtonColor: "#d33",
+      });
       return;
     }
+  
     setSubmitted(true); // Mark as submitted
-    alert(
-      `Thank you for your feedback! You rated this article ${rating} stars.`
-    );
+  
+    // Corrected to use backticks for template literals
+    Swal.fire({
+      icon: "success", // Changed to 'success' since the submission is successful
+      title: "Article Rating Submitted",
+      text: `Thank you for your feedback! You rated this article ${rating} stars.`,
+      confirmButtonColor: "#007579", // Custom confirm button color
+    });
   };
+  
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
@@ -30,7 +42,7 @@ export const ReadResource = () => {
 
       <main className="flex-grow mx-20">
         <div className={GlobalStyle.fontNunito}>
-          <div className={`${GlobalStyle.pageContainer} p-20`}>
+          <div className={`${GlobalStyle.pageContainer} px-20 pt-15 mx-auto`}>
             <div className="flex justify-between items-start">
               <div>
                 <div className="flex items-center justify-between">
@@ -44,20 +56,6 @@ export const ReadResource = () => {
                     </div>
                   </div>
                 </div>
-                <h2 className={`${GlobalStyle.remarkTopic} underline pt-8`}>
-                  Title - Lorem ipsum dolor
-                </h2>
-                <p className={`${GlobalStyle.headingSmall} text-justify px-5`}>
-                  <span className={`${GlobalStyle.remarkTopic} inline`}>
-                    Description -
-                  </span>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Aenean commodo ligula eget dolor. Lorem ipsum dolor sit amet,
-                  consectetur adipiscing elit. Aenean commodo ligula eget dolor.
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Aenean commodo ligula eget dolor.Lorem ipsum dolor sit amet,
-                  consectetur adipiscing elit. Aenean commodo ligula eget dolor.
-                </p>
               </div>
 
               {/* Rating */}
@@ -73,6 +71,22 @@ export const ReadResource = () => {
                 </div>
               </div>
             </div>
+            <div>
+              <h2 className={`${GlobalStyle.headingMedium} underline pt-8`}>
+                Title - Lorem ipsum dolor
+              </h2>
+              <p className={`${GlobalStyle.paragraph} text-justify px-5`}>
+                {/* <span className={`${GlobalStyle.remarkTopic} inline`}>
+                  Description -
+                </span> */}
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
+                commodo ligula eget dolor. Lorem ipsum dolor sit amet,
+                consectetur adipiscing elit. Aenean commodo ligula eget dolor.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
+                commodo ligula eget dolor.Lorem ipsum dolor sit amet,
+                consectetur adipiscing elit. Aenean commodo ligula eget dolor.
+              </p>
+            </div>
 
             {/* Banner */}
             <div>
@@ -85,10 +99,7 @@ export const ReadResource = () => {
 
             {/* Article Body */}
             <div className="mt-6 text-justify">
-              <p className={GlobalStyle.headingSmall}>
-                <span className={`${GlobalStyle.remarkTopic} inline`}>
-                  Description -
-                </span>
+              <p className={GlobalStyle.paragraph}>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
                 commodo ligula eget dolor. Aenean massa. Cum sociis natoque
                 penatibus et magnis dis parturient montes, nascetur ridiculus
@@ -158,7 +169,7 @@ export const ReadResource = () => {
             </div>
 
             {/* References and Footer Actions */}
-            <div className="mt-8 border-t border-[#636363] pt-4">
+            <div className={GlobalStyle.headingSmall}>
               <p>
                 <span className={`${GlobalStyle.remarkTopic} inline`}>
                   References -
@@ -180,34 +191,45 @@ export const ReadResource = () => {
                   <span>Download</span>
                 </button>
               </div>
+            </div>
+          </div>
 
-              {/* Rate the article */}
-              <div className="border p-4 rounded-lg shadow-md w-80 ">
-                <div className="flex justify-between items-center">
-                  <p className={GlobalStyle.remarkTopic}>Rate The Article</p>
+          {/* Rate the article */}
+          <div className="border p-6 rounded-lg shadow-lg w-100 mx-auto mt-10 bg-white">
+            <div className="flex justify-between items-center">
+              <p
+                className={`text-[20px] font-semibold ${GlobalStyle.headingSmall}`}
+              >
+                Rate The Article
+              </p>
+            </div>
 
-                  <span
-                    onClick={handleSubmit}
-                    className="text-black-600 text-xl"
-                  >
-                    <FaCheck className="cursor-pointer text-green-600 hover:text-green-800" />
-                  </span>
-                </div>
-                <div className="flex justify-center items-center mt-4 space-x-2">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      className={`h-8 w-8 text-xl ${
-                        star <= rating ? "text-yellow-500" : "text-black-400"
-                      }`}
-                      onClick={() => setRating(star)}
-                      aria-label={`Rate ${star} stars`}
-                    >
-                      ★
-                    </button>
-                  ))}
-                </div>
-              </div>
+            {/* Star Rating */}
+            <div className="flex justify-center items-center mt-4 space-x-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  className={`h-10 w-10 text-xl transition-colors duration-300 ${
+                    star <= rating
+                      ? "text-yellow-500 scale-110"
+                      : "text-gray-300"
+                  }`}
+                  onClick={() => setRating(star)}
+                  aria-label={`Rate ${star} stars`}
+                >
+                  <FaStar className="h-6 w-6" />
+                </button>
+              ))}
+            </div>
+
+            {/* Beautiful Submit Button */}
+            <div className="flex justify-center mt-6">
+              <button
+                onClick={handleSubmit}
+                className="bg-gradient-to-t from-[#007579] to-[#00B4A6] text-white px-6 py-2 rounded-full shadow-md hover:scale-105 transition-transform duration-300"
+              >
+                Submit Rating
+              </button>
             </div>
           </div>
         </div>
