@@ -15,6 +15,22 @@ export const SelfCarePlanes = () => {
   // Get the current date
   const currentDate = new Date();
 
+  if (sessionSuggesions) {
+    const dateData = JSON.parse(storedData);
+    const currentTime = new Date();
+    const expirationTime = new Date(dateData.expires);
+  
+    // Check if the data has expired
+    if (currentTime > expirationTime) {
+      console.log('The stored date has expired.');
+      sessionStorage.removeItem('storedDate'); // Remove expired data
+      localStorage.removeItem('generate_button');
+    } else {
+      console.log('Stored date:', new Date(dateData.date));
+    }
+  } else {
+    console.log('No date found in session storage.');
+  }
 
   // Fetch self-care plans
   const fetchPlanes = async () => {
