@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Header } from '../../components/Header';
 import { Link } from 'react-router-dom';
+import GlobalStyle from "../../assets/Prototype/GlobalStyle";
 
 export const SelfCarePlanes = () => {
   const [planes, setPlanes] = useState([]);
@@ -47,17 +48,17 @@ export const SelfCarePlanes = () => {
   return (
     <div className='bg-[#FFFDF7] min-h-screen'>
       <Header />
-      <div className='main_section' style={{ fontFamily: "Nunito" }}>
+      <div className="flex-grow mx-20">
         {/* Title Section with Button Aligned to the Right */}
-        <div className='title-section flex justify-between items-center px-4'>
-          <h1 className='text-3xl font-bold'>Self Care Activities</h1>
+        <div className={GlobalStyle.fontNunito}>
+          <h1 className={`${GlobalStyle.headingLarge}`}>Self Care Activities</h1>
           {/* Conditionally render the button based on buttonStatus */}
          
             <button
               className='bg-[#A4CDA7] px-4 py-2 rounded-md hover:bg-[#8cb48f] transition-colors'
               onClick={handleGenerateClick} // Call handleGenerateClick on button click
             >
-              Generate Plains
+              Generate Plans
             </button>
          
         </div>
@@ -68,7 +69,7 @@ export const SelfCarePlanes = () => {
             <div className='grid-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-20'>
               {randomSuggestions.map((suggestion, index) => (
                 <Link to={`/Activity_Tracking/ActivityTracking/${suggestion.id}`} key={index}>
-                  <div className="plane-cards my-4 bg-[#A4CDA7] w-[300px] h-[300px] p-4 flex justify-center shadow-lg rounded-xl">
+                  <div className="plane-cards my-4 bg-[#A4CDA7] w-[600px] h-[400px] p-4 flex justify-center shadow-lg rounded-xl">
                     <h2 className="text-[20px] font-semibold text-center">{suggestion.title}</h2>
                   </div>
                 </Link>
