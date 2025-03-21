@@ -5,40 +5,16 @@ import { Link } from 'react-router-dom';
 import GlobalStyle from "../../assets/Prototype/GlobalStyle";
 import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 
-
 export const SelfCarePlanes = () => {
   const [planes, setPlanes] = useState([]);
   const [randomSuggestions, setRandomSuggestions] = useState([]);
+  const [isGenerated, setIsGenerated] = useState(false);
 
   const user = JSON.parse(localStorage.getItem('userData'));
-
   const sessionSuggesions = JSON.parse(localStorage.getItem('storedDate'));
   const buttonStatus = JSON.parse(localStorage.getItem('isGenerated'));
-  console.log(sessionSuggesions)
-  if (sessionSuggesions) {
-    const dateData = sessionSuggesions;
-    const cTime = new Date();
-    const eTime = new Date(dateData.expires);
-  
-    // Check if the data has expired
-    if (cTime > eTime) {
-      console.log('The stored date has expired.');
-      sessionStorage.removeItem('storedDate'); // Remove expired data
-      localStorage.removeItem('isGenerated');
-    } else {
-      console.log('Stored date:', new Date(dateData.date));
-    }
-  } else {
-    console.log('No date found in session storage.');
-  }
-  
-  // Get the current date
+
   const currentDate = new Date();
-
-
-  const [isGenerated, setIsGenerated] = useState(false);
-  const user = JSON.parse(localStorage.getItem('userData'));
-  const [buttonStatus, setButtonStatus] = useState(true);
 
   const encouragementMessages = [
     "You're doing amazing—keep it up! 💪",
@@ -55,9 +31,26 @@ export const SelfCarePlanes = () => {
     "Take a deep breath, you've got this! 😌"
   ];
 
+  useEffect(() => {
+    if (sessionSuggesions) {
+      const dateData = sessionSuggesions;
+      const cTime = new Date();
+      const eTime = new Date(dateData.expires);
+
+      // Check if the data has expired
+      if (cTime > eTime) {
+        console.log('The stored date has expired.');
+        localStorage.removeItem('storedDate'); // Remove expired data
+        localStorage.removeItem('isGenerated');
+      } else {
+        console.log('Stored date:', new Date(dateData.date));
+      }
+    } else {
+      console.log('No date found in session storage.');
+    }
+  }, [sessionSuggesions]);
 
   const fetchPlanes = async () => {
-
     // Set expiration to 1 week from now
     const expirationDate = new Date();
     expirationDate.setDate(expirationDate.getDate() + 7); // 7 days = 1 week
@@ -69,32 +62,28 @@ export const SelfCarePlanes = () => {
       }
       const data = await response.json();
       console.log('API Response:', data);
-      
+
       const enrichedSuggestions = data.suggestions.map(suggestion => {
         const completed = suggestion.completed ?? Math.floor(Math.random() * 101);
         return {
           ...suggestion,
           completed,
-          remaining: 100 - completed, 
+          remaining: 100 - completed,
         };
       });
 
       const shuffledSuggestions = shuffleArray(enrichedSuggestions).slice(0, 6);
       setRandomSuggestions(shuffledSuggestions);
 
-      
       const dateData = {
         suggestions: shuffledSuggestions,
         date: currentDate.toISOString(), // Store the date in ISO format
         expires: expirationDate.toISOString(), // Store the expiration date
       };
-      
-      // Convert the object to a string and store it in session storage
+
+      // Convert the object to a string and store it in localStorage
       localStorage.setItem('storedDate', JSON.stringify(dateData));
-
-
       setIsGenerated(true);
-
     } catch (error) {
       console.error('Error fetching planes:', error);
     }
@@ -109,39 +98,36 @@ export const SelfCarePlanes = () => {
   };
 
   const handleGenerateClick = () => {
-
     fetchPlanes(); // Fetch planes when the button is clicked
     localStorage.setItem('isGenerated', 'true');
-
   };
 
   return (
     <div className='bg-[#FFFDF7] min-h-screen'>
       <Header />
-
       <div className="flex-grow mx-20">
         <div className={GlobalStyle.fontNunito}>
           <h1 className={`${GlobalStyle.headingLarge}`}>Self Care Activities</h1>
-          <button
-            className='bg-[#A4CDA7] px-4 py-2 rounded-md hover:bg-[#8cb48f] transition-colors'
-            onClick={handleGenerateClick}
-          >
-            Generate Plans
-          </button>
-
+          {!buttonStatus && (
+            <button
+              className='bg-[#A4CDA7] px-4 py-2 rounded-md hover:bg-[#8cb48f] transition-colors'
+              onClick={handleGenerateClick}
+            >
+              Generate Plans
+            </button>
+          )}
         </div>
 
         <div className="px-4 flex justify-center mt-20">
-
-          {isGenerated ? (
+          {sessionSuggesions ? (
             <div className='grid-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-20'>
-              {randomSuggestions.map((suggestion, index) => {
+              {sessionSuggesions.suggestions.map((suggestion, index) => {
                 const data = [
                   { name: 'Completed', value: suggestion.completed },
                   { name: 'Remaining', value: suggestion.remaining },
                 ];
 
-                const COLORS = ['#4CAF50', '#D3D3D3']; 
+                const COLORS = ['#4CAF50', '#D3D3D3'];
                 const randomMessage = encouragementMessages[Math.floor(Math.random() * encouragementMessages.length)];
 
                 return (
@@ -166,7 +152,7 @@ export const SelfCarePlanes = () => {
                         <Tooltip />
                       </PieChart>
                       <p className="text-center mt-2">
-                        <span className="text-green-600 font-bold">{suggestion.completed}%</span> Completed | 
+                        <span className="text-green-600 font-bold">{suggestion.completed}%</span> Completed |
                         <span className="text-gray-500 font-bold"> {suggestion.remaining}%</span> Remaining
                       </p>
                       <p className="text-center mt-4 text-blue-700 font-semibold text-lg italic">{randomMessage}</p>
@@ -174,7 +160,6 @@ export const SelfCarePlanes = () => {
                   </Link>
                 );
               })}
-
             </div>
           ) : (
             <div className="flex justify-center items-center h-64">
