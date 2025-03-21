@@ -37,7 +37,7 @@ export const InstructionPage = () => {
             <br />
             <br />
           </p>
-          <p className={GlobalStyle.headingMedium}>
+          <p className={`font-semibold ${GlobalStyle.headingMedium}`}>
             Follow these steps to begin:
           </p>
           <ul className="list-disc ml-20 space-y-3 pt-3">
