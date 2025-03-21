@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Mood_History_Calendar } from "../Mood Tracking/Mood_History_Calendar";
 import { Header } from "../../../components/Header";
+import { ActivityProgress } from "../../Activity_Tracking/ActivityProgress";
 
 
 export const User_Profile = () => {
@@ -127,13 +128,23 @@ export const User_Profile = () => {
                 </button>
                 <button
                   onClick={() => setActiveTab("Journal History")}
-                  className={`w-50 text-center py-2 font-semibold rounded-tr-lg ${
+                  className={`w-50 text-center py-2 font-semibold ${
                     activeTab === "Journal History"
                       ? "bg-green-50 text-black"
                       : "bg-green-100 text-gray-500"
                   }`}
                 >
                   Journal History
+                </button>
+                <button
+                  onClick={() => setActiveTab("Activity Progress")}
+                  className={`w-50 text-center py-2 font-semibold rounded-tr-lg ${
+                    activeTab === "Activity Progress"
+                      ? "bg-green-50 text-black"
+                      : "bg-green-100 text-gray-500"
+                  }`}
+                >
+                  Activity Progress
                 </button>
               </div>
 
@@ -142,7 +153,7 @@ export const User_Profile = () => {
                 {activeTab === "Mood History" ? (
                   // Mood History Content
                  <Mood_History_Calendar />
-                ) : (
+                ) : activeTab === "Journal History" ? (
                   // Journal History Content
                   journalHistory.map((item) => (
                     <div
@@ -179,7 +190,7 @@ export const User_Profile = () => {
                       </div>
                     </div>
                   ))
-                )}
+                ): activeTab === "Activity Progress" ? (<ActivityProgress />) : ""}
               </div>
             </div>
           </div>
