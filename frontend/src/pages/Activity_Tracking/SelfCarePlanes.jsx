@@ -11,7 +11,21 @@ export const SelfCarePlanes = () => {
   const user = JSON.parse(localStorage.getItem('userData'));
   const [buttonStatus, setButtonStatus] = useState(true);
 
-  // Fetch self-care plans
+  const encouragementMessages = [
+    "You're doing amazing—keep it up! 💪",
+    "Every small step counts! 🌱",
+    "Your mental health matters! 💖",
+    "Believe in yourself—you got this! 🌟",
+    "Progress is progress, no matter how small! 🚀",
+    "Self-care isn't selfish, it's necessary! 🧘",
+    "One day at a time—you're making a difference! ☀️",
+    "You're stronger than you think! 💪",
+    "Keep going, you're creating a better you! 🌸",
+    "Your well-being is a priority, not an option! 🌿",
+    "Celebrate your small wins—they add up! 🎉",
+    "Take a deep breath, you've got this! 😌"
+  ];
+
   const fetchPlanes = async () => {
     try {
       const response = await fetch(`http://localhost:5000/mood/analyze/${user.id}`);
@@ -21,13 +35,12 @@ export const SelfCarePlanes = () => {
       const data = await response.json();
       console.log('API Response:', data);
       
-      // Ensure each suggestion has `completed` and `remaining`, and they sum to 100%
       const enrichedSuggestions = data.suggestions.map(suggestion => {
         const completed = suggestion.completed ?? Math.floor(Math.random() * 101);
         return {
           ...suggestion,
           completed,
-          remaining: 100 - completed, // Ensures sum is always 100%
+          remaining: 100 - completed, 
         };
       });
 
@@ -39,7 +52,6 @@ export const SelfCarePlanes = () => {
     }
   };
 
-  // Function to shuffle an array
   const shuffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -76,7 +88,8 @@ export const SelfCarePlanes = () => {
                   { name: 'Remaining', value: suggestion.remaining },
                 ];
 
-                const COLORS = ['#4CAF50', '#D3D3D3']; // Green for Completed, Light Gray for Remaining
+                const COLORS = ['#4CAF50', '#D3D3D3']; 
+                const randomMessage = encouragementMessages[Math.floor(Math.random() * encouragementMessages.length)];
 
                 return (
                   <Link to={`/Activity_Tracking/ActivityTracking/${suggestion.id}`} key={index}>
@@ -103,6 +116,7 @@ export const SelfCarePlanes = () => {
                         <span className="text-green-600 font-bold">{suggestion.completed}%</span> Completed | 
                         <span className="text-gray-500 font-bold"> {suggestion.remaining}%</span> Remaining
                       </p>
+                      <p className="text-center mt-4 text-blue-700 font-semibold text-lg italic">{randomMessage}</p>
                     </div>
                   </Link>
                 );
