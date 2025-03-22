@@ -1,8 +1,8 @@
 import { useState } from "react";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { Header } from "../../../components/Header";
-
+import { Footer } from "../../../components/Footer";
 
 const emotionMap = {
   "😊": "happy",
@@ -20,9 +20,9 @@ const emotionMap = {
 export const Mood_Tracking = () => {
   const user = JSON.parse(localStorage.getItem("userData"));
 
-  try{
-    if (!(user)) {
-     window.location.href = "/";
+  try {
+    if (!user) {
+      window.location.href = "/";
     }
   } catch (err) {
     console.error("Error checking user role:", err);
@@ -55,14 +55,13 @@ export const Mood_Tracking = () => {
           user_id: user.id,
           createdAt: new Date().toISOString(), // Add timestamp
         }),
-        
       });
       Swal.fire({
         position: "top-end",
         icon: "success",
         title: "Your work has been saved",
         showConfirmButton: false,
-        timer: 1500
+        timer: 1500,
       });
       if (!response.ok) {
         throw new Error("Failed to save mood");
@@ -82,41 +81,47 @@ export const Mood_Tracking = () => {
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
       <Header />
-      <div className="min-h-screen flex flex-col items-center justify-center p-4">
-        <div className="p-8 rounded-lg shadow-lg w-full max-w-md">
-          <h1 className="text-2xl font-bold mb-6 text-center">Select Your Mood</h1>
-          <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
-            {Object.keys(emotionMap).map((emoji) => (
+      <main className="flex-grow mx-20">
+        <div className=" flex flex-col items-center p-20">
+          <div className="p-8 rounded-lg shadow-lg w-full max-w-md">
+            <h1 className="text-2xl font-bold mb-6 text-center">
+              Select Your Mood
+            </h1>
+            <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
+              {Object.keys(emotionMap).map((emoji) => (
+                <button
+                  key={emoji}
+                  onClick={() => handleEmojiClick(emoji)}
+                  className={`flex justify-center items-center text-4xl p-4 bg-white rounded-lg shadow-md hover:bg-gray-200 transition-colors ${
+                    selectedEmoji === emoji ? "ring-2 ring-blue-500" : ""
+                  }`}
+                  disabled={loading} // Disable buttons while loading
+                >
+                  {emoji}
+                </button>
+              ))}
+            </div>
+          </div>
+          {selectedEmoji && (
+            <div className="mt-8 text-center">
+              <p className="text-lg">
+                You selected: <span className="text-4xl">{selectedEmoji}</span>
+              </p>
+              <p className="text-gray-600">{emotionMap[selectedEmoji]}</p>
               <button
-                key={emoji}
-                onClick={() => handleEmojiClick(emoji)}
-                className={`flex justify-center items-center text-4xl p-4 bg-white rounded-lg shadow-md hover:bg-gray-200 transition-colors ${
-                  selectedEmoji === emoji ? "ring-2 ring-blue-500" : ""
-                }`}
-                disabled={loading} // Disable buttons while loading
+                onClick={handleSave}
+                className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:bg-blue-300"
+                disabled={loading} // Disable save button while loading
               >
-                {emoji}
+                {loading ? "Saving..." : "Save Mood"}
               </button>
-            ))}
-          </div>
+            </div>
+          )}
+          {error && <p className="mt-4 text-red-600">Error: {error}</p>}
         </div>
-        {selectedEmoji && (
-          <div className="mt-8 text-center">
-            <p className="text-lg">
-              You selected: <span className="text-4xl">{selectedEmoji}</span>
-            </p>
-            <p className="text-gray-600">{emotionMap[selectedEmoji]}</p>
-            <button
-              onClick={handleSave}
-              className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:bg-blue-300"
-              disabled={loading} // Disable save button while loading
-            >
-              {loading ? "Saving..." : "Save Mood"}
-            </button>
-          </div>
-        )}
-        {error && <p className="mt-4 text-red-600">Error: {error}</p>}
-      </div>
+      </main>
+
+      <Footer />
     </div>
   );
 };
