@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Header_2 } from "../../../components/Header_2";
 import Swal from 'sweetalert2'
 import { useNavigate } from "react-router-dom";
+import { Header } from "../../../components/Header";
 
 
 const emotionMap = {
@@ -80,8 +80,8 @@ export const Mood_Tracking = () => {
   };
 
   return (
-    <div>
-      <Header_2 />
+    <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
+      <Header />
       <div className="min-h-screen flex flex-col items-center justify-center p-4">
         <div className="p-8 rounded-lg shadow-lg w-full max-w-md">
           <h1 className="text-2xl font-bold mb-6 text-center">Select Your Mood</h1>
