@@ -18,7 +18,7 @@ export const Home = () => {
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
       <Header />
 
-      <main className="main-section flex-grow">
+      <main className="main-section flex-grow bg-[#FFFDF7]">
         <div className="hero-section flex flex-row mt-10 items-center justify-center gap-10">
           <div className="img-section flex-1 flex flex-col items-end">
             <img

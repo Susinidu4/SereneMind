@@ -83,7 +83,7 @@ export const Mood_Tracking = () => {
     <div>
       <Header_2 />
       <div className="min-h-screen flex flex-col items-center justify-center p-4">
-        <div className="bg-[#C4C8AC] p-8 rounded-lg shadow-lg w-full max-w-md">
+        <div className="p-8 rounded-lg shadow-lg w-full max-w-md">
           <h1 className="text-2xl font-bold mb-6 text-center">Select Your Mood</h1>
           <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
             {Object.keys(emotionMap).map((emoji) => (
