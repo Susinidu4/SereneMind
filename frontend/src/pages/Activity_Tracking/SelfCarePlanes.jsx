@@ -17,18 +17,18 @@ export const SelfCarePlanes = () => {
   const currentDate = new Date();
 
   const encouragementMessages = [
-    "You're doing amazing—keep it up! 💪",
-    "Every small step counts! 🌱",
-    "Your mental health matters! 💖",
-    "Believe in yourself—you got this! 🌟",
-    "Progress is progress, no matter how small! 🚀",
-    "Self-care isn't selfish, it's necessary! 🧘",
-    "One day at a time—you're making a difference! ☀️",
-    "You're stronger than you think! 💪",
-    "Keep going, you're creating a better you! 🌸",
-    "Your well-being is a priority, not an option! 🌿",
-    "Celebrate your small wins—they add up! 🎉",
-    "Take a deep breath, you've got this! 😌"
+    "You're doing amazing—keep it up! ",
+    "Every small step counts! ",
+    "Your mental health matters! ",
+    "Believe in yourself—you got this! ",
+    "Progress is progress, no matter how small! ",
+    "Self-care isn't selfish, it's necessary! ",
+    "One day at a time—you're making a difference! ",
+    "You're stronger than you think! ",
+    "Keep going, you're creating a better you! ",
+    "Your well-being is a priority, not an option! ",
+    "Celebrate your small wins—they add up! ",
+    "Take a deep breath, you've got this! "
   ];
 
   useEffect(() => {
@@ -103,19 +103,19 @@ export const SelfCarePlanes = () => {
   };
 
   return (
-    <div className='bg-[#FFFDF7] min-h-screen'>
+    <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
       <Header />
-      <div className="flex-grow mx-20">
+      <main className="flex-grow mx-20">
         <div className={GlobalStyle.fontNunito}>
           <h1 className={`${GlobalStyle.headingLarge}`}>Self Care Activities</h1>
-          {!buttonStatus && (
+          {/* {!buttonStatus && (
             <button
               className='bg-[#A4CDA7] px-4 py-2 rounded-md hover:bg-[#8cb48f] transition-colors'
               onClick={handleGenerateClick}
             >
               Generate Plans
             </button>
-          )}
+          )} */}
         </div>
 
         <div className="px-4 flex justify-center mt-20">
@@ -127,12 +127,12 @@ export const SelfCarePlanes = () => {
                   { name: 'Remaining', value: suggestion.remaining },
                 ];
 
-                const COLORS = ['#4CAF50', '#D3D3D3'];
+                const COLORS = ['#407F81', '#E0EAEA'];
                 const randomMessage = encouragementMessages[Math.floor(Math.random() * encouragementMessages.length)];
 
                 return (
                   <Link to={`/Activity_Tracking/ActivityTracking/${suggestion.id}`} key={index}>
-                    <div className="plane-cards my-4 bg-[#A4CDA7] w-[600px] h-[400px] p-4 flex flex-col items-center shadow-lg rounded-xl">
+                    <div className="plane-cards my-6 bg-[#C0D5D5] w-[600px] h-[400px] p-4 flex flex-col items-center shadow-lg rounded-xl">
                       <h2 className="text-[20px] font-semibold text-center mb-4">{suggestion.title}</h2>
                       <PieChart width={200} height={200}>
                         <Pie
@@ -152,10 +152,10 @@ export const SelfCarePlanes = () => {
                         <Tooltip />
                       </PieChart>
                       <p className="text-center mt-2">
-                        <span className="text-green-600 font-bold">{suggestion.completed}%</span> Completed |
-                        <span className="text-gray-500 font-bold"> {suggestion.remaining}%</span> Remaining
+                        <span className="text-black font-bold">{suggestion.completed}%</span> Completed |
+                        <span className="text-gray-400 font-bold"> {suggestion.remaining}%</span> Remaining
                       </p>
-                      <p className="text-center mt-4 text-blue-700 font-semibold text-lg italic">{randomMessage}</p>
+                      <p className="text-center mt-4 text-[#005457] font-semibold text-lg italic">{randomMessage}</p>
                     </div>
                   </Link>
                 );
@@ -167,8 +167,12 @@ export const SelfCarePlanes = () => {
             </div>
           )}
         </div>
-      </div>
+     
+      
+      </main>
+
       <Footer />
     </div>
+    
   );
 };
