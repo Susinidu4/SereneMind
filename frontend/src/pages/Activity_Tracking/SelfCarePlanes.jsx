@@ -17,18 +17,18 @@ export const SelfCarePlanes = () => {
   const currentDate = new Date();
 
   const encouragementMessages = [
-    "You're doing amazing—keep it up! 💪",
-    "Every small step counts! 🌱",
-    "Your mental health matters! 💖",
-    "Believe in yourself—you got this! 🌟",
-    "Progress is progress, no matter how small! 🚀",
-    "Self-care isn't selfish, it's necessary! 🧘",
-    "One day at a time—you're making a difference! ☀️",
-    "You're stronger than you think! 💪",
-    "Keep going, you're creating a better you! 🌸",
-    "Your well-being is a priority, not an option! 🌿",
-    "Celebrate your small wins—they add up! 🎉",
-    "Take a deep breath, you've got this! 😌"
+    "You're doing amazing—keep it up! ",
+    "Every small step counts! ",
+    "Your mental health matters! ",
+    "Believe in yourself—you got this! ",
+    "Progress is progress, no matter how small! ",
+    "Self-care isn't selfish, it's necessary! ",
+    "One day at a time—you're making a difference! ",
+    "You're stronger than you think! ",
+    "Keep going, you're creating a better you! ",
+    "Your well-being is a priority, not an option! ",
+    "Celebrate your small wins—they add up! ",
+    "Take a deep breath, you've got this! "
   ];
 
   useEffect(() => {

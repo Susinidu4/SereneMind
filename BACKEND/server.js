@@ -14,6 +14,8 @@ import AdminRouter from './routes/AdminRoute.js';
 import MoodLogRouter from './routes/Mood_tracking_Route.js'
 import SuggesionRouter from './routes/SuggesionsRoute.js';
 
+//Activity Tracking
+import ActivityTrackingRoute from './routes/ActivityTrackingRoute.js'
 
 
 // Import Routes
@@ -58,6 +60,9 @@ app.use('/mood', MoodLogRouter);
 app.use('/suggestions', SuggesionRouter);
 
 app.use("/api/mood_journaling", MoodJournaling);
+
+app.use("/api/activity_tracking", ActivityTrackingRoute);
+
 
 
 

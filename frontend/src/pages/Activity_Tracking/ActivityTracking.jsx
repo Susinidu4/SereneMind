@@ -79,6 +79,7 @@ export const ActivityTracking = () => {
                 <div
                   key={index}
                   className="flex justify-between items-center border p-3 rounded-md bg-gray-50 shadow-sm cursor-pointer"
+                  
                   onClick={() => openModal(index + 1)}
                 >
                   <span>Day {index + 1}</span>
