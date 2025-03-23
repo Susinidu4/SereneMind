@@ -16,7 +16,7 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 15px;
-    background-color: #92C9B1;
+    background-color: #005457;
     border-radius: 8px;
     padding: 10px;
     color: #fff;
@@ -51,7 +51,7 @@
 .calendar-day-header {
     font-weight: bold;
     padding: 10px;
-    background-color: #A5D6C2;
+    background-color: #80ABAB;
     border-radius: 5px;
     color: #fff;
 }
@@ -65,7 +65,7 @@
 }
 
 .calendar-day:hover {
-    background-color: #C5E1A5;
+    background-color: #609596;
     cursor: pointer;
     transform: scale(1.05);
 }
