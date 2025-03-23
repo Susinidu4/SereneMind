@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { Header } from "../../../components/Header";
+import { Link } from "react-router-dom";
 
 export const User_Signup = () => {
   const [formData, setFormData] = useState({
@@ -74,10 +75,10 @@ export const User_Signup = () => {
   };
 
   return (
-    <div style={{fontFamily: "'Nunito', sans-serif"}}>
+    <div style={{fontFamily: "'Nunito'"}} className="bg-[#FFFDF7]">
       <Header />
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+      <div className="min-h-screen flex items-center justify-center ">
+      <div className="bg-[#E9F1F1] p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center">Signup</h2>
         {message && (
           <p
@@ -97,7 +98,7 @@ export const User_Signup = () => {
               value={formData.name}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full bg-[#FFFDF7] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             />
             {errors.name && (
               <p className="text-red-500 text-sm mt-1">{errors.name}</p>
@@ -111,7 +112,7 @@ export const User_Signup = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full bg-[#FFFDF7] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
           <div>
@@ -122,7 +123,7 @@ export const User_Signup = () => {
               value={formData.password}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full bg-[#FFFDF7] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             />
             {errors.password && (
               <p className="text-red-500 text-sm mt-1">{errors.password}</p>
@@ -135,7 +136,7 @@ export const User_Signup = () => {
               value={formData.dob}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-3 bg-[#FFFDF7] py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             />
             {errors.dob && (
               <p className="text-red-500 text-sm mt-1">{errors.dob}</p>
@@ -145,19 +146,21 @@ export const User_Signup = () => {
             name="role"
             value={formData.role}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full px-3 bg-[#FFFDF7] py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
           >
             <option value="">Select Role</option>
             <option value="user">User</option>
           </select>
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            className="w-full bg-[#92C9B1] text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
             Register
           </button>
 
-         <a href="/login"> <h1>Already have an account? <b>LOGIN</b></h1></a>
+          <Link to={`/login`}>
+           <p className="text-center mt-4 font-bold">All ready have an account? <span className="text-[#92C9B1]">Sign in</span></p>
+           </Link>
         </form>
       </div>
     </div>

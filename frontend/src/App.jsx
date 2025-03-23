@@ -48,16 +48,19 @@ function App() {
         <Route path="/PrototypeA" element={<PrototypeA/>} />
         
 
-         {/* yasindu */}
+         {/* mood tracking */}
+        <Route path="/sample" element={<Sample/>} />
+        <Route path="/moodtracking" element={<Mood_Tracking/>} />
+        <Route path="/moodhistorycalendar" element={<Mood_History_Calendar/>} />
+        <Route path="/moodtrackingupdate/:id" element={<Mood_Tracking_Update/>} />
+        
+
+        {/* user management */}
         <Route path="/usersignup" element={<User_Signup/>} />
         <Route path="/login" element={<User_Login/>} />
         <Route path="/userprofile" element={<User_Profile/>} />
         <Route path="/adminlogin" element={<Admin_Login/>} />
         <Route path="/admindashboard" element={<Admin_Dashboard/>} />
-        <Route path="/sample" element={<Sample/>} />
-        <Route path="/moodtracking" element={<Mood_Tracking/>} />
-        <Route path="/moodhistorycalendar" element={<Mood_History_Calendar/>} />
-        <Route path="/moodtrackingupdate/:id" element={<Mood_Tracking_Update/>} />
         <Route path="update-user/:id" element={<Update_User/>} />
 
         {/* Mood Journaling */}
