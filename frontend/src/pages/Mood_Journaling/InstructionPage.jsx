@@ -3,7 +3,7 @@ import GlobalStyle from "../../assets/Prototype/GlobalStyle";
 import { useNavigate } from "react-router-dom";
 import { Header } from "../../components/Header";
 import { Footer } from "../../components/Footer";
-import bg_image1 from "../../assets/Images/instructionbgImage.png";
+import journalInst from "../../assets/Images/journalInst.jpg";
 
 export const InstructionPage = () => {
   const navigate = useNavigate();
@@ -85,9 +85,9 @@ export const InstructionPage = () => {
         {/* Ad Banner */}
         <div>
           <img 
-            src={bg_image1}
+            src={journalInst}
             alt="Ad"
-            className="w-200 h-200 mx-auto mt-16"
+            className="w-full h-200 mx-auto mt-16"
           />
         </div>
 
