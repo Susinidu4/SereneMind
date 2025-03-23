@@ -54,7 +54,7 @@ export const OnlineResource = () => {
                     return (
                       <div
                         key={resourceId}
-                        className='bg-[#C0D5D5] border-none p-10 rounded-[25px] shadow w-[600px] h-[380px]'
+                        className='bg-[#C0D5D5] border-none p-10 rounded-[25px] shadow w-[550px] h-[370px]'
                       >
                         <Link to={`/ResourceManagement/ReadResource`}> {/* Link to the detailed page */}
                         {/* /${resourceId} */}
