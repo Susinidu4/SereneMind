@@ -91,9 +91,8 @@ export const User_Login = () => {
             </div>
             <button
               type="submit"
-              className='w-full bg-[#92C9B1] text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
-            >
-              Login
+              className={`${GlobalStyle.buttonPrimary} w-full`}           >
+              LOGIN
             </button>
 
            <Link to={`/usersignup`}>

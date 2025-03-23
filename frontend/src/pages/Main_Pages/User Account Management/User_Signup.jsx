@@ -3,6 +3,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { Header } from "../../../components/Header";
 import { Link } from "react-router-dom";
+import GlobalStyle from "../../../assets/Prototype/GlobalStyle";
 
 export const User_Signup = () => {
   const [formData, setFormData] = useState({
@@ -152,11 +153,10 @@ export const User_Signup = () => {
             <option value="user">User</option>
           </select>
           <button
-            type="submit"
-            className="w-full bg-[#92C9B1] text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
-            Register
-          </button>
+              type="submit"
+              className={`${GlobalStyle.buttonPrimary} w-full`}           >
+              SIGN UP
+            </button>
 
           <Link to={`/login`}>
            <p className="text-center mt-4 font-bold">All ready have an account? <span className="text-[#92C9B1]">Sign in</span></p>
