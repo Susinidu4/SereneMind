@@ -89,12 +89,9 @@ export const ActivityTracking = () => {
               {[...Array(7)].map((_, index) => (
                 <div
                   key={index}
-<<<<<<< HEAD
-                  className="flex justify-between items-center border p-3 rounded-md bg-gray-50 shadow-sm cursor-pointer"
-                  
-=======
+
                   className="flex justify-between items-center border p-3 rounded-md bg-gray-50 shadow-sm cursor-pointer "
->>>>>>> aae932e4b716d774a2f325bb12ceeb8ebba647eb
+
                   onClick={() => openModal(index + 1)}
                 >
                   <span>Day {index + 1}</span>
