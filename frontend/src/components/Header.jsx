@@ -24,7 +24,7 @@ export const Header = () => {
             </div>
 
             {/* Icons */}
-            <div className="flex items-end justify-end space-x-6 ml-auto py-">
+            <div className="flex items-end justify-end space-x-6 ml-auto ">
               <a href="#">
                 <Bell className="w-6 h-6 text-gray-600 cursor-pointer" />
               </a>

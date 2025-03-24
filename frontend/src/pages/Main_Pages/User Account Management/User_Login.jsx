@@ -2,15 +2,12 @@ import React, { useState } from 'react';
 import { Header } from '../../../components/Header';
 import GlobalStyle from '../../../assets/Prototype/GlobalStyle';
 import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2'; // Import SweetAlert2
+
 export const User_Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(''); // State to handle errors
-
-  // const user = JSON.parse(localStorage.getItem('userData'));
-  // if (user?.role === 'user' || user?.role === 'User' || user?.role === 'USER') {
-  //   window.location.href = '/userprofile';
-  // }
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -18,6 +15,13 @@ export const User_Login = () => {
     // Basic validation
     if (!email || !password) {
       setError('Please fill in all fields');
+      Swal.fire({
+        title: 'Error!',
+        text: 'Please fill in all fields.',
+        icon: 'error',
+        confirmButtonColor: '#005457',
+        confirmButtonText: 'OK',
+      });
       return;
     }
 
@@ -40,28 +44,47 @@ export const User_Login = () => {
       // Parse the response data
       const data = await response.json();
       console.log('Login successful:', data);
-      window.location.href = '/userprofile';
+
+      // Save user data to localStorage
       localStorage.setItem('userData', JSON.stringify(data));
+
       // Reset form fields and error state
       setEmail('');
       setPassword('');
       setError('');
 
-      // Handle successful login (e.g., redirect to dashboard)
-      alert('Login successful!');
-      // You can use a routing library like react-router-dom to redirect the user
-      // Example: history.push('/dashboard');
+      // Show success alert
+      Swal.fire({
+        title: 'Success!',
+        text: 'Login successful!',
+        icon: 'success',
+        timer: 1500, // 1 seconds
+        timerProgressBar: true,
+        showConfirmButton: false, // Hide the "OK" button
+        willClose: () => {
+          // Navigate to another page after the timer ends
+          window.location.href = '/userprofile'; // Replace '/dashboard' with your desired URL
+        }
+      });
     } catch (err) {
       console.error('Login error:', err.message);
-      setError(err.message || 'An error occurred during login');
+
+      // Show error alert
+      Swal.fire({
+        title: 'Error!',
+        text: err.message || 'An error occurred during login.',
+        icon: 'error',
+        confirmButtonColor: '#005457',
+        confirmButtonText: 'OK',
+      });
     }
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#FFFDF7]" style={{fontFamily:"'Nunito"}}>
+    <div className="flex flex-col min-h-screen bg-[#FFFDF7]" style={{ fontFamily: "'Nunito'" }}>
       <Header />
       <main className="flex mx-20 justify-center items-center">
-      <div className={`bg-[#E9F1F1] p-8 rounded-lg shadow-lg w-full max-w-md`}>
+        <div className={`bg-[#E9F1F1] p-8 rounded-lg shadow-lg w-full max-w-md`}>
           <h1 className={`font-bold text-2xl text-center`}>Login</h1>
           {error && <p className='text-red-500 text-center mb-4'>{error}</p>}
           <form onSubmit={handleLogin}>
@@ -96,9 +119,9 @@ export const User_Login = () => {
               Login
             </button>
 
-           <Link to={`/usersignup`}>
-           <p className="text-center mt-4 font-bold">Don't have an account? <span className="text-[#92C9B1]">Sign Up</span></p>
-           </Link>
+            <Link to={`/usersignup`}>
+              <p className="text-center mt-4 font-bold">Don't have an account? <span className="text-[#92C9B1]">Sign Up</span></p>
+            </Link>
           </form>
         </div>
       </main>

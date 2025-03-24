@@ -18,8 +18,11 @@ import SuggesionRouter from './routes/SuggesionsRoute.js';
 import ActivityTrackingRoute from './routes/ActivityTrackingRoute.js'
 
 
-// Import Routes
+// Mood Journaling
 import MoodJournaling from "./routes/MoodJournalingRoute.js";
+
+//Resource Management
+import ResourceManagement from "./routes/ResourceManagementRoute.js";
 
 
 const app = express();
@@ -36,6 +39,8 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// app.use("/uploads", express.static("uploads"));
 
 const URL = process.env.MONGODB_URL;
 mongoose.connect(URL, {
@@ -62,6 +67,8 @@ app.use('/suggestions', SuggesionRouter);
 app.use("/api/mood_journaling", MoodJournaling);
 
 app.use("/api/activity_tracking", ActivityTrackingRoute);
+
+app.use("/api/resource_management", ResourceManagement);
 
 
 

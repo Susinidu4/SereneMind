@@ -31,10 +31,10 @@ export const ActivityProgress = () => {
     fetchProgress();
   }, [id]);
 
-  const COLORS = ["#76c7c0", "#ffb6b9", "#fae3d9", "#bbded6"];
+  const COLORS = ["#407F81", "#005457", "#fae3d9", "#bbded6"];
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-[#E3FDFD] to-[#FFE6E6] px-6 py-10">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r px-6 py-10">
       
       {/* Charts - Daily Progress and Overall Progress */}
       <div className="flex justify-between w-full max-w-[1200px] gap-6">
@@ -47,11 +47,11 @@ export const ActivityProgress = () => {
           <h2 className="text-xl font-bold mb-4 text-center text-gray-700">Daily Progress</h2>
           <ResponsiveContainer width="100%" height={400}>
             <BarChart data={progressData}>
-              <XAxis dataKey="day" stroke="#555" />
-              <YAxis stroke="#555" />
+              <XAxis dataKey="day" stroke="#005457" />
+              <YAxis stroke="#005457" />
               <Tooltip />
               <Legend />
-              <Bar dataKey="progress" fill="#76c7c0" radius={[8, 8, 0, 0]} />
+              <Bar dataKey="progress" fill="#005457" radius={[8, 8, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </motion.div>

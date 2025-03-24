@@ -3,6 +3,7 @@ import { IoMdCloseCircle } from "react-icons/io";
 import GlobalStyle from "../../assets/Prototype/GlobalStyle";
 import { FaEdit } from "react-icons/fa";
 import axios from "axios";
+import Swal from "sweetalert2"; 
 
 export const EditJournal = ({ journal, onClose }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -49,11 +50,38 @@ export const EditJournal = ({ journal, onClose }) => {
         `http://localhost:5000/api/mood_journaling/update/${journal._id}`,
         formData
       );
-      console.log("Journal updated successfully:", response.data);
-      setIsEditing(false);
-      onClose();
+      if (response.status === 200) {
+        // Show success alert
+        Swal.fire({
+          title: "Success!",
+          text: "Journal updated successfully.",
+          icon: "success",
+          confirmButtonColor: "#005457",
+          confirmButtonText: "OK",
+        }).then(() => {
+          // Close the modal and reset editing state
+          setIsEditing(false);
+          onClose();
+        });
+      } else {
+        // Show error alert if the response status is not 200
+        Swal.fire({
+          title: "Error!",
+          text: "Failed to update journal.",
+          icon: "error",
+          confirmButtonColor: "#005457",
+          confirmButtonText: "OK",
+        });
+      }
     } catch (error) {
-      console.error("Error updating journal:", error);
+      // Show error alert for exceptions
+    Swal.fire({
+      title: "Error!",
+      text: "An error occurred while updating the journal.",
+      icon: "error",
+      confirmButtonColor: "#005457",
+      confirmButtonText: "OK",
+    });
     }
   };
 
@@ -80,16 +108,14 @@ export const EditJournal = ({ journal, onClose }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg backdrop-blur-sm z-50">
-      <div
-        className="bg-[#E9F1F1] rounded-lg shadow-lg w-[90%] sm:w-[800px] p-10 relative border-1 border-[#005457]"
-      >
+      <div className="bg-[#E9F1F1] rounded-lg shadow-lg w-[90%] sm:w-[800px] p-10 relative border-1 border-[#005457]">
         {!isEditing && (
           <div>
             <button
               className="absolute top-3 left-3 rounded-full text-[#007579] hover:text-[#005457] hover:bg-[#AEDBD8] text-2xl p-3"
               onClick={handleEditClick}
             >
-              <FaEdit />
+              <FaEdit title="Edit" />
             </button>
           </div>
         )}
@@ -97,6 +123,7 @@ export const EditJournal = ({ journal, onClose }) => {
         <button
           className="absolute top-3 right-3 text-red-900"
           onClick={onClose}
+          title="Close"
           aria-label="Close"
         >
           <IoMdCloseCircle size={30} />
@@ -117,11 +144,9 @@ export const EditJournal = ({ journal, onClose }) => {
                   onChange={handleChange}
                   className="w-full border rounded p-2"
                 />
-
-                
               </div>
               <div>
-              <label className="block text-lg font-semibold">
+                <label className="block text-lg font-semibold">
                   Mood Intensity:
                 </label>
                 <input
@@ -190,7 +215,9 @@ export const EditJournal = ({ journal, onClose }) => {
               </div>
 
               <div>
-                <label className="block text-lg font-semibold">Cope Mood:</label>
+                <label className="block text-lg font-semibold">
+                  Cope Mood:
+                </label>
                 <textarea
                   name="cope_mood"
                   value={formData.cope_mood}
@@ -221,7 +248,7 @@ export const EditJournal = ({ journal, onClose }) => {
                 />
               </div>
 
-              <div className="flex gap-4 mt-4">
+              <div className="flex col-span-2 justify-end mt-4">
                 <button
                   className={`${GlobalStyle.buttonPrimary} px-2 py-1 text-sm ml-auto`}
                   onClick={handleSaveClick}
@@ -268,7 +295,9 @@ export const EditJournal = ({ journal, onClose }) => {
               </div>
 
               <div className="mt-4 bg-[#AEDBD8] p-4 rounded-lg shadow-md">
-                <h3 className="font-semibold">What You Coped With This Mood:</h3>
+                <h3 className="font-semibold">
+                  What You Coped With This Mood:
+                </h3>
                 <p>{journal.cope_mood}</p>
               </div>
 

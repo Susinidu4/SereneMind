@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Header_2 } from "../../../components/Header_2";
+import Swal from "sweetalert2"; 
 
 export const Admin_Login = () => {
     const [email, setEmail] = useState("");
@@ -27,19 +28,39 @@ export const Admin_Login = () => {
             if (response.data.status) {
                 // Login successful
                 console.log("Login successful:", response.data);
-                alert("Login successful!");
-
-                // Store the entire response in local storage under a single key
-                localStorage.setItem("userData", JSON.stringify(response.data));
-
-                // Redirect to the user profile page
-                window.location.href = "/admindashboard";
+                Swal.fire({
+                    title: "Success!",
+                    text: "Login successful!",
+                    icon: "success",
+                    timer: 1500, // 3 seconds (you can adjust this as needed)
+                    timerProgressBar: true,
+                    showConfirmButton: false, // Hide the "OK" button
+                    willClose: () => {
+                        // Store the entire response in local storage under a single key
+                        localStorage.setItem("userData", JSON.stringify(response.data));
+            
+                        // Redirect to the admin dashboard after the alert closes
+                        window.location.href = "/admindashboard"; // Replace with the desired URL
+                    }
+                });
             } else {
                 setError(response.data.message);
+                Swal.fire({
+                    title: "Error!",
+                    text: response.data.message,
+                    icon: "error",
+                    confirmButtonText: "OK",
+                });
             }
         } catch (err) {
             setError(err.response?.data?.message || "An error occurred during login.");
             console.error("Login error:", err);
+            Swal.fire({
+                title: "Error!",
+                text: err.response?.data?.message || "An error occurred during login.",
+                icon: "error",
+                confirmButtonText: "OK",
+            });
         } finally {
             setLoading(false);
         }
