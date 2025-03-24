@@ -122,7 +122,7 @@ export const Header_2 = () => {
             </div>
 
             {/* Icons */}
-            <div className="flex items-center space-x-6">
+            <div className="flex items-end justify-end space-x-6 ml-auto">
               <a href="#">
                 <Bell className="w-6 h-6 text-gray-600 cursor-pointer" />
               </a>
@@ -136,7 +136,7 @@ export const Header_2 = () => {
           </div>
 
           <div>
-            <hr className="border-t-2 border-black-200 w-370 mx-auto" />
+            <hr className="border-t-2 border-black-200 w-330 mx-auto" />
           </div>
 
           <div className="flex items-center justify-between px-12 m-8 ">
@@ -204,14 +204,14 @@ export const Header_2 = () => {
         </div>
       ) : user.role === "user" ? (
         <div className={GlobalStyle.fontNunito}>
-          <div className="container flex justify-between items-center m-8 px-12">
+          <div className="flex justify-between items-center m-4 px-12 pt-4">
             {/* Logo Section */}
             <div className="flex items-center space-x-3">
               <img src={logo} alt="Logo" className="w-100 h-20" />
             </div>
 
             {/* Icons */}
-            <div className="flex items-center space-x-6">
+            <div className="flex items-end justify-end space-x-6 ml-auto">
               <a href="#">
                 <Bell className="w-6 h-6 text-gray-600 cursor-pointer" />
               </a>
@@ -225,14 +225,14 @@ export const Header_2 = () => {
           </div>
 
           <div>
-            <hr className="border-t-2 border-black-200 w-370 mx-auto" />
+            <hr className="border-t-2 border-black-200 w-330 mx-auto" />
           </div>
 
           <div className="flex items-center justify-between px-12 m-8 ">
             {/* Navigation Links */}
             <div className={GlobalStyle.headingMedium}>
               <div className={GlobalStyle.remarkTopic}>
-                <nav className="gap-20 flex space-x-8">
+                <nav className="gap-12 flex space-x-8">
                   <a href="/" className="hover:font-bold hover:underline">
                     Home
                   </a>
