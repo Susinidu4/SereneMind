@@ -200,43 +200,6 @@ export const Update_User = () => {
             </button>
         </form>
 
-        {/* Update Password Section */}
-        <form onSubmit={handlePasswordSubmit} className="space-y-4">
-          <h3 className="text-xl font-semibold mb-4">Update Password</h3>
-          <div>
-            <input
-              type="password"
-              name="password"
-              placeholder="New Password"
-              value={passwordData.password}
-              onChange={handlePasswordChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            />
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-            )}
-          </div>
-          <div>
-            <input
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              value={passwordData.confirmPassword}
-              onChange={handlePasswordChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            />
-            {errors.confirmPassword && (
-              <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
-            )}
-          </div>
-          <button
-              type="submit"
-              className={`${GlobalStyle.buttonPrimary} w-full`}           >
-              Update Password
-            </button>
-        </form>
       </div>
      </main>
     </div>

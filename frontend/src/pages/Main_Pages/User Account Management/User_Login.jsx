@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Header } from '../../../components/Header';
 import GlobalStyle from '../../../assets/Prototype/GlobalStyle';
 import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
 export const User_Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -40,6 +41,11 @@ export const User_Login = () => {
       // Parse the response data
       const data = await response.json();
       console.log('Login successful:', data);
+      Swal.fire({
+              title: "Login Successful!",
+              text: "Login successfully!",
+              icon: "success"
+            });
       window.location.href = '/userprofile';
       localStorage.setItem('userData', JSON.stringify(data));
       // Reset form fields and error state
@@ -54,6 +60,11 @@ export const User_Login = () => {
     } catch (err) {
       console.error('Login error:', err.message);
       setError(err.message || 'An error occurred during login');
+      Swal.fire({
+              title: "Login Failed!",
+              text: "try again!",
+              icon: "error"
+            });
     }
   };
 
