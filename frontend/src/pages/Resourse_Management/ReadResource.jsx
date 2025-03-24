@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import GlobalStyle from "../../assets/Prototype/GlobalStyle";
 import { Header } from "../../components/Header";
 import { Footer } from "../../components/Footer";
@@ -7,13 +7,35 @@ import banner1 from "../../assets/Images/banner1.png";
 import { FaStar } from "react-icons/fa";
 import { MdDownload } from "react-icons/md";
 import Swal from "sweetalert2";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 
 export const ReadResource = () => {
+  const { id } = useParams(); // Get resource ID from the URL
+  const [resource, setResource] = useState(null); // Store the fetched resource
   const [rating, setRating] = useState(0); // State to store the selected rating
   const [submitted, setSubmitted] = useState(false); // State to track if rating is submitted
 
+  // Temporary hardcoded userId (Replace this with your dynamic user ID, e.g., from authentication context)
+  const [userId, setUserId] = useState("user123"); // Example of hardcoded user ID
+
+  // Fetch resource data when the component mounts
+  useEffect(() => {
+    const fetchResource = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/resource_management/getResource/${id}`
+        );
+        setResource(response.data); // Store resource data in state
+      } catch (error) {
+        console.error("Error fetching resource:", error);
+      }
+    };
+    fetchResource(); // Call the function to fetch the resource data
+  }, [id]); // Dependency array ensures the effect runs when `id` changes
+
   // Function to handle rating submission
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (rating === 0) {
       Swal.fire({
         icon: "error",
@@ -21,20 +43,43 @@ export const ReadResource = () => {
         text: "Please select a rating before submitting.",
         confirmButtonColor: "#d33",
       });
-      return;
+      return; // Exit the function if no rating is selected
     }
-  
-    setSubmitted(true); // Mark as submitted
-  
-    // Corrected to use backticks for template literals
-    Swal.fire({
-      icon: "success", // Changed to 'success' since the submission is successful
-      title: "Article Rating Submitted",
-      text: `Thank you for your feedback! You rated this article ${rating} stars.`,
-      confirmButtonColor: "#007579", // Custom confirm button color
-    });
+
+    try {
+      // Send feedback data to the backend
+      const response = await axios.post(
+        "http://localhost:5000/api/resource_management/add-feedback",
+        {
+          user_id: userId, // Send the userId
+          resourse_id: id, // Send the resource ID
+          ratings: rating, // Send the rating value
+        }
+      );
+
+      // Show success message after submission
+      Swal.fire({
+        icon: "success",
+        title: "Article Rating Submitted",
+        text: `Thank you for your feedback! You rated this article ${rating} stars.`,
+        confirmButtonColor: "#007579",
+      });
+      setRating(0);
+      setSubmitted(true); // Mark as submitted
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Submission Failed",
+        text: "There was an error submitting your feedback.",
+        confirmButtonColor: "#d33",
+      });
+    }
   };
-  
+
+  // Show loading state while fetching resource data
+  if (!resource) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
@@ -51,40 +96,35 @@ export const ReadResource = () => {
                       <IoPersonCircle className="w-20 h-20 text-gray-600" />
                     </div>
                     <div className="text-sm text-[18px]">
-                      <p className="font-bold">Sahan Perera</p>
-                      <p className="text-gray-500">Psychoanalyst</p>
+                      <p className="font-bold">{resource.auther_name}</p>
+                      <p className="text-gray-500">
+                        {resource.auther_designation}
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Rating */}
+              {/* Rating Placeholder */}
               <div className="flex items-center space-x-2">
                 <div className="flex space-x-1">
                   {[...Array(5)].map((_, i) => (
                     <FaStar
                       key={i}
-                      className="h-6 w-6 text-[#FFD700]" // Use the star icon
+                      className="h-6 w-6 text-[#FFD700]" // Star icon for placeholder
                       aria-label={`Rate ${i + 1}`}
                     />
                   ))}
                 </div>
               </div>
             </div>
+
             <div>
               <h2 className={`${GlobalStyle.headingMedium} underline pt-8`}>
-                Title - Lorem ipsum dolor
+                {resource.title}
               </h2>
               <p className={`${GlobalStyle.paragraph} text-justify px-5`}>
-                {/* <span className={`${GlobalStyle.remarkTopic} inline`}>
-                  Description -
-                </span> */}
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
-                commodo ligula eget dolor. Lorem ipsum dolor sit amet,
-                consectetur adipiscing elit. Aenean commodo ligula eget dolor.
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
-                commodo ligula eget dolor.Lorem ipsum dolor sit amet,
-                consectetur adipiscing elit. Aenean commodo ligula eget dolor.
+                {resource.description}
               </p>
             </div>
 
@@ -94,78 +134,12 @@ export const ReadResource = () => {
                 src={banner1}
                 alt="Resource Image"
                 className="mx-auto mt-10"
-              ></img>
+              />
             </div>
 
             {/* Article Body */}
             <div className="mt-6 text-justify">
-              <p className={GlobalStyle.paragraph}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
-                commodo ligula eget dolor. Aenean massa. Cum sociis natoque
-                penatibus et magnis dis parturient montes, nascetur ridiculus
-                mus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Aenean commodo ligula eget dolor. Aenean massa. Cum sociis
-                natoque penatibus et magnis dis parturient montes, nascetur
-                ridiculus mus. Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-                Cum sociis natoque penatibus et magnis dis parturient montes,
-                nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-                Cum sociis natoque penatibus et magnis dis parturient montes,
-                nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-                Cum sociis natoque penatibus et magnis dis parturient montes,
-                nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-                Cum sociis natoque penatibus et magnis dis parturient montes,
-                nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-                Cum sociis natoque penatibus et magnis dis parturient montes,
-                nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-                Cum sociis natoque penatibus et magnis dis parturient montes,
-                nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-                Cum sociis natoque penatibus et magnis dis parturient montes,
-                nascetur ridiculus mus.Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-                Cum sociis natoque penatibus et magnis dis parturient montes,
-                nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-                Cum sociis natoque penatibus et magnis dis parturient montes,
-                nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-                Cum sociis natoque penatibus et magnis dis parturient montes,
-                nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-                Cum sociis natoque penatibus et magnis dis parturient montes,
-                nascetur ridiculus mus.Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-                Cum sociis natoque penatibus et magnis dis parturient montes,
-                nascetur ridiculus mus.Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-                Cum sociis natoque penatibus et magnis dis parturient montes,
-                nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-                Cum sociis natoque penatibus et magnis dis parturient montes,
-                nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-                Cum sociis natoque penatibus et magnis dis parturient montes,
-                nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-                Cum sociis natoque penatibus et magnis dis parturient montes,
-                nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-                Cum sociis natoque penatibus et magnis dis parturient montes,
-                nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-                Cum sociis natoque penatibus et magnis dis parturient montes,
-                nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-                Cum sociis natoque penatibus et magnis dis parturient montes,
-                nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit.
-              </p>
+              <p className={GlobalStyle.paragraph}>{resource.content}</p>
             </div>
 
             {/* References and Footer Actions */}
@@ -173,16 +147,11 @@ export const ReadResource = () => {
               <p>
                 <span className={`${GlobalStyle.remarkTopic} inline`}>
                   References -
-                </span>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
-                commodo ligula eget dolor. Lorem ipsum dolor sit amet,
-                consectetur adipiscing elit. Aenean commodo ligula eget dolor.
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
-                commodo ligula eget dolor. Lorem ipsum dolor sit amet,
-                consectetur adipiscing elit. Aenean commodo ligula eget dolor.
+                </span>{" "}
+                {resource.reference}
               </p>
 
-              {/* download button */}
+              {/* Download button */}
               <div className="flex gap-4 justify-end pt-8 pb-6">
                 <button
                   className={`${GlobalStyle.buttonPrimary} flex items-center gap-2`}
@@ -214,7 +183,7 @@ export const ReadResource = () => {
                       ? "text-yellow-500 scale-110"
                       : "text-gray-300"
                   }`}
-                  onClick={() => setRating(star)}
+                  onClick={() => setRating(star)} // Set rating value on click
                   aria-label={`Rate ${star} stars`}
                 >
                   <FaStar className="h-6 w-6" />
@@ -222,7 +191,7 @@ export const ReadResource = () => {
               ))}
             </div>
 
-            {/* Beautiful Submit Button */}
+            {/* Submit Button */}
             <div className="flex justify-center mt-6">
               <button
                 onClick={handleSubmit}
