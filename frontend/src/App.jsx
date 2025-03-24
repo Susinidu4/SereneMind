@@ -4,16 +4,21 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Home } from './pages/Main_Pages/Home';
 import { PrototypeA } from './assets/Prototype/PrototypeA';
 
-{/* yasindu */}
+{/* user management */}
 import { User_Signup } from './pages/Main_Pages/User Account Management/User_Signup';
 import { User_Login } from './pages/Main_Pages/User Account Management/User_Login';
 import { User_Profile } from './pages/Main_Pages/User Account Management/User_Profile';
 import { Admin_Login } from './pages/Main_Pages/Admin/Admin_Login';
 import { Admin_Dashboard } from './pages/Main_Pages/Admin/Admin_Dashboard';
 import { Sample } from './pages/Main_Pages/Mood Tracking/Sample';
+import { Update_User } from './pages/Main_Pages/User Account Management/Update_User';
+import { Password_Update } from './pages/Main_Pages/User Account Management/Password_Update';
+
+{/* mood tracking */}
 import { Mood_History_Calendar } from './pages/Main_Pages/Mood Tracking/Mood_History_Calendar';
 import { Mood_Tracking } from './pages/Main_Pages/Mood Tracking/Mood_Tracking';
 import { Mood_Tracking_Update } from './pages/Main_Pages/Mood Tracking/Mood_Tracking_Update';
+
 
 
 import { InstructionPage } from './pages/Mood_Journaling/InstructionPage';
@@ -27,9 +32,10 @@ import { ReadResource } from './pages/Resourse_Management/ReadResource';
 import { ActivityTracking } from './pages/Activity_Tracking/ActivityTracking';
 import { SelfCarePlanes } from './pages/Activity_Tracking/SelfCarePlanes';
 
-import { Update_User } from './pages/Main_Pages/User Account Management/update_user';
+
 
 import { ActivityProgress } from './pages/Activity_Tracking/ActivityProgress';
+
 
 
 
@@ -61,7 +67,8 @@ function App() {
         <Route path="/userprofile" element={<User_Profile/>} />
         <Route path="/adminlogin" element={<Admin_Login/>} />
         <Route path="/admindashboard" element={<Admin_Dashboard/>} />
-        <Route path="update-user/:id" element={<Update_User/>} />
+        <Route path="/update-user/:id" element={<Update_User/>} />
+        <Route path="/update-user-password/:id" element={<Password_Update/>} />
 
         {/* Mood Journaling */}
         <Route path="/MoodJournaling/InstructionPage" element={<InstructionPage/>} />

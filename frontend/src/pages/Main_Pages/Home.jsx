@@ -2,16 +2,23 @@ import React from "react";
 import GlobalStyle from "../../assets/Prototype/GlobalStyle";
 import { Footer } from "../../components/Footer";
 import meditation from "../../assets/Images/meditation.png";
+
+
+
+
+
+import { IoDiamond } from "react-icons/io5";
+import { Header } from "../../components/Header";
+import { Header_3 } from "../../components/Header_3";
+
+import welcome from "../../assets/Images/welcome.png";
 import offer from "../../assets/Images/offer.png";
 import cimg1 from "../../assets/Images/c-img1.png";
 import cimg2 from "../../assets/Images/c-img2.png";
 import cimg3 from "../../assets/Images/c-img3.png";
-import work from "../../assets/Images/work.png";
 import cimg4 from "../../assets/Images/c-img4.png";
-import benifit from "../../assets/Images/benifit.png";
-import { IoDiamond } from "react-icons/io5";
-import { Header } from "../../components/Header";
-import { Header_3 } from "../../components/Header_3";
+import work from "../../assets/Images/work.png";
+import benifit from "../../assets/Images/benefit.png";
 
 export const Home = () => {
   return (
@@ -23,9 +30,9 @@ export const Home = () => {
         <div className="hero-section flex items-center justify-center px-20 pb-10">
           <div className="img-section flex-1 flex flex-col ">
             <img
-              src={meditation}
-              alt="meditation"
-              // className="w-150 h-150"
+              src={welcome}
+              alt="welcome"
+              className="w-150 h-150"
             />
           </div>
           <div
@@ -93,11 +100,11 @@ export const Home = () => {
               </ul>
             </div>
 
-            {/* Image Section */}
+            {/* What we offer section image */}
             <div className="img-section flex-1 flex justify-center">
               <img
                 src={offer}
-                className="w-[400px] h-[400px] "
+                className="w-[450px] h-[450px] "
                 alt="What we offer"
               />
             </div>
@@ -108,7 +115,9 @@ export const Home = () => {
         <div className="card-container mt-40 flex justify-center pb-40">
           <div className="card-section grid grid-cols-1 md:grid-cols-2 gap-10">
             {/* Card 1 */}
+
             <div className="home-card bg-gradient-to-br from-[#C0D5D5] to-[#E0EAEA] shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 w-[400px] h-[350px] p-6 rounded-2xl flex flex-col justify-between items-center">
+
               <div className="txt-section text-center pt-5">
                 <h1 className={GlobalStyle.headingMedium}>
                   AI-Powered Personalization
@@ -127,7 +136,9 @@ export const Home = () => {
             </div>
 
             {/* Card 2 */}
+
             <div className="home-card bg-gradient-to-bl from-[#C0D5D5] to-[#E0EAEA] shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 w-[400px] h-[350px] p-6 rounded-2xl flex flex-col justify-between items-center">
+
               <div className="txt-section text-center pt-5">
                 <h1 className={GlobalStyle.headingMedium}>
                   Comprehensive Well-being
@@ -147,7 +158,9 @@ export const Home = () => {
             </div>
 
             {/* Card 3 */}
+
             <div className="home-card bg-gradient-to-bl from-[#E0EAEA] to-[#C0D5D5] shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 w-[400px] h-[350px] p-6 rounded-2xl flex flex-col justify-between items-center">
+
               <div className="txt-section text-center pt-5">
                 <h1 className={GlobalStyle.headingMedium}>Secure & Private</h1>
                 <p className="text-[13px] pt-4">
@@ -157,7 +170,7 @@ export const Home = () => {
               </div>
               <div className="img-section">
                 <img
-                  className="w-[200px] h-[200px]"
+                  className="w-[250px] h-[250px]"
                   src={cimg3}
                   alt="Secure & Private"
                 />
@@ -165,7 +178,9 @@ export const Home = () => {
             </div>
 
             {/* Card 4 */}
+
             <div className="home-card bg-gradient-to-br from-[#E0EAEA] to-[#C0D5D5] shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 w-[400px] h-[350px] p-6 rounded-2xl flex flex-col justify-between items-center">
+
               <div className="txt-section text-center pt-5">
                 <h1 className={GlobalStyle.headingMedium}>
                   Real-time Mood Insights
@@ -176,7 +191,7 @@ export const Home = () => {
               </div>
               <div className="img-section">
                 <img
-                  className="w-[200px] h-[200px]"
+                  className="w-[300px] h-[200px]"
                   src={cimg4}
                   alt="Real-time Mood Insights"
                 />
@@ -195,7 +210,7 @@ export const Home = () => {
             <div className="img-section flex-1 flex justify-center">
               <img
                 src={work}
-                className="w-[450px] h-[400px]  "
+                className="w-[600px] h-[550px]  "
                 alt="How It Works"
               />
             </div>
@@ -279,7 +294,7 @@ export const Home = () => {
               <div className="img-section flex justify-center items-center">
                 <img
                   src={benifit}
-                  className="w-[500px] h-[500px] "
+                  className="w-[600px] h-[600px] "
                   alt="Benefit Illustration"
                 />
               </div>
