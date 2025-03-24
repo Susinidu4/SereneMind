@@ -87,7 +87,7 @@ export const InstructionPage = () => {
           <img 
             src={journalInst}
             alt="Ad"
-            className="w-full h-200 mx-auto mt-16"
+            className="w-200 h-120 mx-auto mt-16"
           />
         </div>
 

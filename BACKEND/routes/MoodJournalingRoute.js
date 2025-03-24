@@ -86,7 +86,7 @@ router.get("/mood-journal/:user_id", async (req, res) => {
 });
 
 
-
+// delete jouranal
 router.delete("/remove/mood-journal/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -117,5 +117,45 @@ router.delete("/remove/mood-journal/:id", async (req, res) => {
   }
 });
 
-  
+
+// Update Journal Entry
+router.put("/update/:id", async (req, res) => {
+  const { id } = req.params;
+  const {
+    Overall_mood,
+    mood_intensity,
+    emotion,
+    mood_trigger,
+    cope_mood,
+    notes,
+    reflection,
+    image,
+  } = req.body;
+
+  try {
+    const updatedJournal = await MoodJournaling.findByIdAndUpdate(
+      id,
+      {
+        Overall_mood,
+        mood_intensity,
+        emotion,
+        mood_trigger,
+        cope_mood,
+        notes,
+        reflection,
+        image,
+      },
+      { new: true } // Returns the updated document
+    );
+
+    if (!updatedJournal) {
+      return res.status(404).json({ message: "Journal entry not found" });
+    }
+
+    res.status(200).json(updatedJournal);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating journal entry", error });
+  }
+});
+
 export default router;
