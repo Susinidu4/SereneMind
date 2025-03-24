@@ -1,10 +1,10 @@
 import React from "react";
-import "./Calendar.css";
 import { IoCloseCircle } from "react-icons/io5";
 import { RiEdit2Fill } from "react-icons/ri";
 import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import GlobalStyle from "../../../assets/Prototype/GlobalStyle";
 
 const deleteMood = async (id) => {
   try {
@@ -66,45 +66,51 @@ export const HistoryPopup = ({
   };
 
   return (
-    <div className="popup-overlay">
-      <div className="popup">
-        <div className="popup-content">
-          <div className="close-btn float-right" onClick={onClose}>
-            <IoCloseCircle size={25} color="red" />
+    <div className="fixed inset-0 flex justify-center backdrop-blur-sm items-center z-[1]">
+      <main
+        className={`flex flex-col justify-center mx-20 bg-[#FFFDF7] p-10 rounded-lg`}
+        style={{ fontFamily: "Nunito" }}
+      >
+        <div className="close-btn flex justify-end" onClick={onClose}>
+            <IoCloseCircle size={30} color="red" />
           </div>
-          <h2 className="font-bold">{selectedDate}</h2>
-          <h3>Mood History</h3>
+          <div className="flex flex-col gap-y-2 mb-5">
+          <h2 className="font-bold text-lg">{selectedDate}</h2>
+          <h3 className="font-bold text-2xl">Mood History</h3>
+          </div>
+        <div className="popup-content bg-[#005457]  w-[400px] max-h-[600px]  p-10 rounded-lg">
+          
           {loading ? (
             <p>Loading...</p>
           ) : error ? (
             <p>Error: {error}</p>
           ) : (
-            <div className="flex justify-center">
+            <div className="flex justify-center overflow-y-auto h-[300px]">
               <table className="w-full border-collapse text-left">
                 <thead>
-                  <tr className="bg-gray-100 border-b-2 border-gray-200">
+                  <tr className="bg-gray-100 border-b-2 border-gray-200 text-center">
                     <th className="p-3 font-semibold">Emoji</th>
                     <th className="p-3 font-semibold">Time</th>
                     <th></th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="text-center">
                   {filteredMoodHistory.length > 0 ? (
                     filteredMoodHistory.map((mood) => (
                       <tr key={mood._id} className="border-b border-gray-200">
-                        <td className="p-3">{mood.emoji}</td>
-                        <td className="p-3">
+                        <td className="p-3 text-2xl">{mood.emoji}</td>
+                        <td className="p-3 text-lg text-[#FFFDF7]">
                           {new Date(mood.createdAt).toLocaleTimeString()}
                         </td>
                         <td className="p-3">
                           <Link to={`/moodtrackingupdate/${mood._id}`}>
-                            <button className="text-blue-500 mr-2">
+                            <button className="text-[#FFFDF7] mr-2">
                               <RiEdit2Fill size={20} />
                             </button>
                           </Link>
                           <button
                             onClick={() => handleDelete(mood._id)}
-                            className="text-red-500"
+                            className="text-[#FFFDF7]"
                           >
                             <MdDelete size={20} />
                           </button>
@@ -123,7 +129,7 @@ export const HistoryPopup = ({
             </div>
           )}
         </div>
-      </div>
+      </main>
     </div>
   );
 };

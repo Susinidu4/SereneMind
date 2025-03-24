@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Header } from '../../../components/Header';
 import GlobalStyle from '../../../assets/Prototype/GlobalStyle';
 import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
 export const User_Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -40,6 +41,11 @@ export const User_Login = () => {
       // Parse the response data
       const data = await response.json();
       console.log('Login successful:', data);
+      Swal.fire({
+              title: "Login Successful!",
+              text: "Login successfully!",
+              icon: "success"
+            });
       window.location.href = '/userprofile';
       localStorage.setItem('userData', JSON.stringify(data));
       // Reset form fields and error state
@@ -54,6 +60,11 @@ export const User_Login = () => {
     } catch (err) {
       console.error('Login error:', err.message);
       setError(err.message || 'An error occurred during login');
+      Swal.fire({
+              title: "Login Failed!",
+              text: "try again!",
+              icon: "error"
+            });
     }
   };
 
@@ -61,7 +72,7 @@ export const User_Login = () => {
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]" style={{fontFamily:"'Nunito"}}>
       <Header />
       <main className="flex mx-20 justify-center items-center">
-      <div className={`bg-[#E9F1F1] p-8 rounded-lg shadow-lg w-full max-w-md`}>
+      <div className={`bg-[#E9F1F1] p-8 rounded-lg shadow-md shadow-neutral-950 w-full max-w-md`}>
           <h1 className={`font-bold text-2xl text-center`}>Login</h1>
           {error && <p className='text-red-500 text-center mb-4'>{error}</p>}
           <form onSubmit={handleLogin}>
@@ -91,9 +102,8 @@ export const User_Login = () => {
             </div>
             <button
               type="submit"
-              className='w-full bg-[#92C9B1] text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
-            >
-              Login
+              className={`${GlobalStyle.buttonPrimary} w-full`}           >
+              LOGIN
             </button>
 
            <Link to={`/usersignup`}>
