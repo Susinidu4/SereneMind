@@ -183,7 +183,7 @@ export const ReadResource = () => {
               </p>
 
               {/* download button */}
-              <div className="flex gap-4 justify-end pt-8">
+              <div className="flex gap-4 justify-end pt-8 pb-6">
                 <button
                   className={`${GlobalStyle.buttonPrimary} flex items-center gap-2`}
                 >

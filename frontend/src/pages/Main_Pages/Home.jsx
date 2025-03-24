@@ -53,7 +53,7 @@ export const Home = () => {
         </div>
 
         {/* 2ns section */}
-        <div className="bg-gradient-to-t via-green-50 to-[#007579] py-16">
+        <div className="bg-gradient-to-t via-green-50 to-[#609596] py-16">
           <div className="w-full max-w-6xl mx-auto pt-40 flex flex-col md:flex-row items-center gap-20">
             {/* Text Section */}
             <div className="para-section flex-1">
@@ -115,7 +115,9 @@ export const Home = () => {
         <div className="card-container mt-40 flex justify-center pb-40">
           <div className="card-section grid grid-cols-1 md:grid-cols-2 gap-10">
             {/* Card 1 */}
-            <div className="home-card bg-gradient-to-br from-[#C0D5D5] to-[#E0EAEA] shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 w-[400px] h-[375px] p-6 rounded-2xl flex flex-col justify-between items-center">
+
+            <div className="home-card bg-gradient-to-br from-[#C0D5D5] to-[#E0EAEA] shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 w-[400px] h-[350px] p-6 rounded-2xl flex flex-col justify-between items-center">
+
               <div className="txt-section text-center pt-5">
                 <h1 className={GlobalStyle.headingMedium}>
                   AI-Powered Personalization
@@ -134,7 +136,9 @@ export const Home = () => {
             </div>
 
             {/* Card 2 */}
-            <div className="home-card bg-gradient-to-bl from-[#C0D5D5] to-[#E0EAEA] shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 w-[400px] h-[375px] p-6 rounded-2xl flex flex-col justify-between items-center">
+
+            <div className="home-card bg-gradient-to-bl from-[#C0D5D5] to-[#E0EAEA] shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 w-[400px] h-[350px] p-6 rounded-2xl flex flex-col justify-between items-center">
+
               <div className="txt-section text-center pt-5">
                 <h1 className={GlobalStyle.headingMedium}>
                   Comprehensive Well-being
@@ -154,7 +158,9 @@ export const Home = () => {
             </div>
 
             {/* Card 3 */}
-            <div className="home-card bg-gradient-to-bl from-[#E0EAEA] to-[#C0D5D5] shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 w-[400px] h-[375px] p-6 rounded-2xl flex flex-col justify-between items-center">
+
+            <div className="home-card bg-gradient-to-bl from-[#E0EAEA] to-[#C0D5D5] shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 w-[400px] h-[350px] p-6 rounded-2xl flex flex-col justify-between items-center">
+
               <div className="txt-section text-center pt-5">
                 <h1 className={GlobalStyle.headingMedium}>Secure & Private</h1>
                 <p className="text-[13px] pt-4">
@@ -172,7 +178,9 @@ export const Home = () => {
             </div>
 
             {/* Card 4 */}
-            <div className="home-card bg-gradient-to-br from-[#E0EAEA] to-[#C0D5D5] shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 w-[400px] h-[375px] p-6 rounded-2xl flex flex-col justify-between items-center">
+
+            <div className="home-card bg-gradient-to-br from-[#E0EAEA] to-[#C0D5D5] shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 w-[400px] h-[350px] p-6 rounded-2xl flex flex-col justify-between items-center">
+
               <div className="txt-section text-center pt-5">
                 <h1 className={GlobalStyle.headingMedium}>
                   Real-time Mood Insights
