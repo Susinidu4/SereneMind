@@ -6,6 +6,13 @@ import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2'; // Import SweetAlert2
 
 export const User_Login = () => {
+  const userData = localStorage.getItem('userData');
+  const user = userData ? JSON.parse(userData) : null;
+  
+  // Redirect if user is already logged in
+  if(user && user.role === "user") {
+    window.location.href = '/userprofile';
+  }
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(''); // State to handle errors

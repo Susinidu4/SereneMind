@@ -15,7 +15,14 @@ import { jsPDF } from "jspdf";
 
 export const User_Profile = () => {
   const user_data = JSON.parse(localStorage.getItem("userData"));
-  const user_id = "UID-6599";
+
+  if (user_data && user_data === "admin") {
+    window.location.href = '/admindashboard';
+  }
+
+  if (!user_data){
+    window.location.href = '/login';
+  }
   const [activeTab, setActiveTab] = useState("Mood History");
   const [journalHistory, setJournalHistory] = useState([]);
   const [user, setUser] = useState("");
@@ -24,9 +31,6 @@ export const User_Profile = () => {
 
   const [selectedJournalIds, setSelectedJournalIds] = useState([]); // Track selected journals
 
-  if (!user_data) {
-    window.location.href = "/";
-  }
 
   // Fetch user data
   useEffect(() => {
@@ -54,7 +58,7 @@ export const User_Profile = () => {
     const fetchJournalHistory = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/mood_journaling/mood-journal/${user_id}`
+          `http://localhost:5000/api/mood_journaling/mood-journal/${user_data.id}`
         );
         if (response.status === 200) {
           setJournalHistory(response.data.data);
@@ -68,7 +72,7 @@ export const User_Profile = () => {
     };
 
     fetchJournalHistory();
-  }, [user_id]);
+  }, [user_data.id]);
 
   // Handle delete
   const handleDelete = async (id) => {
