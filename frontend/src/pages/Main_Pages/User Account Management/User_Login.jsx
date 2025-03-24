@@ -72,7 +72,7 @@ export const User_Login = () => {
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]" style={{fontFamily:"'Nunito"}}>
       <Header />
       <main className="flex mx-20 justify-center items-center">
-      <div className={`bg-[#E9F1F1] p-8 rounded-lg shadow-lg w-full max-w-md`}>
+      <div className={`bg-[#E9F1F1] p-8 rounded-lg shadow-md shadow-neutral-950 w-full max-w-md`}>
           <h1 className={`font-bold text-2xl text-center`}>Login</h1>
           {error && <p className='text-red-500 text-center mb-4'>{error}</p>}
           <form onSubmit={handleLogin}>

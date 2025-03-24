@@ -73,12 +73,11 @@ export const Password_Update = () => {
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
         <Header />
-      <main className="flex-grow mx-20">
-        <div className={GlobalStyle.fontNunito}>
-          <h1 className={`${GlobalStyle.headingLarge} `}>Password Update</h1>
+      <main className="flex justify-center mx-20">
+        <div className={`w-full max-w-md bg-[#E9F1F1] shadow-md shadow-black p-8 rounded-lg ${GlobalStyle.fontNunito}`} style={{ fontFamily:"Nunito"}}>
+          <h1 className={`text-2xl font-semibold text-center mb-10`}>Password Update</h1>
           <form onSubmit={handlePasswordSubmit} className="space-y-4">
-          <h3 className="text-xl font-semibold mb-4">Update Password</h3>
-          <div>
+          <div className="mb-4">
             <input
               type="password"
               name="password"
@@ -86,13 +85,13 @@ export const Password_Update = () => {
               value={passwordData.password}
               onChange={handlePasswordChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="bg-[#FFFDF7] w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             />
             {errors.password && (
               <p className="text-red-500 text-sm mt-1">{errors.password}</p>
             )}
           </div>
-          <div>
+          <div className="mb-4">
             <input
               type="password"
               name="confirmPassword"
@@ -100,7 +99,7 @@ export const Password_Update = () => {
               value={passwordData.confirmPassword}
               onChange={handlePasswordChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="bg-[#FFFDF7] w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             />
             {errors.confirmPassword && (
               <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>

@@ -79,7 +79,7 @@ export const User_Signup = () => {
     <div style={{fontFamily: "'Nunito'"}} className="bg-[#FFFDF7]">
       <Header />
       <div className="min-h-screen flex items-center justify-center ">
-      <div className="bg-[#E9F1F1] p-8 rounded-lg shadow-lg w-full max-w-md">
+      <div className="bg-[#E9F1F1] p-8 rounded-lg shadow-md shadow-black w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center">Signup</h2>
         {message && (
           <p
