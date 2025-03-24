@@ -89,7 +89,9 @@ export const ActivityTracking = () => {
               {[...Array(7)].map((_, index) => (
                 <div
                   key={index}
+
                   className="flex justify-between items-center border p-3 rounded-md bg-gray-50 shadow-sm cursor-pointer "
+
                   onClick={() => openModal(index + 1)}
                 >
                   <span>Day {index + 1}</span>
@@ -121,8 +123,9 @@ export const ActivityTracking = () => {
       <Footer />
 
       {showModal && (
-        <div className="fixed inset-0 flex justify-center items-center backdrop-blur-lg">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full border border-gray-300 relative ">
+       <div className="fixed inset-0 flex justify-center items-center backdrop-blur-lg">
+        <div className="bg-white p-8 rounded-lg shadow-lg max-w-2xl w-full max-h-[600px] h-[500px] border border-gray-300 relative overflow-auto">
+     
             <div className="absolute top-2 right-2">
               <IoClose
                 className="text-gray-500 cursor-pointer"
@@ -134,8 +137,9 @@ export const ActivityTracking = () => {
             <h2 className="text-lg font-bold mb-4">
               Log Activity for Day {selectedDay}
             </h2>
+            <br/>
             <h2>Assigned Time: {plane.time_per_day} per day</h2>
-
+            <br/>
             <p className={GlobalStyle.headingMedium}>Notes</p>
             <textarea
               className="w-full border p-2 mt-2 rounded-md bg-white"
@@ -143,8 +147,8 @@ export const ActivityTracking = () => {
               value={activityData}
               onChange={(e) => setActivityData(e.target.value)}
             ></textarea>
-
-            <p className={GlobalStyle.headingMedium}>
+            
+            <p className={GlobalStyle.headingMedium}><br/>
               Actual Time Spent (minutes)
             </p>
             <input
@@ -154,8 +158,9 @@ export const ActivityTracking = () => {
               value={actualTime}
               onChange={(e) => setActualTime(e.target.value)}
             />
-
+            
             <div className="flex justify-end space-x-3 mt-4">
+            <br/>
               <button
                 className={GlobalStyle.buttonPrimary}
                 onClick={handleSave}
