@@ -1,7 +1,17 @@
-const mongoose = require("mongoose");
-const { Schema } = mongoose;
+import mongoose from "mongoose";
 
-const ActivityTrackingSchema = new Schema(
+const daySchema = new mongoose.Schema(
+  {
+      progress: { type: Number, required: true },
+      note: { type: String, required: true },
+      dtm: { type: Date, required: true },
+  },
+  {
+      timestamps: true,
+  }
+);
+
+const ActivityTrackingSchema = new mongoose.Schema(
   {
     user_id: { type: String, required: true },
     Day: [daySchema],
@@ -12,17 +22,5 @@ const ActivityTrackingSchema = new Schema(
   }
 );
 
-const daySchema = new Schema(
-    {
-        progress: { type: Number, required: true },
-        note: { type: String, required: true },
-        dtm: { type: Date, required: true },
-    },
-    {
-        timestamps: true,
-    }
-);
 
-const ActivityTracking = mongoose.model("ActivityTracking", ActivityTrackingSchema);
-
-module.exports = ActivityTracking;
+export default mongoose.model('Activity_Tracking', ActivityTrackingSchema);

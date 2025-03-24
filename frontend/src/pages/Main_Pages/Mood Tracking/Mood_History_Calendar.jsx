@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import "./Calendar.css";
 import { HistoryPopup } from "./HistoryPopup";
+import GlobalStyle from "../../../assets/Prototype/GlobalStyle";
 
 export const Mood_History_Calendar = () => {
   const user = JSON.parse(localStorage.getItem("userData"));
@@ -45,7 +45,9 @@ export const Mood_History_Calendar = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`http://localhost:5000/mood/user/${user.id}`);
+      const response = await fetch(
+        `http://localhost:5000/mood/user/${user.id}`
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch mood history");
       }
@@ -77,13 +79,17 @@ export const Mood_History_Calendar = () => {
 
     // Add empty cells for days before the first day of the month
     for (let i = 0; i < firstDay; i++) {
-      calendarDays.push(<div key={`empty-${i}`} className="empty-day"></div>);
+      calendarDays.push(<div key={`empty-${i}`} className="empty-day p-[10px] bg-[#F3F7F0]"></div>);
     }
 
     // Add days of the month
     for (let day = 1; day <= days; day++) {
       calendarDays.push(
-        <div key={day} className="calendar-day" onClick={() => handleDateClick(day)}>
+        <div
+          key={day}
+          className="calendar-day bg-[#E7F2EB] p-[10px] rounded-[5px] hover:bg-[#609596] hover:cursor-pointer hover:scale-105 transition-transform duration-200"
+          onClick={() => handleDateClick(day)}
+        >
           {day}
         </div>
       );
@@ -101,33 +107,50 @@ export const Mood_History_Calendar = () => {
   };
 
   return (
-    <div className="calendar">
-      <div className="calendar-header">
-        <button className="prev-month-btn" onClick={goToPreviousMonth}>&lt;</button>
-        <h2>
-          {monthNames[month]} {year}
-        </h2>
-        <button className="next-month-btn" onClick={goToNextMonth}>&gt;</button>
-      </div>
-      <div className="calendar-grid">
-        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-          <div key={day} className="calendar-day-header">
-            {day}
+    <div className="calendar flex flex-col items-center overflow-hidden ">
+      <main
+        className={`flex flex-col justify-center mx-20 bg-[#FFFDF7]  px-10 py-5 rounded-2xl`}
+        style={{ fontFamily: "Nunito" }}
+      >
+        <div className="w-[500px]">
+          <div className="calendar-header w-full bg-[#005457] rounded-lg text-[#fff] font-bold flex flex-row items-center justify-center gap-x-10 p-5 mb-5 ">
+            <button
+              className="prev-month-btn text-2xl hover:scale-150"
+              onClick={goToPreviousMonth}
+            >
+              &lt;
+            </button>
+            <h2 className="text-3xl hover:scale-110">
+              {monthNames[month]} {year}
+            </h2>
+            <button
+              className="next-month-btn text-2xl hover:scale-150"
+              onClick={goToNextMonth}
+            >
+              &gt;
+            </button>
           </div>
-        ))}
-        {renderCalendar()}
-      </div>
+          <div className="calendar-grid text-center grid grid-cols-7 gap-3">
+            {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+              <div key={day} className="calendar-day-header bg-[#80ABAB] p-2 rounded-[5px] text-[#fff] font-bold">
+                {day}
+              </div>
+            ))}
+            {renderCalendar()}
+          </div>
 
-      {/* Popup for mood history */}
-      {showPopup && (
-        <HistoryPopup
-          selectedDate={selectedDate}
-          loading={loading}
-          error={error}
-          filteredMoodHistory={filteredMoodHistory}
-          onClose={() => setShowPopup(false)}
-        />
-      )}
+          {/* Popup for mood history */}
+          {showPopup && (
+            <HistoryPopup
+              selectedDate={selectedDate}
+              loading={loading}
+              error={error}
+              filteredMoodHistory={filteredMoodHistory}
+              onClose={() => setShowPopup(false)}
+            />
+          )}
+        </div>
+      </main>
     </div>
   );
 };
