@@ -108,18 +108,19 @@ export const SelfCarePlanes = () => {
       <main className="flex-grow mx-20">
         <div className={GlobalStyle.fontNunito}>
           <h1 className={`${GlobalStyle.headingLarge}`}>Self Care Activities</h1>
-          {/* {!buttonStatus && (
+          {/* Uncomment below if you want a button to trigger the generation */}
+           {!buttonStatus && (
             <button
               className='bg-[#A4CDA7] px-4 py-2 rounded-md hover:bg-[#8cb48f] transition-colors'
               onClick={handleGenerateClick}
             >
               Generate Plans
             </button>
-          )} */}
+          )} 
         </div>
 
         <div className="px-4 flex justify-center mt-20">
-          {sessionSuggesions ? (
+          {sessionSuggesions && sessionSuggesions.suggestions && sessionSuggesions.suggestions.length > 0 ? (
             <div className='grid-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-20'>
               {sessionSuggesions.suggestions.map((suggestion, index) => {
                 const data = [
@@ -167,12 +168,9 @@ export const SelfCarePlanes = () => {
             </div>
           )}
         </div>
-     
-      
       </main>
 
       <Footer />
     </div>
-    
   );
 };

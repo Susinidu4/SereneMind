@@ -11,6 +11,7 @@ import { useParams } from "react-router-dom";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 export const ReadResource = () => {
+  const user = JSON.parse(localStorage.getItem("userData"))
   const { id } = useParams(); // Get resource ID from the URL
   const [resource, setResource] = useState(null); // Store the fetched resource
   const [rating, setRating] = useState(0); // State to store the selected rating
@@ -28,8 +29,6 @@ export const ReadResource = () => {
 
   const [averageRating, setAverageRating] = useState(0);
 
-  // Temporary hardcoded userId (Replace this with your dynamic user ID, e.g., from authentication context)
-  const [userId, setUserId] = useState("user123"); // Example of hardcoded user ID
 
 useEffect(() => {
   const fetchAverageRating = async () => {
@@ -80,7 +79,7 @@ useEffect(() => {
       const response = await axios.post(
         "http://localhost:5000/api/resource_management/add-feedback",
         {
-          user_id: userId, // Send the userId
+          user_id: user.id, // Send the userId
           resourse_id: id, // Send the resource ID
           ratings: rating, // Send the rating value
         }
