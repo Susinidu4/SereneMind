@@ -3,8 +3,9 @@ const { Schema } = mongoose;
 
 const FeedbackSchema = new Schema(
     {
-        user_id: {type: String, required: true},
-        feedback: { type: String, required: true },
+        user_id: {type: String, required: false},
+        resourse_id: {type: String, required: false},
+        ratings: { type: Number, required: false },
     },
     {
         collection: "Feedback",

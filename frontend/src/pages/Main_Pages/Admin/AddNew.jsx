@@ -52,6 +52,15 @@ export const AddNew = () => {
         text: "Your mood journal has been successfully recorded.",
         confirmButtonColor: "#45553D",
       });
+
+      setTitle("");
+      setDescription("");
+      setContent("");
+      // setSelectedImages([]);
+      setAuthorName("");
+      setAuthorDesignation("");
+      setReference("");
+      
     } catch (error) {
       console.error("Error submitting form:", error);
       Swal.fire({
