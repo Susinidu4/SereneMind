@@ -72,7 +72,7 @@ router.get("/:user_id", async (req, res) => {
 });
 
 
-//delete data by id
+//delete data by id (use main _id)
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -115,7 +115,7 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-//update data by id
+//update data by id (use main _id)
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -154,129 +154,6 @@ router.put('/:id', async (req, res) => {
 
   } catch (error) {
     console.error('Error updating activity tracking:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error',
-      error: error.message
-    });
-  }
-});
-
-// Update a day entry by ActivityTracking _id and plane_id
-router.put('/:activityId', async (req, res) => {
-  try {
-    const { activityId } = req.params;
-    const { plane_id, progress, note } = req.body;
-
-    // Validate required fields
-    if (!plane_id) {
-      return res.status(400).json({ 
-        success: false,
-        message: 'plane_id is required' 
-      });
-    }
-
-    // Validate MongoDB ID
-    if (!mongoose.Types.ObjectId.isValid(activityId)) {
-      return res.status(400).json({ 
-        success: false,
-        message: 'Invalid activity tracking ID' 
-      });
-    }
-
-    // Find the activity tracking document
-    const activity = await ActivityTracking.findById(activityId);
-    if (!activity) {
-      return res.status(404).json({ 
-        success: false,
-        message: 'Activity tracking not found' 
-      });
-    }
-
-    // Find and update the specific day entry
-    const dayToUpdate = activity.Day.find(day => day.plane_id === plane_id);
-    if (!dayToUpdate) {
-      return res.status(404).json({ 
-        success: false,
-        message: 'Day entry not found with this plane_id' 
-      });
-    }
-
-    // Update fields
-    if (progress !== undefined) dayToUpdate.progress = progress;
-    if (note !== undefined) dayToUpdate.note = note;
-
-    // Save the updated document
-    const updatedActivity = await activity.save();
-
-    res.status(200).json({
-      success: true,
-      message: 'Day entry updated successfully',
-      data: {
-        activityId: updatedActivity._id,
-        updatedDay: dayToUpdate
-      }
-    });
-
-  } catch (error) {
-    console.error('Error updating day entry:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error',
-      error: error.message
-    });
-  }
-});
-
-
-// Delete a day entry by ActivityTracking _id and plane_id
-router.delete('/:activityId', async (req, res) => {
-  try {
-    const { activityId } = req.params;
-    const { plane_id } = req.body;
-
-    // Validate required fields
-    if (!plane_id) {
-      return res.status(400).json({ 
-        success: false,
-        message: 'plane_id is required' 
-      });
-    }
-
-    // Validate MongoDB ID
-    if (!mongoose.Types.ObjectId.isValid(activityId)) {
-      return res.status(400).json({ 
-        success: false,
-        message: 'Invalid activity tracking ID' 
-      });
-    }
-
-    // Find and update the document
-    const result = await ActivityTracking.findByIdAndUpdate(
-      activityId,
-      { $pull: { Day: { plane_id } } },
-      { new: true }
-    );
-
-    if (!result) {
-      return res.status(404).json({ 
-        success: false,
-        message: 'Activity tracking not found' 
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: 'Day entry deleted successfully',
-      data: {
-        activityId: result._id,
-        plane_id,
-        remainingDays: result.Day.length
-      }
-    });
-
-  } catch (error) {
-    console.error('Error deleting day entry:', error);
     res.status(500).json({
       success: false,
       message: 'Internal server error',
