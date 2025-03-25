@@ -6,7 +6,7 @@ import GlobalStyle from "../../../assets/Prototype/GlobalStyle";
 import { Header_3 } from "../../../components/Header_3";
 export const Admin_Login = () => {
   
-  const userData = localStorage.getItem('userData');
+  const userData = JSON.parse(localStorage.getItem('userData'));
   
   // Redirect if user is already logged in
   if (userData && userData.role === "admin") {
