@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Header_2 } from "../../../components/Header_2";
 import { useParams, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import GlobalStyle from "../../../assets/Prototype/GlobalStyle";
 
 const emotionMap = {
   "😊": "happy",
@@ -17,12 +18,22 @@ const emotionMap = {
 };
 
 export const Mood_Tracking_Update = () => {
+  
+
   const { id } = useParams(); // Get moodId from the URL
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("userData"));
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  
+  // Redirect if user is already logged in
+  if (!user){
+    window.location.href = '/login';
+  } else if (user.role === "admin") {
+    window.location.href = '/admindashboard';
+  }
 
   // Fetch the existing mood entry
   useEffect(() => {
@@ -96,9 +107,9 @@ export const Mood_Tracking_Update = () => {
   return (
     <div>
       <Header_2 />
-      <div className="min-h-screen flex flex-col items-center justify-center p-4">
-        <div className="bg-[#C4C8AC] p-8 rounded-lg shadow-lg w-full max-w-md">
-          <h1 className="text-2xl font-bold mb-6 text-center">Update Your Mood</h1>
+      <main className="min-h-screen flex flex-col items-center justify-center p-4" style={{ fontFamily: "Nunito" }}>
+      <div className="p-8 rounded-lg bg-[#005457] shadow-gray-400 shadow-md w-full max-w-md">
+          <h1 className="text-2xl font-bold mb-6 text-center text-white">Update Your Mood</h1>
           <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
             {Object.keys(emotionMap).map((emoji) => (
               <button
@@ -121,16 +132,17 @@ export const Mood_Tracking_Update = () => {
             </p>
             <p className="text-gray-600">{emotionMap[selectedEmoji]}</p>
             <button
-              onClick={handleUpdate}
-              className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:bg-blue-300"
-              disabled={loading} // Disable update button while loading
-            >
-              {loading ? "Updating..." : "Update Mood"}
-            </button>
+                type="submit"
+                onClickCapture={handleUpdate}
+                className={`${GlobalStyle.buttonPrimary} w-full`}
+                disabled={loading}
+              >
+                {loading ? "Updating..." : "Update"}
+              </button>
           </div>
         )}
         {error && <p className="mt-4 text-red-600">Error: {error}</p>}
-      </div>
+      </main>
     </div>
   );
 };

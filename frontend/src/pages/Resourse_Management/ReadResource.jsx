@@ -15,6 +15,17 @@ export const ReadResource = () => {
   const [resource, setResource] = useState(null); // Store the fetched resource
   const [rating, setRating] = useState(0); // State to store the selected rating
   const [submitted, setSubmitted] = useState(false); // State to track if rating is submitted
+
+  const [buttonStatus, setButtonStatus] = useState(false);
+
+
+  useEffect(() => {
+      const user = JSON.parse(localStorage.getItem("userData"));
+      if (user && user.role === "user") {
+        setButtonStatus(true);
+      }
+    }, []); // Empty dependency array means this runs once on mount
+
   const [averageRating, setAverageRating] = useState(0);
 
   // Temporary hardcoded userId (Replace this with your dynamic user ID, e.g., from authentication context)
@@ -50,6 +61,7 @@ useEffect(() => {
     fetchResource();
     
   }, [id]); // Dependency array ensures the effect runs when `id` changes
+
 
   // Function to handle rating submission
   const handleSubmit = async () => {
@@ -179,12 +191,14 @@ useEffect(() => {
 
               {/* Download button */}
               <div className="flex gap-4 justify-end pt-8 pb-6">
-                <button
+                {buttonStatus && (
+                  <button
                   className={`${GlobalStyle.buttonPrimary} flex items-center gap-2`}
                 >
                   <MdDownload size={20} />
                   <span>Download</span>
                 </button>
+                )}
               </div>
             </div>
           </div>
@@ -219,12 +233,14 @@ useEffect(() => {
 
             {/* Submit Button */}
             <div className="flex justify-center mt-6">
-              <button
+              {buttonStatus && (
+                <button
                 onClick={handleSubmit}
                 className="bg-gradient-to-t from-[#007579] to-[#00B4A6] text-white px-6 py-2 rounded-full shadow-md hover:scale-105 transition-transform duration-300"
               >
                 Submit Rating
               </button>
+              )}
             </div>
           </div>
         </div>
