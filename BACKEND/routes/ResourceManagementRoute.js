@@ -1,8 +1,6 @@
 import express from "express";
 import ResourseManagement from "../models/Resourse_management.js";
-import mongoose from "mongoose";
-import multer from "multer";
-import path from "path";
+import Feedback from "../models/Feedback.js";
 
 const router = express.Router();
 
@@ -70,6 +68,27 @@ router.get("/getAllResources", async (req, res) => {
 });
 
 
+// GET a single resource by ID
+router.get("/getResource/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Find the resource by ID
+    const resource = await ResourseManagement.findById(id);
+
+    if (!resource) {
+      return res.status(404).json({ error: "Resource not found" });
+    }
+
+    // Return the resource data
+    res.status(200).json(resource);
+  } catch (error) {
+    console.error("Error fetching resource:", error);
+    res.status(500).json({ error: "Failed to fetch resource details" });
+  }
+});
+
+
 // DELETE: Remove a resource by ID
 router.delete("/deleteResource/:id", async (req, res) => {
   try {
@@ -89,5 +108,68 @@ router.delete("/deleteResource/:id", async (req, res) => {
     res.status(500).json({ error: "Failed to delete resource" });
   }
 });
+
+
+// Route to insert feedback data
+router.post("/add-feedback", async (req, res) => {
+    try {
+        // Destructure data from the request body
+        const { user_id, resourse_id, ratings } = req.body;
+
+        // Validate that all fields are present
+        if (!user_id || !resourse_id || !ratings) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+
+        // Create a new Feedback document
+        const newFeedback = new Feedback({
+          user_id,
+          resourse_id, // received from frontend
+          ratings,
+        });
+
+        // Save the feedback document to the database
+        const savedFeedback = await newFeedback.save();
+
+        // Respond with success
+        res.status(201).json({
+            message: "Feedback added successfully",
+            feedback: savedFeedback,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+});
+
+
+
+// Get percentage of ratings for each resource
+router.get("/ratings/:resource_id", async (req, res) => {
+    try {
+        const { resource_id } = req.params;
+        
+        // Fetch ratings for the resource
+        const feedbacks = await Feedback.find({ resourse_id: resource_id });
+        
+        if (feedbacks.length === 0) {
+            return res.json({ averageRating: 0, percentage: 0 });
+        }
+        
+        // Calculate average rating
+        const totalRatings = feedbacks.reduce((sum, feedback) => sum + feedback.ratings, 0);
+        const averageRating = totalRatings / feedbacks.length;
+        
+        // Convert to percentage (assuming max rating is 5)
+        const percentage = (averageRating / 5) * 100;
+        
+        res.json({ averageRating, percentage });
+    } catch (error) {
+        console.error("Error fetching ratings:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+
 
 export default router;

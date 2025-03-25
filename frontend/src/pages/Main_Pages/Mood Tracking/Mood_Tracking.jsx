@@ -3,7 +3,12 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { Header } from "../../../components/Header";
 import { Footer } from "../../../components/Footer";
+import GlobalStyle from "../../../assets/Prototype/GlobalStyle";
+import { Goal } from "lucide-react";
 
+const user = JSON.parse(localStorage.getItem("userData"));
+console.log(user);
+ 
 const emotionMap = {
   "😊": "happy",
   "😔": "sad",
@@ -18,15 +23,17 @@ const emotionMap = {
 };
 
 export const Mood_Tracking = () => {
-  const user = JSON.parse(localStorage.getItem("userData"));
-
-  try {
-    if (!user) {
-      window.location.href = "/";
-    }
-  } catch (err) {
-    console.error("Error checking user role:", err);
+  
+ 
+  const userData = localStorage.getItem('userData');
+  
+  // Redirect if user is already logged in
+  if (!userData){
+    window.location.href = '/login';
+  } else if (user.role === "admin") {
+    window.location.href = '/admindashboard';
   }
+  
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -72,6 +79,13 @@ export const Mood_Tracking = () => {
       setSelectedEmoji(null); // Reset selected emoji after saving
     } catch (err) {
       setError(err.message);
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: "Failed Save",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       console.error("Error saving mood:", err);
     } finally {
       setLoading(false);
@@ -81,10 +95,10 @@ export const Mood_Tracking = () => {
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
       <Header />
-      <main className="flex-grow mx-20">
+      <main className={`flex-grow mx-20 ${GlobalStyle.fontNunito}`} style={{fontFamily: "Nunito"}}>
         <div className=" flex flex-col items-center p-20">
-          <div className="p-8 rounded-lg shadow-lg w-full max-w-md">
-            <h1 className="text-2xl font-bold mb-6 text-center">
+          <div className="p-8 rounded-lg bg-[#005457] shadow-gray-400 shadow-lg w-full max-w-md">
+            <h1 className="text-2xl text-white font-bold mb-6 text-center">
               Select Your Mood
             </h1>
             <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
@@ -109,11 +123,12 @@ export const Mood_Tracking = () => {
               </p>
               <p className="text-gray-600">{emotionMap[selectedEmoji]}</p>
               <button
-                onClick={handleSave}
-                className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:bg-blue-300"
-                disabled={loading} // Disable save button while loading
+                type="submit"
+                onClickCapture={handleSave}
+                className={`${GlobalStyle.buttonPrimary} w-full`}
+                disabled={loading}
               >
-                {loading ? "Saving..." : "Save Mood"}
+                {loading ? "Saving..." : "Save"}
               </button>
             </div>
           )}

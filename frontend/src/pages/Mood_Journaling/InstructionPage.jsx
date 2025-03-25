@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import GlobalStyle from "../../assets/Prototype/GlobalStyle";
 import { useNavigate } from "react-router-dom";
 import { Header } from "../../components/Header";
@@ -6,7 +6,15 @@ import { Footer } from "../../components/Footer";
 import journalInst from "../../assets/Images/journalInst.jpg";
 
 export const InstructionPage = () => {
+  const [buttonStatus, setButtonStatus] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("userData"));
+    if (user && user.role === "user") {
+      setButtonStatus(true);
+    }
+  }, []); // Empty dependency array means this runs once on mount
 
   const handleButtonClick = () => {
     navigate("/MoodJournaling/MoodJournalingInsert");
@@ -32,7 +40,7 @@ export const InstructionPage = () => {
             resilience, and self-compassion. Whether you're celebrating a joyful
             moment, processing a challenging experience, or simply checking in
             with yourself, journaling provides a safe space to express and
-            explore your emotions. Remember, there’s no right or wrong way to
+            explore your emotions. Remember, there's no right or wrong way to
             feel—this is your journey to self-discovery and emotional balance.
             <br />
             <br />
@@ -42,11 +50,11 @@ export const InstructionPage = () => {
           </p>
           <ul className="list-disc ml-20 space-y-3 pt-3">
             <li>
-              Rate Your Mood: Indicate how you’re feeling overall and select
+              Rate Your Mood: Indicate how you're feeling overall and select
               your mood intensity on a scale of 1 to 10.
             </li>
             <li>
-              Identify Your Emotions: Choose the specific emotions you’re
+              Identify Your Emotions: Choose the specific emotions you're
               experiencing right now.
             </li>
             <li>
@@ -74,12 +82,14 @@ export const InstructionPage = () => {
 
         {/* button */}
         <div className="flex gap-4 pt-16 justify-center">
-          <button
-            className={GlobalStyle.buttonPrimary}
-            onClick={handleButtonClick}
-          >
-            Add Journal
-          </button>
+          {buttonStatus && (
+            <button
+              className={GlobalStyle.buttonPrimary}
+              onClick={handleButtonClick}
+            >
+              Add Journal
+            </button>
+          )}
         </div>
 
         {/* Ad Banner */}
@@ -90,7 +100,6 @@ export const InstructionPage = () => {
             className="w-200 h-120 mx-auto mt-16"
           />
         </div>
-
       </main>
 
       <Footer />

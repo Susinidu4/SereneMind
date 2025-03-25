@@ -6,24 +6,22 @@ import { AddNew } from "../../../pages/Main_Pages/Admin/AddNew";
 import { Insights } from "../../../pages/Main_Pages/Admin/Insights";
 import { Articles } from "../../../pages/Main_Pages/Admin/Articles";
 import { IoPersonCircle } from "react-icons/io5";
+import { Header_3 } from "../../../components/Header_3";
+
 
 export const Admin_Dashboard = () => {
-  const data = JSON.parse(localStorage.getItem("userData"));
-  if (
-    !data?.role === "admin" ||
-    !data?.role === "Admin" ||
-    !data?.role === "ADMIN"
-  ) {
-    window.location.href = "/adminlogin";
-  }
+  const userData = JSON.parse(localStorage.getItem('userData'));
 
-  try {
-    const data = JSON.parse(localStorage.getItem("userData"));
-    console.log("Admin data:", data.role);
-  } catch (e) {
-    console.log("Error in parsing the data:", e);
+  // Redirect if user is already logged in
+  if (userData && userData.role === "user") {
+    window.location.href = '/userprofile';
   }
+  // Redirect if user is already logged in
+  if (!userData) {
+    window.location.href = '/adminlogin';
+  } 
 
+  
   const [activeTab, setActiveTab] = useState("Insights");
 
   const renderContent = () => {

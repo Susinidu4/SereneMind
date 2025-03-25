@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Header } from "../../../components/Header";
 import GlobalStyle from "../../../assets/Prototype/GlobalStyle";
+import { Header_2 } from "../../../components/Header_2";
 
 export const Password_Update = () => {
   const { id } = useParams();
@@ -72,7 +73,7 @@ export const Password_Update = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
-        <Header />
+        <Header_2 />
       <main className="flex justify-center mx-20">
         <div className={`w-full max-w-md bg-[#E9F1F1] shadow-md shadow-black p-8 rounded-lg ${GlobalStyle.fontNunito}`} style={{ fontFamily:"Nunito"}}>
           <h1 className={`text-2xl font-semibold text-center mb-10`}>Password Update</h1>
