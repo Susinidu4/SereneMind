@@ -44,6 +44,24 @@ export const OnlineResource = () => {
             Online Resources
           </h1>
 
+          {/* //should update the code */}
+          {/* Search and Icons */}
+          <div className="flex justify content-right pb-10">
+            {/* Search Bar */}
+            <div className="flex items-center border-1 border-[#007579] hover:border-2 px-4 py-2 rounded-lg shadow-md w-70 h-10">
+              <input
+                type="text"
+                placeholder="Search"
+                className="text-[#007579] outline-none text-sm placeholder-[#007579]"
+              />
+              {/* <button className="text-[#007579] ml-auto">
+                <FaSearch className="" />
+              </button> */}
+            </div>
+          </div>
+
+          
+
           <div className="flex items-center justify-center min-h-screen">
             <div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-20 gap-y-20">
@@ -54,11 +72,17 @@ export const OnlineResource = () => {
                     return (
                       <div
                         key={resourceId}
-                        className='bg-[#C0D5D5] border-none p-10 rounded-[25px] shadow w-[600px] h-[380px]'
+
+                        className="bg-[#C0D5D5] border-none p-10 rounded-[25px] shadow w-[600px] h-[380px]"
+
                       >
-                        <Link to={`/ResourceManagement/ReadResource`}> {/* Link to the detailed page */}
-                        {/* /${resourceId} */}
-                          <h3 className={`${GlobalStyle.headingMedium} underline hover:text-gray-500`}>
+                        <Link to={`/ResourceManagement/ReadResource`}>
+                          {" "}
+                          {/* Link to the detailed page */}
+                          {/* /${resourceId} */}
+                          <h3
+                            className={`${GlobalStyle.headingMedium} underline hover:text-gray-500`}
+                          >
                             Title - Lorem ipsum dolor
                           </h3>
                         </Link>
