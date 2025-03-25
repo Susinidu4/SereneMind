@@ -26,10 +26,10 @@ export const Header = () => {
 
             {/* Icons */}
             <div className="flex items-end justify-end space-x-6 ml-auto ">
-              <a href="#">
+              <a href="#" title="notification">
                 <Bell className="w-6 h-6 text-gray-600 cursor-pointer" />
               </a>
-              <a href="/login">
+              <a href="/login" title="login">
                 <User className="w-6 h-6 text-gray-600 cursor-pointer" />
               </a>
             </div>
@@ -102,13 +102,13 @@ export const Header = () => {
 
             {/* Icons */}
             <div className="flex items-end justify-end space-x-6 ml-auto ">
-              <a href="#">
+              <a href="#" title="notification">
                 <Bell className="w-6 h-6 text-gray-600 cursor-pointer" />
               </a>
-              <a href="/userprofile">
+              <a href="/userprofile" title="dashboard">
                 <User className="w-6 h-6 text-gray-600 cursor-pointer" />
               </a>
-              <a onClick={logout}>
+              <a onClick={logout} title="logout">
                 <MdLogout className="w-6 h-6 text-gray-600 cursor-pointer" />
               </a>
             </div>

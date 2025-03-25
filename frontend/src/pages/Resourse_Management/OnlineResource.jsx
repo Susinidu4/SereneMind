@@ -12,6 +12,7 @@ export const OnlineResource = () => {
   const [resources, setResources] = useState([]);
   const [ratings, setRatings] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
   const itemsPerPage = 6;
 
   useEffect(() => {
@@ -63,7 +64,12 @@ export const OnlineResource = () => {
     );
   };
 
-  const totalPages = Math.ceil(resources.length / itemsPerPage);
+  const filteredResources = resources.filter((resource) =>
+    resource.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    resource.auther_name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filteredResources.length / itemsPerPage);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -79,7 +85,7 @@ export const OnlineResource = () => {
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const displayedResources = resources.slice(startIndex, endIndex);
+  const displayedResources = filteredResources.slice(startIndex, endIndex);
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
@@ -93,10 +99,13 @@ export const OnlineResource = () => {
                 type="text"
                 placeholder="Search"
                 className="text-[#007579] outline-none text-sm placeholder-[#007579]"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
           </div>
-          <div className="flex items-center justify-center min-h-screen">
+          <div className="flex items-center justify-center">
+
             <div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-20 gap-y-20">
                 {displayedResources.map((resource) => (

@@ -34,10 +34,10 @@ export const Header_2 = () => {
 
             {/* Icons */}
             <div className="flex items-end justify-end space-x-6 ml-auto ">
-              <a href="#">
+              <a href="#" title="notification">
                 <Bell className="w-6 h-6 text-gray-600 cursor-pointer" />
               </a>
-              <a href="/login">
+              <a href="/login" title="login">
                 <User className="w-6 h-6 text-gray-600 cursor-pointer" />
               </a>
             </div>
@@ -205,8 +205,8 @@ export const Header_2 = () => {
             </div>
 
             {/* Icons */}
-            <div className="flex items-end justify-end space-x-6 ml-auto" title="notification">
-              <a href="#">
+            <div className="flex items-end justify-end space-x-6 ml-auto" >
+              <a href="#" title="notification">
                 <Bell className="w-6 h-6 text-gray-600 cursor-pointer" />
               </a>
               <a href="/admindashboard" title="dashboard">
