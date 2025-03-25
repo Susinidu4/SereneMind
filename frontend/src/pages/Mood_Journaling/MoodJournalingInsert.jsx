@@ -9,7 +9,9 @@ import Swal from "sweetalert2";
 
 
 export const MoodJournalingInsert = () => {
+
   const user = JSON.parse(localStorage.getItem("userData"))
+
 
   const [selectedValue, setSelectedValue] = useState(null);
   const [remark, setRemark] = useState("");
@@ -84,7 +86,9 @@ export const MoodJournalingInsert = () => {
     event.preventDefault();
 
     const formData = {
+
       user_id: user.id, 
+
       Overall_mood: overallMood,
       mood_intensity: selectedValue,
       emotion: emotions.join(", "), 
