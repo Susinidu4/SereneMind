@@ -6,6 +6,7 @@ import { AddNew } from "../../../pages/Main_Pages/Admin/AddNew";
 import { Insights } from "../../../pages/Main_Pages/Admin/Insights";
 import { Articles } from "../../../pages/Main_Pages/Admin/Articles";
 import { IoPersonCircle } from "react-icons/io5";
+import { Header_3 } from "../../../components/Header_3";
 
 
 export const Admin_Dashboard = () => {

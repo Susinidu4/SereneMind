@@ -12,6 +12,7 @@ import { Header } from "../../../components/Header";
 import { ActivityProgress } from "../../Activity_Tracking/ActivityProgress";
 import Profile_banner from "../../../assets/Images/Profile_banner.png";
 import { jsPDF } from "jspdf";
+import { Header_2 } from "../../../components/Header_2";
 
 export const User_Profile = () => {
   const user_data = JSON.parse(localStorage.getItem("userData"));
@@ -193,7 +194,7 @@ export const User_Profile = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
-      <Header />
+      <Header_2 />
 
       <main className="flex-grow mx-20">
         <div className={GlobalStyle.fontNunito}>
