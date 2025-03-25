@@ -4,10 +4,7 @@ const daySchema = new mongoose.Schema(
   {
       progress: { type: Number, required: true },
       note: { type: String, required: true },
-      dtm: { type: Date, required: true },
-  },
-  {
-      timestamps: true,
+      plane_id : {type: String, required:true}
   }
 );
 
