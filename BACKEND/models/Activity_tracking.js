@@ -5,7 +5,8 @@ const daySchema = new mongoose.Schema(
       progress: { type: Number, required: true },
       note: { type: String, required: true },
       plane_id : {type: String, required:true}
-  }
+  },
+  { _id: false }
 );
 
 const ActivityTrackingSchema = new mongoose.Schema(
