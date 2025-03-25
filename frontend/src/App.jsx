@@ -82,7 +82,7 @@ function App() {
 
         {/* Resource Management */}
         <Route path="/ResourceManagement/OnlineResource" element={<OnlineResource/>} />
-        <Route path="/ResourceManagement/ReadResource" element={<ReadResource/>} />
+        <Route path="/ResourceManagement/ReadResource/:id" element={<ReadResource />} />
 
 
 

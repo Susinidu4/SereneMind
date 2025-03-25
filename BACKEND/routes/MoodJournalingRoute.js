@@ -26,7 +26,7 @@ router.post("/mood-journal-insert", async (req, res) => {
 
         // Create a new MoodJournaling document
         const newEntry = new MoodJournaling({
-            user_id : "UID-6599",
+            user_id : user_id,
             Overall_mood : Overall_mood,
             mood_intensity : mood_intensity,
             emotion : emotion,

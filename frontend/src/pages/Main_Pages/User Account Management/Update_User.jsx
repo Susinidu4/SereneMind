@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Header } from "../../../components/Header";
 import GlobalStyle from "../../../assets/Prototype/GlobalStyle";
+import { Header_2 } from "../../../components/Header_2";
 
 
 
@@ -138,7 +139,7 @@ export const Update_User = () => {
   return (
     <div className="flex flex-col items-center min-h-full bg-[#FFFDF7]" style={{fontFamily:"'Nunito"}}>
 
-      <Header />
+      <Header_2 />
      <main className="flex mx-20 justify-center items-center">
      <div className={`bg-[#E9F1F1] p-8 rounded-lg shadow-lg w-full`}>
         <h2 className="text-2xl font-bold mb-6 text-center">Update User</h2>
@@ -163,7 +164,7 @@ export const Update_User = () => {
               value={userData.name}
               onChange={handleUserChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="bg-[#FFFDF7] w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             />
             {errors.name && (
               <p className="text-red-500 text-sm mt-1">{errors.name}</p>
@@ -177,7 +178,7 @@ export const Update_User = () => {
               value={userData.email}
               onChange={handleUserChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="bg-[#FFFDF7] w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
           <div>
@@ -187,7 +188,7 @@ export const Update_User = () => {
               value={userData.dob}
               onChange={handleUserChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="bg-[#FFFDF7] w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             />
             {errors.dob && (
               <p className="text-red-500 text-sm mt-1">{errors.dob}</p>

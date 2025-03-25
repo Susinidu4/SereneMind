@@ -12,10 +12,20 @@ import { Header } from "../../../components/Header";
 import { ActivityProgress } from "../../Activity_Tracking/ActivityProgress";
 import Profile_banner from "../../../assets/Images/Profile_banner.png";
 import { jsPDF } from "jspdf";
+import { Header_2 } from "../../../components/Header_2";
+import { FaSearch } from "react-icons/fa";
 
 export const User_Profile = () => {
   const user_data = JSON.parse(localStorage.getItem("userData"));
-  const user_id = "UID-6599";
+  const [searchTerm, setSearchTerm] = useState("");
+
+  if (user_data && user_data === "admin") {
+    window.location.href = "/admindashboard";
+  }
+
+  if (!user_data) {
+    window.location.href = "/login";
+  }
   const [activeTab, setActiveTab] = useState("Mood History");
   const [journalHistory, setJournalHistory] = useState([]);
   const [user, setUser] = useState("");
@@ -23,10 +33,6 @@ export const User_Profile = () => {
   const [selectedJournalDetail, setSelectedJournalDetail] = useState(null);
 
   const [selectedJournalIds, setSelectedJournalIds] = useState([]); // Track selected journals
-
-  if (!user_data) {
-    window.location.href = "/";
-  }
 
   // Fetch user data
   useEffect(() => {
@@ -54,7 +60,7 @@ export const User_Profile = () => {
     const fetchJournalHistory = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/mood_journaling/mood-journal/${user_id}`
+          `http://localhost:5000/api/mood_journaling/mood-journal/${user_data.id}`
         );
         if (response.status === 200) {
           setJournalHistory(response.data.data);
@@ -68,7 +74,7 @@ export const User_Profile = () => {
     };
 
     fetchJournalHistory();
-  }, [user_id]);
+  }, [user_data.id]);
 
   // Handle delete
   const handleDelete = async (id) => {
@@ -187,9 +193,23 @@ export const User_Profile = () => {
     doc.save("Journal_Entries.pdf");
   };
 
+  const filteredJournals = journalHistory.filter((item) =>
+    new Date(item.createdAt)
+      .toLocaleString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
-      <Header />
+      <Header_2 />
 
       <main className="flex-grow mx-20">
         <div className={GlobalStyle.fontNunito}>
@@ -280,11 +300,26 @@ export const User_Profile = () => {
                 ) : activeTab === "Journal History" ? (
                   // Journal History Content
                   <div>
-                    {/* download button */}
-                    <div className="flex gap-4 mb-4">
+                    {/* Search and Download Container */}
+                    <div className="flex justify-between items-center w-full mb-4">
+                      {/* Search Bar */}
+                      <div className="flex items-center border border-[#007579] hover:border-2 px-4 py-2 rounded-lg shadow-md w-80 h-10">
+                        <input
+                          type="text"
+                          placeholder="Search by date..."
+                          className="text-[#007579] outline-none text-sm placeholder-[#007579] w-full"
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        <button className="text-[#007579] ml-2">
+                          <FaSearch />
+                        </button>
+                      </div>
+
+                      {/* Download Button */}
                       <button
                         onClick={handleDownloadPDF}
-                        className={`${GlobalStyle.buttonPrimary} flex items-center gap-2`}
+                        className={`${GlobalStyle.buttonPrimary} flex items-center gap-2 px-4 py-2`}
                       >
                         <MdDownload size={20} />
                         <span>Download Journal Entries PDF</span>
@@ -292,7 +327,7 @@ export const User_Profile = () => {
                     </div>
 
                     {/* Journal History Entries */}
-                    {journalHistory.map((item) => (
+                    {filteredJournals.map((item) => (
                       <div
                         key={item._id}
                         className="flex items-center justify-between bg-white p-5 rounded-lg mb-4 shadow-md transition-shadow hover:shadow-lg w-300 mx-auto"
