@@ -4,20 +4,35 @@ import { Header } from "../../components/Header";
 import { Footer } from "../../components/Footer";
 import { IoPersonCircle } from "react-icons/io5";
 import banner1 from "../../assets/Images/banner1.png";
-import { FaStar } from "react-icons/fa";
 import { MdDownload } from "react-icons/md";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 export const ReadResource = () => {
   const { id } = useParams(); // Get resource ID from the URL
   const [resource, setResource] = useState(null); // Store the fetched resource
   const [rating, setRating] = useState(0); // State to store the selected rating
   const [submitted, setSubmitted] = useState(false); // State to track if rating is submitted
+  const [averageRating, setAverageRating] = useState(0);
 
   // Temporary hardcoded userId (Replace this with your dynamic user ID, e.g., from authentication context)
   const [userId, setUserId] = useState("user123"); // Example of hardcoded user ID
+
+useEffect(() => {
+  const fetchAverageRating = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/resource_management/ratings/${id}`
+      );
+      setAverageRating(response.data.averageRating || 0);
+    } catch (error) {
+      console.error("Error fetching average rating:", error);
+    }
+  };
+  fetchAverageRating();
+}, [id]);
 
   // Fetch resource data when the component mounts
   useEffect(() => {
@@ -27,11 +42,13 @@ export const ReadResource = () => {
           `http://localhost:5000/api/resource_management/getResource/${id}`
         );
         setResource(response.data); // Store resource data in state
+        fetchRatings(response.data);
       } catch (error) {
         console.error("Error fetching resource:", error);
       }
     };
-    fetchResource(); // Call the function to fetch the resource data
+    fetchResource();
+    
   }, [id]); // Dependency array ensures the effect runs when `id` changes
 
   // Function to handle rating submission
@@ -75,6 +92,23 @@ export const ReadResource = () => {
       });
     }
   };
+  
+    const renderStars = (rating) => {
+      const fullStars = Math.floor(rating);
+      const halfStar = rating % 1 !== 0;
+      const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+      return (
+        <div className="flex text-yellow-500">
+          {[...Array(fullStars)].map((_, index) => (
+            <FaStar key={index} />
+          ))}
+          {halfStar && <FaStarHalfAlt />}
+          {[...Array(emptyStars)].map((_, index) => (
+            <FaRegStar key={index} />
+          ))}
+        </div>
+      );
+    };
 
   // Show loading state while fetching resource data
   if (!resource) {
@@ -106,16 +140,8 @@ export const ReadResource = () => {
               </div>
 
               {/* Rating Placeholder */}
-              <div className="flex items-center space-x-2">
-                <div className="flex space-x-1">
-                  {[...Array(5)].map((_, i) => (
-                    <FaStar
-                      key={i}
-                      className="h-6 w-6 text-[#FFD700]" // Star icon for placeholder
-                      aria-label={`Rate ${i + 1}`}
-                    />
-                  ))}
-                </div>
+              <div className="flex space-x-1 text-xl">
+              {renderStars(averageRating)}
               </div>
             </div>
 

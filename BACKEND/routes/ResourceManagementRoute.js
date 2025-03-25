@@ -144,4 +144,32 @@ router.post("/add-feedback", async (req, res) => {
 
 
 
+// Get percentage of ratings for each resource
+router.get("/ratings/:resource_id", async (req, res) => {
+    try {
+        const { resource_id } = req.params;
+        
+        // Fetch ratings for the resource
+        const feedbacks = await Feedback.find({ resourse_id: resource_id });
+        
+        if (feedbacks.length === 0) {
+            return res.json({ averageRating: 0, percentage: 0 });
+        }
+        
+        // Calculate average rating
+        const totalRatings = feedbacks.reduce((sum, feedback) => sum + feedback.ratings, 0);
+        const averageRating = totalRatings / feedbacks.length;
+        
+        // Convert to percentage (assuming max rating is 5)
+        const percentage = (averageRating / 5) * 100;
+        
+        res.json({ averageRating, percentage });
+    } catch (error) {
+        console.error("Error fetching ratings:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+
+
 export default router;
