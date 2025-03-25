@@ -72,7 +72,7 @@ router.get("/:user_id", async (req, res) => {
 });
 
 
-//delete data by id
+//delete data by id (use main _id)
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -115,7 +115,7 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-//update data by id
+//update data by id (use main _id)
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
