@@ -31,11 +31,8 @@ import { ReadResource } from './pages/Resourse_Management/ReadResource';
 {/* Oshi */}
 import { ActivityTracking } from './pages/Activity_Tracking/ActivityTracking';
 import { SelfCarePlanes } from './pages/Activity_Tracking/SelfCarePlanes';
-
-
-
 import { ActivityProgress } from './pages/Activity_Tracking/ActivityProgress';
-
+import { ActivityUpdate } from './pages/Activity_Tracking/ActivityUpdate';
 
 
 
@@ -79,6 +76,8 @@ function App() {
         <Route path="/Activity_Tracking/ActivityTracking/plane/:suggesionId/:id" element={<ActivityTracking />} />
         <Route path="/selfcareplanes" element={<SelfCarePlanes />} />
         <Route path="/activityProgress" element={<ActivityProgress />} />
+        <Route path="/activityUpdate" element={<ActivityUpdate />} />
+
 
         {/* Resource Management */}
         <Route path="/ResourceManagement/OnlineResource" element={<OnlineResource/>} />
