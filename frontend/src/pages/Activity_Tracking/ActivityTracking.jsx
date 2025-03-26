@@ -9,7 +9,7 @@ import { IoClose } from "react-icons/io5";
 import axios from "axios";
 
 export const ActivityTracking = () => {
-  const { id} = useParams();
+  const { id, suggestionId } = useParams();
   const user = JSON.parse(localStorage.getItem("userData"));
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
