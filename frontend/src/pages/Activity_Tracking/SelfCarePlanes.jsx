@@ -6,14 +6,9 @@ import GlobalStyle from "../../assets/Prototype/GlobalStyle";
 import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 
 export const SelfCarePlanes = () => {
-  const [planes, setPlanes] = useState([]);
-
-
+  const [suggestions, setSuggesions] = useState([]);
+  const [suggestionIds, setSuggestionIds] = useState([]);
   const user = JSON.parse(localStorage.getItem('userData'));
-  const sessionSuggesions = JSON.parse(localStorage.getItem('storedDate'));
-
-
-
 
   const encouragementMessages = [
     "You're doing amazing—keep it up! ",
@@ -30,7 +25,6 @@ export const SelfCarePlanes = () => {
     "Take a deep breath, you've got this! "
   ];
 
-
   useEffect(() => {
     const fetchPlanes = async () => {
       try {
@@ -39,10 +33,21 @@ export const SelfCarePlanes = () => {
           throw new Error('Failed to fetch planes');
         }
         const data = await response.json();
+        console.log("Planes:", data.data);
+
+        if (Array.isArray(data.data)) {
+          const ids = [];
+          data.data.forEach(item => {
+            if (item._id) {
+              console.log("_id:", item._id);
+              ids.push(item._id);
+            }
+          });
+          setSuggestionIds(ids);
+        }
         
-        // Correct way to access suggestions:
         const suggestions = data.data[0]?.suggestions || [];
-        setPlanes(suggestions);
+        setSuggesions(suggestions);
     
         const enrichedSuggestions = suggestions.map(suggestion => {
           const completed = suggestion.completed ?? Math.floor(Math.random() * 101);
@@ -61,8 +66,6 @@ export const SelfCarePlanes = () => {
     fetchPlanes();
   }, [user.id]);
 
-
-
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
       <Header />
@@ -73,7 +76,7 @@ export const SelfCarePlanes = () => {
 
         <div className="px-4 flex justify-center mt-20">
             <div className='grid-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-20'>
-              {planes.map((suggestion, index) => {
+              {suggestions.map((suggestion, index) => {
                 const data = [
                   { name: 'Completed', value: suggestion.completed },
                   { name: 'Remaining', value: suggestion.remaining },
@@ -83,7 +86,10 @@ export const SelfCarePlanes = () => {
                 const randomMessage = encouragementMessages[Math.floor(Math.random() * encouragementMessages.length)];
 
                 return (
-                  <Link to={`/Activity_Tracking/ActivityTracking/${suggestion.id}`} key={index}>
+                  <Link 
+                    to={`/Activity_Tracking/ActivityTracking/plane/${suggestionIds[index]}/${suggestion.id}`} 
+                    key={index}
+                  >
                     <div className="plane-cards my-6 bg-[#C0D5D5] w-[600px] h-[400px] p-4 flex flex-col items-center shadow-lg rounded-xl">
                       <h2 className="text-[20px] font-semibold text-center mb-4">{suggestion.title}</h2>
                       <PieChart width={200} height={200}>
@@ -113,7 +119,6 @@ export const SelfCarePlanes = () => {
                 );
               })}
             </div>
-          
         </div>
       </main>
 
