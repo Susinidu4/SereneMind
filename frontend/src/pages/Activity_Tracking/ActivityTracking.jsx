@@ -7,12 +7,16 @@ import bg_image1 from "../../assets/Images/tracking.png";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import axios from "axios";
+import { ActivityUpdate } from "./ActivityUpdate"; // Adjust path as needed
+import { icons } from "lucide-react";
+import Swal from "sweetalert2";
 
 export const ActivityTracking = () => {
   const { id, suggestionId } = useParams();
   const user = JSON.parse(localStorage.getItem("userData"));
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [selectedDay, setSelectedDay] = useState(null);
   const [note, setNote] = useState("");
   const [actualTime, setActualTime] = useState("");
@@ -36,8 +40,9 @@ export const ActivityTracking = () => {
 
     fetchPlane();
 
-    // Load completed days from localStorage
-    const savedCompletedDays = localStorage.getItem(`completedDays-${user.id}-${id}`);
+    const savedCompletedDays = localStorage.getItem(
+      `completedDays-${user.id}-${id}`
+    );
     if (savedCompletedDays) {
       setCompletedDays(JSON.parse(savedCompletedDays));
     }
@@ -74,10 +79,12 @@ export const ActivityTracking = () => {
       );
 
       if (response.status === 201) {
-        // Update completed days state
         const updatedCompletedDays = { ...completedDays, [selectedDay]: true };
         setCompletedDays(updatedCompletedDays);
-        localStorage.setItem(`completedDays-${user.id}-${id}`, JSON.stringify(updatedCompletedDays));
+        localStorage.setItem(
+          `completedDays-${user.id}-${id}`,
+          JSON.stringify(updatedCompletedDays)
+        );
         closeModal();
       }
     } catch (error) {
@@ -87,43 +94,56 @@ export const ActivityTracking = () => {
     }
   };
 
-  const handleEdit = async () => {
-    // Edit functionality: open modal to edit the existing log
+  const handleEdit = (day) => {
+    setSelectedDay(day);
+    setShowEditModal(true);
+  };
+
+  const handleUpdate = () => {
+    // You might want to add logic here to refresh data
+    setShowEditModal(false);
+  };
+  const handleDelete = async (day) => {
     try {
-      const response = await axios.put(
-        `http://localhost:5000/api/activity_tracking/users/${user.id}/planes/${id}`,
-        {
-          Day: [
-            {
-              progress: actualTime,
-              note: note,
-            },
-          ],
-        }
-      );
+      // Show confirmation dialog
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      });
 
-      if (response.status === 201) {
-        // Update completed days state
-        const updatedCompletedDays = { ...completedDays, [selectedDay]: true };
-        setCompletedDays(updatedCompletedDays);
-        localStorage.setItem(`completedDays-${user.id}-${id}`, JSON.stringify(updatedCompletedDays));
-        closeModal();
+      if (result.isConfirmed) {
+        // Make DELETE request to your API
+        const response = await axios.delete(
+          `http://localhost:5000/api/activity_tracking/users/${user.id}/planes/${id}`
+        );
+
+        if (response.status === 200) {
+          // Update local state
+          const updatedCompletedDays = { ...completedDays };
+          delete updatedCompletedDays[day];
+          setCompletedDays(updatedCompletedDays);
+          localStorage.setItem(
+            `completedDays-${user.id}-${id}`,
+            JSON.stringify(updatedCompletedDays)
+          );
+
+          // Show success message
+          Swal.fire("Deleted!", "Your activity has been deleted.", "success");
+        }
       }
     } catch (error) {
-      console.error("Error saving activity log:", error);
-    } finally {
-      setIsSubmitting(false);
+      console.error("Error deleting activity:", error);
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to delete mood.",
+        icon: "error",
+      });
     }
-    openModal(selectedDay);
-  };
-
-  const handleDelete = () => {
-    // Handle deleting the log for the selected day
-    const updatedCompletedDays = { ...completedDays };
-    delete updatedCompletedDays[selectedDay];
-    setCompletedDays(updatedCompletedDays);
-    localStorage.setItem(`completedDays-${user.id}-${id}`, JSON.stringify(updatedCompletedDays));
-    closeModal();
   };
 
   return (
@@ -137,7 +157,9 @@ export const ActivityTracking = () => {
         </div>
 
         <main className="flex-grow flex justify-center items-center">
-          <div className={`${GlobalStyle.pageContainer} h-[820px] px-10 py-5 mx-auto`}>
+          <div
+            className={`${GlobalStyle.pageContainer} h-[820px] px-10 py-5 mx-auto`}
+          >
             <div className="flex justify-between items-center pt-10">
               <p className={GlobalStyle.headingMedium}>{plane.title}</p>
               <p className={GlobalStyle.headingMedium}>Duration: 1 Week</p>
@@ -159,16 +181,15 @@ export const ActivityTracking = () => {
                   onClick={() => openModal(index + 1)}
                 >
                   <span>Day {index + 1}</span>
-                  {completedDays[index + 1] ? ( // Show icons only if completed
+                  {completedDays[index + 1] ? (
                     <div className="flex gap-3">
                       <button
                         className="p-2 rounded-full text-[#007579] hover:text-[#005457] hover:bg-[#AEDBD8] transition"
                         title="Edit"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleEdit();
+                          handleEdit(index + 1);
                         }}
-                        disabled={completedDays[index + 1] ? false : true}
                       >
                         <FaEdit size={15} />
                       </button>
@@ -177,9 +198,8 @@ export const ActivityTracking = () => {
                         title="Delete"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleDelete();
+                          handleDelete(index + 1);
                         }}
-                        disabled={completedDays[index + 1] ? false : true}
                       >
                         <FaTrash size={15} />
                       </button>
@@ -208,7 +228,7 @@ export const ActivityTracking = () => {
                 onClick={closeModal}
               />
             </div>
-            
+
             <h2 className="text-lg font-bold mb-4">
               Log Activity for Day {selectedDay}
             </h2>
@@ -221,7 +241,7 @@ export const ActivityTracking = () => {
               placeholder="Enter activity details..."
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              disabled={completedDays[selectedDay]} // Disable textarea if day is completed
+              disabled={completedDays[selectedDay]}
             ></textarea>
 
             <p className={GlobalStyle.headingMedium}>
@@ -234,7 +254,7 @@ export const ActivityTracking = () => {
               placeholder="Enter actual time spent"
               value={actualTime}
               onChange={(e) => setActualTime(e.target.value)}
-              disabled={completedDays[selectedDay]} // Disable input if day is completed
+              disabled={completedDays[selectedDay]}
             />
 
             <div className="flex justify-end space-x-3 mt-4">
@@ -242,18 +262,37 @@ export const ActivityTracking = () => {
               <br />
               <button
                 className={`${GlobalStyle.buttonPrimary} ${
-                  !note || !actualTime || isSubmitting || completedDays[selectedDay]
+                  !note ||
+                  !actualTime ||
+                  isSubmitting ||
+                  completedDays[selectedDay]
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-green-500 hover:bg-green-600"
                 }`}
                 onClick={handleSave}
-                disabled={!note || !actualTime || isSubmitting || completedDays[selectedDay]}
+                disabled={
+                  !note ||
+                  !actualTime ||
+                  isSubmitting ||
+                  completedDays[selectedDay]
+                }
               >
                 {isSubmitting ? "Submitting..." : "Submit"}
               </button>
             </div>
           </div>
         </div>
+      )}
+
+      {showEditModal && (
+        <ActivityUpdate
+          selectedDay={selectedDay}
+          plane={plane}
+          user={user}
+          id={id}
+          onClose={() => setShowEditModal(false)}
+          onUpdate={handleUpdate}
+        />
       )}
     </div>
   );
