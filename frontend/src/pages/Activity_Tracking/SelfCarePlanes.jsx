@@ -7,14 +7,13 @@ import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 
 export const SelfCarePlanes = () => {
   const [planes, setPlanes] = useState([]);
-  const [randomSuggestions, setRandomSuggestions] = useState([]);
-  const [isGenerated, setIsGenerated] = useState(false);
+
 
   const user = JSON.parse(localStorage.getItem('userData'));
   const sessionSuggesions = JSON.parse(localStorage.getItem('storedDate'));
-  const buttonStatus = JSON.parse(localStorage.getItem('isGenerated'));
 
-  const currentDate = new Date();
+
+
 
   const encouragementMessages = [
     "You're doing amazing—keep it up! ",
@@ -31,76 +30,38 @@ export const SelfCarePlanes = () => {
     "Take a deep breath, you've got this! "
   ];
 
+
   useEffect(() => {
-    if (sessionSuggesions) {
-      const dateData = sessionSuggesions;
-      const cTime = new Date();
-      const eTime = new Date(dateData.expires);
-
-      // Check if the data has expired
-      if (cTime > eTime) {
-        console.log('The stored date has expired.');
-        localStorage.removeItem('storedDate'); // Remove expired data
-        localStorage.removeItem('isGenerated');
-      } else {
-        console.log('Stored date:', new Date(dateData.date));
+    const fetchPlanes = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/suggestions/user/${user.id}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch planes');
+        }
+        const data = await response.json();
+        
+        // Correct way to access suggestions:
+        const suggestions = data.data[0]?.suggestions || [];
+        setPlanes(suggestions);
+    
+        const enrichedSuggestions = suggestions.map(suggestion => {
+          const completed = suggestion.completed ?? Math.floor(Math.random() * 101);
+          return {
+            ...suggestion,
+            completed,
+            remaining: 100 - completed,
+          };
+        });
+    
+      } catch (error) {
+        console.error('Error fetching planes:', error);
       }
-    } else {
-      console.log('No date found in session storage.');
-    }
-  }, [sessionSuggesions]);
+    };
 
-  const fetchPlanes = async () => {
-    // Set expiration to 1 week from now
-    const expirationDate = new Date();
-    expirationDate.setDate(expirationDate.getDate() + 7); // 7 days = 1 week
+    fetchPlanes();
+  }, [user.id]);
 
-    try {
-      const response = await fetch(`http://localhost:5000/mood/analyze/${user.id}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch planes');
-      }
-      const data = await response.json();
-      console.log('API Response:', data);
 
-      const enrichedSuggestions = data.suggestions.map(suggestion => {
-        const completed = suggestion.completed ?? Math.floor(Math.random() * 101);
-        return {
-          ...suggestion,
-          completed,
-          remaining: 100 - completed,
-        };
-      });
-
-      const shuffledSuggestions = shuffleArray(enrichedSuggestions).slice(0, 6);
-      setRandomSuggestions(shuffledSuggestions);
-
-      const dateData = {
-        suggestions: shuffledSuggestions,
-        date: currentDate.toISOString(), // Store the date in ISO format
-        expires: expirationDate.toISOString(), // Store the expiration date
-      };
-
-      // Convert the object to a string and store it in localStorage
-      localStorage.setItem('storedDate', JSON.stringify(dateData));
-      setIsGenerated(true);
-    } catch (error) {
-      console.error('Error fetching planes:', error);
-    }
-  };
-
-  const shuffleArray = (array) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  };
-
-  const handleGenerateClick = () => {
-    fetchPlanes(); // Fetch planes when the button is clicked
-    localStorage.setItem('isGenerated', 'true');
-  };
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
@@ -108,21 +69,11 @@ export const SelfCarePlanes = () => {
       <main className="flex-grow mx-20">
         <div className={GlobalStyle.fontNunito}>
           <h1 className={`${GlobalStyle.headingLarge}`}>Self Care Activities</h1>
-          {/* Uncomment below if you want a button to trigger the generation */}
-           {!buttonStatus && (
-            <button
-              className='bg-[#A4CDA7] px-4 py-2 rounded-md hover:bg-[#8cb48f] transition-colors'
-              onClick={handleGenerateClick}
-            >
-              Generate Plans
-            </button>
-          )} 
         </div>
 
         <div className="px-4 flex justify-center mt-20">
-          {sessionSuggesions && sessionSuggesions.suggestions && sessionSuggesions.suggestions.length > 0 ? (
             <div className='grid-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-20'>
-              {sessionSuggesions.suggestions.map((suggestion, index) => {
+              {planes.map((suggestion, index) => {
                 const data = [
                   { name: 'Completed', value: suggestion.completed },
                   { name: 'Remaining', value: suggestion.remaining },
@@ -162,11 +113,7 @@ export const SelfCarePlanes = () => {
                 );
               })}
             </div>
-          ) : (
-            <div className="flex justify-center items-center h-64">
-              <p className="text-2xl text-gray-600">Click the Generate button to View Your Plans</p>
-            </div>
-          )}
+          
         </div>
       </main>
 
