@@ -73,62 +73,13 @@ router.get("/:user_id", async (req, res) => {
 
 
 // Update a specific day's progress
-router.put("/:user_id/day/:day_id", async (req, res) => {
-  try {
-    const { user_id, day_id } = req.params;
-    const { progress, note, plane_id } = req.body;
 
-    const activity = await ActivityTracking.findOne({ user_id });
 
-    if (!activity) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const dayToUpdate = activity.Day.id(day_id);
-    if (!dayToUpdate) {
-      return res.status(404).json({ message: "Day entry not found" });
-    }
-
-    // Update fields
-    if (progress !== undefined) dayToUpdate.progress = progress;
-    if (note !== undefined) dayToUpdate.note = note;
-    if (plane_id !== undefined) dayToUpdate.plane_id = plane_id;
-
-    await activity.save();
-    res.status(200).json({ message: "Day progress updated successfully", activity });
-  } catch (error) {
-    console.error("Error updating activity:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
+ 
 
 
 // Delete an specific day's progress
-router.delete("/:user_id/day/:day_id", async (req, res) => {
-  try {
-    const { user_id, day_id } = req.params;
 
-    const activity = await ActivityTracking.findOne({ user_id });
-
-    if (!activity) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const dayToDelete = activity.Day.id(day_id);
-    if (!dayToDelete) {
-      return res.status(404).json({ message: "Day entry not found" });
-    }
-
-    // Remove the day entry
-    activity.Day.id(day_id).remove();
-    await activity.save();
-
-    res.status(200).json({ message: "Day progress deleted successfully", activity });
-  } catch (error) {
-    console.error("Error deleting activity:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
 
 
 export default router;
