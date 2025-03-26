@@ -9,6 +9,10 @@ import Swal from "sweetalert2";
 
 
 export const MoodJournalingInsert = () => {
+
+  const user = JSON.parse(localStorage.getItem("userData"))
+
+
   const [selectedValue, setSelectedValue] = useState(null);
   const [remark, setRemark] = useState("");
   const [remark2, setRemark2] = useState("");
@@ -18,6 +22,7 @@ export const MoodJournalingInsert = () => {
   const [overallMood, setOverallMood] = useState("");
   const [emotions, setEmotions] = useState([]);
 
+// Helper function to get current date in YYYY-MM-DD format
   const getCurrentDate = () => {
     const now = new Date();
     const year = now.getFullYear();
@@ -26,6 +31,7 @@ export const MoodJournalingInsert = () => {
     return `${year}-${month}-${day}`;
   };
 
+  // Helper function to get current time in 12-hour format
   const getCurrentTime = () => {
     const now = new Date();
     let hours = now.getHours();
@@ -39,6 +45,7 @@ export const MoodJournalingInsert = () => {
     return `${String(hours).padStart(2, "0")}:${minutes} ${period}`;
   };
 
+  // Handle image uploads
   const handleImageChange = (e) => {
     if (e.target.files) {
       const newImages = Array.from(e.target.files);
@@ -46,14 +53,17 @@ export const MoodJournalingInsert = () => {
     }
   };
 
+  // Handle mood intensity selection
   const handleMoodIntensityChange = (event) => {
     setSelectedValue(event.target.value);
   };
 
+  // Handle overall mood selection
   const handleOverallMoodChange = (event) => {
     setOverallMood(event.target.value);
   };
 
+   // Handle emotion checkbox changes
   const handleEmotionChange = (event) => {
     const { value, checked } = event.target;
     if (checked) {
@@ -63,6 +73,7 @@ export const MoodJournalingInsert = () => {
     }
   };
 
+  // Remove an uploaded image
   const handleRemoveImage = (indexToRemove) => {
     const updatedImages = selectedImages.filter(
       (_, index) => index !== indexToRemove
@@ -70,32 +81,33 @@ export const MoodJournalingInsert = () => {
     setSelectedImages(updatedImages);
   };
 
-  const user_id = "UID-6599";
-
+  // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     const formData = {
-      user_id: user_id, // Hardcoded for now, replace with dynamic user ID if needed
+
+      user_id: user.id, 
+
       Overall_mood: overallMood,
       mood_intensity: selectedValue,
-      emotion: emotions.join(", "), // Convert array to comma-separated string
+      emotion: emotions.join(", "), 
       mood_trigger: remark,
       cope_mood: remark2,
       notes: remark3,
       reflection: remark4,
-      image: selectedImages.map((image) => URL.createObjectURL(image)), // Convert images to URLs
+      image: selectedImages.map((image) => URL.createObjectURL(image)), 
     };
 
-    console.log("Form data:", formData); // Log the form data
+    console.log("Form data:", formData); 
 
     try {
       // Submit form data to the backend
       const response = await axios.post(
-        "http://localhost:5000/api/mood_journaling/mood-journal-insert", // Correct backend URL
+        "http://localhost:5000/api/mood_journaling/mood-journal-insert", 
         formData // Ensure formData contains all necessary fields
       );
-      console.log("Response:", response); // Log the response from the server
+      console.log("Response:", response); 
       Swal.fire({
         icon: "success",
         title: "Mood Journal Entry Added!",
@@ -104,24 +116,24 @@ export const MoodJournalingInsert = () => {
       });
 
       // Reset form fields after successful submission
-      setOverallMood(""); // Reset overall mood state
-      setSelectedValue(null); // Reset mood intensity state
-      setEmotions([]); // Reset emotions state (empty array)
-      setRemark(""); // Reset "what triggered your mood" field
-      setRemark2(""); // Reset "how did you cope" field
-      setRemark3(""); // Reset "notes" field
-      setRemark4(""); // Reset "reflection" field
-      setSelectedImages([]); // Reset selected images
+      setOverallMood(""); 
+      setSelectedValue(null); 
+      setEmotions([]); 
+      setRemark(""); 
+      setRemark2(""); 
+      setRemark3(""); 
+      setRemark4(""); 
+      setSelectedImages([]); 
     } catch (error) {
       // Handle any errors that occur during submission
-      console.error("Error submitting form:", error); // Log the error
-      // Show error alert
+      console.error("Error submitting form:", error); 
+      
     Swal.fire({
       icon: "error",
       title: "Submission Failed",
       text: "Failed to submit mood journal entry. Please try again.",
       confirmButtonColor: "#d33",
-    });// Alert user
+    });
     }
   };
 
