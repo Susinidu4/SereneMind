@@ -53,7 +53,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-
 // Get all activities for a user
 router.get("/:user_id", async (req, res) => {
   try {
@@ -68,6 +67,63 @@ router.get("/:user_id", async (req, res) => {
   } catch (error) {
     console.error("Error fetching user activities:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Get data by user_id and plane_id
+router.get('/users/:user_id/planes/:plane_id', async (req, res) => {
+  try {
+    const { user_id, plane_id } = req.params;
+
+    // Find all documents for the user that contain days with the specified plane_id
+    const activities = await ActivityTracking.aggregate([
+      {
+        $match: {
+          user_id: user_id,
+          "Day.plane_id": plane_id
+        }
+      },
+      {
+        $unwind: "$Day" // Split each day into separate documents
+      },
+      {
+        $match: {
+          "Day.plane_id": plane_id // Filter to only keep matching plane_id entries
+        }
+      },
+      {
+        $group: {
+          _id: "$_id", // Group back by original document ID
+          user_id: { $first: "$user_id" },
+          createdAt: { $first: "$createdAt" },
+          updatedAt: { $first: "$updatedAt" },
+          Days: { 
+            $push: "$Day" // Rebuild array with only matching days
+          }
+        }
+      }
+    ]);
+
+    if (!activities || activities.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No activities found for this user and plane combination"
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      count: activities.length,
+      data: activities
+    });
+
+  } catch (error) {
+    console.error("Error fetching activities:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message
+    });
   }
 });
 
