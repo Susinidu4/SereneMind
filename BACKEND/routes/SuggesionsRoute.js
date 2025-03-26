@@ -142,4 +142,30 @@ router.get('/all/suggestions', async (req, res) => {
     });
   }
 });
+
+//delete sugeesion by id
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedSuggestion = await Suggesion.findByIdAndDelete(id);
+    if (!deletedSuggestion) {
+      return res.status(404).json({
+        success: false,
+        message: 'Suggestion not found'
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: 'Suggestion deleted successfully',
+      data: deletedSuggestion
+    });
+  } catch (error) {
+    console.error('Error deleting suggestion:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: error.message
+    });
+  }
+});
 export default router;

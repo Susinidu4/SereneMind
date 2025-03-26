@@ -115,6 +115,52 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+
+//delete data using user id and plane id
+router.delete('/users/:user_id/planes/:plane_id', async (req, res) => {
+  try {
+    const { user_id, plane_id } = req.params;
+
+    // Validate parameters
+    if (!user_id || !plane_id) {
+      return res.status(400).json({ 
+        message: 'Both user_id and plane_id are required' 
+      });
+    }
+
+    // Find the document that contains both the user_id and plane_id
+    const document = await ActivityTracking.findOne({
+      user_id,
+      'Day.plane_id': plane_id
+    });
+
+    if (!document) {
+      return res.status(404).json({ 
+        message: 'No matching document found with the specified user_id and plane_id' 
+      });
+    }
+
+    // Delete the entire document
+    const result = await ActivityTracking.deleteOne({ _id: document._id });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ 
+        message: 'Document could not be deleted' 
+      });
+    }
+
+    res.status(200).json({ 
+      message: 'Document deleted successfully',
+      deletedCount: result.deletedCount
+    });
+  } catch (error) {
+    console.error('Error deleting document:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
+
 //update data by id (use main _id)
 router.put('/:id', async (req, res) => {
   try {
@@ -161,6 +207,51 @@ router.put('/:id', async (req, res) => {
     });
   }
 });
+
+
+//update data by user id and plane id
+router.put('/users/:user_id/planes/:plane_id', async (req, res) => {
+  try {
+    const { user_id, plane_id } = req.params;
+    const { progress, note } = req.body;
+
+    // Validate all required fields for replacement
+    if (progress === undefined || note === undefined) {
+      return res.status(400).json({ 
+        message: 'Both progress and note are required for full replacement' 
+      });
+    }
+
+    const result = await ActivityTracking.updateOne(
+      { 
+        user_id,
+        'Day.plane_id': plane_id 
+      },
+      { 
+        $set: { 
+          'Day.$.progress': progress,
+          'Day.$.note': note
+        } 
+      }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ 
+        message: 'User or day entry not found' 
+      });
+    }
+
+    res.status(200).json({ 
+      message: 'Day entry fully replaced',
+      updated: result.modifiedCount > 0
+    });
+  } catch (error) {
+    console.error('Error replacing day entry:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
 
 export default router;
 
