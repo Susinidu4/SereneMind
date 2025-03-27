@@ -7,7 +7,6 @@ import { SuggesionPopup } from "./SuggesionPopup";
 import { Header_2 } from "../../../components/Header_2";
 
 const user = JSON.parse(localStorage.getItem("userData"));
-console.log(user);
 
 const emotionMap = {
   "😊": "happy",
@@ -20,18 +19,31 @@ const emotionMap = {
   "🤢": "feeling sick",
   "🥳": "feeling excited",
   "😕": "feeling confused",
-};
+}
 
 export const Mood_Tracking = () => {
-  const userData = localStorage.getItem('userData');
+  const userData = JSON.parse(localStorage.getItem('userData'));
+  const buttonData = JSON.parse(localStorage.getItem('buttonStatus'))
+
+  // Get current date
+  const currentDate = (new Date()).toISOString().split('T')[0];
+  const expireDate =  buttonData.expireDate.split('T')[0];
+  console.log(expireDate)
   
-  // Redirect if user is already logged in
-  if (!userData){
+  // Remove buttonStatus if expired
+  if (buttonData.expireDate && currentDate >= expireDate) {
+    localStorage.removeItem('buttonStatus');
+  }
+
+  // Redirect if user is not logged in or is admin
+  if (!userData) {
     window.location.href = '/login';
   } else if (user.role === "admin") {
     window.location.href = '/admindashboard';
   }
   
+ 
+
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -50,6 +62,7 @@ export const Mood_Tracking = () => {
 
     setLoading(true);
     setError(null);
+
 
     try {
       const response = await fetch("http://localhost:5000/mood/", {
@@ -95,16 +108,29 @@ export const Mood_Tracking = () => {
   };
 
   const handleGenerate = async () => {
+  
     setLoading(true);
     setError(null);
     
     try {
       const response = await fetch(`http://localhost:5000/mood/analyze/${user.id}`);
+
+      if(currentDate < expireDate) {
+        Swal.fire({
+          position: "center",
+          icon: "info",
+          title: "You have already generated suggestions for today",
+          showConfirmButton: false,
+          timer: 1500,
+        })
+
+        return
+      }
       
       if (!response.ok) {
         throw new Error("Failed to get mood analysis");
       }
-
+  
       const data = await response.json();
       setSuggestion(data);
       setShowSuggestionPopup(true);
@@ -128,7 +154,7 @@ export const Mood_Tracking = () => {
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
       <Header_2 />
       <main className={`flex-grow mx-20 ${GlobalStyle.fontNunito}`} style={{fontFamily: "Nunito"}}>
-        <div className=" flex flex-col items-center p-20">
+        <div className="flex flex-col items-center p-20">
           <div className="py-10">
             <button 
               onClick={handleGenerate}
@@ -165,7 +191,7 @@ export const Mood_Tracking = () => {
               <p className="text-gray-600">{emotionMap[selectedEmoji]}</p>
               <button
                 type="submit"
-                onClickCapture={handleSave}
+                onClick={handleSave}
                 className={`${GlobalStyle.buttonPrimary} w-full`}
                 disabled={loading}
               >

@@ -16,6 +16,7 @@ export const SuggesionPopup = ({ suggestions, onClose }) => {
     return shuffled.slice(0, count);
   };
 
+
   // Initialize random suggestions when component mounts or suggestions prop changes
   useEffect(() => {
     if (suggestions?.suggestions) {
@@ -65,6 +66,16 @@ export const SuggesionPopup = ({ suggestions, onClose }) => {
         text: "Login successfully!",
         icon: "success",
       });
+       //set expire date for 1 week
+            const expirationDate = new Date();
+            expirationDate.setDate(expirationDate.getDate() + 7); // 7 days = 1 week
+      
+            const buttonStatus = 
+              {status: false,
+              expireDate: expirationDate.toISOString(),};
+          
+            localStorage.setItem('buttonStatus', JSON.stringify(buttonStatus));
+            window.location.reload();
     } catch (error) {
       console.error("Error submitting form:", error);
       const errorMessage =
