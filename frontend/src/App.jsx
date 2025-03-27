@@ -27,6 +27,7 @@ import { EditJournal } from './pages/Mood_Journaling/EditJournal';
 
 import { OnlineResource } from './pages/Resourse_Management/OnlineResource';
 import { ReadResource } from './pages/Resourse_Management/ReadResource';
+import { DisplayResourceAdmin } from './pages/Resourse_Management/DisplayResourceAdmin';
 
 {/* Oshi */}
 import { ActivityTracking } from './pages/Activity_Tracking/ActivityTracking';
@@ -83,6 +84,7 @@ function App() {
         {/* Resource Management */}
         <Route path="/ResourceManagement/OnlineResource" element={<OnlineResource/>} />
         <Route path="/ResourceManagement/ReadResource/:id" element={<ReadResource />} />
+        <Route path="/ResourceManagement/DisplayResourceAdmin/:id" element={<DisplayResourceAdmin />} />
 
 
 
