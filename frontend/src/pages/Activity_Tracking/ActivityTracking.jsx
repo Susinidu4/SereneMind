@@ -9,7 +9,7 @@ import { IoClose } from "react-icons/io5";
 import axios from "axios";
 
 export const ActivityTracking = () => {
-  const { id } = useParams();
+  const { id, suggestionId } = useParams();
   const user = JSON.parse(localStorage.getItem("userData"));
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
@@ -87,8 +87,33 @@ export const ActivityTracking = () => {
     }
   };
 
-  const handleEdit = () => {
+  const handleEdit = async () => {
     // Edit functionality: open modal to edit the existing log
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/activity_tracking/users/${user.id}/planes/${id}`,
+        {
+          Day: [
+            {
+              progress: actualTime,
+              note: note,
+            },
+          ],
+        }
+      );
+
+      if (response.status === 201) {
+        // Update completed days state
+        const updatedCompletedDays = { ...completedDays, [selectedDay]: true };
+        setCompletedDays(updatedCompletedDays);
+        localStorage.setItem(`completedDays-${user.id}-${id}`, JSON.stringify(updatedCompletedDays));
+        closeModal();
+      }
+    } catch (error) {
+      console.error("Error saving activity log:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
     openModal(selectedDay);
   };
 
