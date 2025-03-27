@@ -31,9 +31,7 @@ import { ReadResource } from './pages/Resourse_Management/ReadResource';
 {/* Oshi */}
 import { ActivityTracking } from './pages/Activity_Tracking/ActivityTracking';
 import { SelfCarePlanes } from './pages/Activity_Tracking/SelfCarePlanes';
-
-
-
+import{ ActivityUpdate} from './pages/Activity_Tracking/ActivityUpdate'
 import { ActivityProgress } from './pages/Activity_Tracking/ActivityProgress';
 
 
