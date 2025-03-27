@@ -11,6 +11,7 @@ import { EditJournal } from "../../Mood_Journaling/EditJournal";
 import { Header } from "../../../components/Header";
 import { ActivityProgress } from "../../Activity_Tracking/ActivityProgress";
 import Profile_banner from "../../../assets/Images/Profile_banner.png";
+import profile from "../../../assets/Images/profile.png";
 import { jsPDF } from "jspdf";
 
 export const User_Profile = () => {
@@ -194,20 +195,24 @@ export const User_Profile = () => {
       <main className="flex-grow mx-20">
         <div className={GlobalStyle.fontNunito}>
           {/* Cover Photo */}
-          <div className="relative h-60 bg-green-600 rounded-t-3xl overflow-hidden">
+          <div className="relative h-90 bg-green-600 rounded-t-3xl overflow-hidden">
             <img
               src={user?.coverPhoto || Profile_banner}
               alt="Cover"
-              className="w-full h-full object-cover"
+              className="w-full h-100px object-cover"
             />
           </div>
 
           {/* Profile Section */}
           <div className="absolute flex items-center p-6 -mt-20">
             <div>
-              <IoPersonCircle
-                className="text-gray-600"
-                style={{ width: "200px", height: "200px" }}
+              <img
+                src={user?.profilePhoto || profile}
+                alt="Profile"
+                className="w-50 h-50 object-cover rounded-full"
+              // <IoPersonCircle
+              //   className="text-gray-600"
+              //   style={{ width: "200px", height: "200px" }}
               />
             </div>
           </div>
