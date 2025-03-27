@@ -183,7 +183,7 @@ export const ActivityTracking = () => {
                 onClick={closeModal}
               />
             </div>
-
+            
             <h2 className="text-lg font-bold mb-4">
               Log Activity for Day {selectedDay}
             </h2>

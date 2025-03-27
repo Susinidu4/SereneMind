@@ -79,6 +79,8 @@ function App() {
         <Route path="/Activity_Tracking/ActivityTracking/:id" element={<ActivityTracking />} />
         <Route path="/selfcareplanes" element={<SelfCarePlanes />} />
         <Route path="/activityProgress" element={<ActivityProgress />} />
+        <Route path="/activityUpdate" element={<ActivityUpdate />} />
+
 
         {/* Resource Management */}
         <Route path="/ResourceManagement/OnlineResource" element={<OnlineResource/>} />
