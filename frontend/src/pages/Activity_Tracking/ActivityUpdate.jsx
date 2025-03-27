@@ -3,18 +3,23 @@ import { IoClose } from "react-icons/io5";
 import axios from "axios";
 import GlobalStyle from "../../assets/Prototype/GlobalStyle";
 
-const EditActivityForm = ({ selectedDay, plane, user, id, onClose, onUpdate }) => {
+export const ActivityUpdate = ({ selectedDay, plane = {}, user, id, onClose, onUpdate }) => {
   const [note, setNote] = useState("");
   const [actualTime, setActualTime] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    // Fetch existing activity data if needed
+    // Reset input fields when selectedDay changes
     setNote("");
     setActualTime("");
   }, [selectedDay]);
 
   const handleSave = async () => {
+    if (!user?.id || !id) {
+      console.error("User ID or Plane ID is missing.");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const response = await axios.post(
@@ -31,8 +36,8 @@ const EditActivityForm = ({ selectedDay, plane, user, id, onClose, onUpdate }) =
       );
 
       if (response.status === 201) {
-        onUpdate(); // Callback to update UI
-        onClose(); // Close modal after saving
+        onUpdate(); // Callback to refresh UI
+        onClose(); // Close modal
       }
     } catch (error) {
       console.error("Error saving activity log:", error);
@@ -47,10 +52,12 @@ const EditActivityForm = ({ selectedDay, plane, user, id, onClose, onUpdate }) =
         <div className="absolute top-2 right-2">
           <IoClose className="text-gray-500 cursor-pointer" size={24} onClick={onClose} />
         </div>
-        
+
         <h2 className="text-lg font-bold mb-4">Edit Activity for Day {selectedDay}</h2>
-        <h2>Assigned Time: {plane.time_per_day} per day</h2>
         
+        {/* Prevents accessing 'time_per_day' if 'plane' is undefined */}
+        <h2>Assigned Time: {plane?.time_per_day ?? "N/A"} per day</h2>
+
         <p className={GlobalStyle.headingMedium}>Notes</p>
         <textarea
           className="w-full border p-2 mt-2 rounded-md bg-white"
@@ -70,7 +77,9 @@ const EditActivityForm = ({ selectedDay, plane, user, id, onClose, onUpdate }) =
 
         <div className="flex justify-end space-x-3 mt-4">
           <button
-            className={`${GlobalStyle.buttonPrimary} ${!note || !actualTime || isSubmitting ? "bg-gray-400 cursor-not-allowed" : "bg-green-500 hover:bg-green-600"}`}
+            className={`${GlobalStyle.buttonPrimary} ${
+              !note || !actualTime || isSubmitting ? "bg-gray-400 cursor-not-allowed" : "bg-green-500 hover:bg-green-600"
+            }`}
             onClick={handleSave}
             disabled={!note || !actualTime || isSubmitting}
           >
@@ -81,5 +90,3 @@ const EditActivityForm = ({ selectedDay, plane, user, id, onClose, onUpdate }) =
     </div>
   );
 };
-
-export default EditActivityForm;
