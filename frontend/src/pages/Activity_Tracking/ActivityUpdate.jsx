@@ -124,16 +124,18 @@ export const ActivityUpdate = ({ selectedDay, plane = {}, user, id, onClose, onU
         <h2 className="text-lg font-bold mb-4">Edit Activity for Day {selectedDay}</h2>
         
         <h2>Assigned Time: {plane?.time_per_day ?? "N/A"} per day</h2>
-
+        <br/>
         <p className={GlobalStyle.headingMedium}>Notes</p>
         <textarea
           className="w-full border p-2 mt-2 rounded-md bg-white"
           placeholder="Enter activity details..."
           value={note}
           onChange={(e) => setNote(e.target.value)}
+          
         ></textarea>
-
+        <br/>
         <p className={GlobalStyle.headingMedium}>Actual Time Spent (minutes)</p>
+        
         <input
           type="number"
           className="w-full border p-2 mt-2 rounded-md bg-white"
@@ -141,7 +143,7 @@ export const ActivityUpdate = ({ selectedDay, plane = {}, user, id, onClose, onU
           value={actualTime}
           onChange={(e) => setActualTime(e.target.value)}
         />
-
+        
         <div className="flex justify-end space-x-3 mt-4">
           <button
             className={`${GlobalStyle.buttonPrimary} ${
