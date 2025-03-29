@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from "react";
-import { MdDelete, MdModeEdit } from "react-icons/md";
+import { MdDelete} from "react-icons/md";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { PiDotsThreeCircleFill } from "react-icons/pi";
+import { Link} from "react-router-dom";
 
 export const Articles = () => {
   const initialCount = 6; // Number of items to show initially
@@ -58,7 +60,7 @@ export const Articles = () => {
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
+      cancelButtonColor: "#005457",
       confirmButtonText: "Yes, delete it!",
     });
 
@@ -96,14 +98,18 @@ export const Articles = () => {
 
               {/* Buttons on the Right */}
               <div className="flex space-x-4">
-                <button className="text-black-600 hover:text-gray-600 text-2xl">
-                  <MdModeEdit className="text-[25px]" />
-                </button>
+                <Link
+                  to={`/ResourceManagement/DisplayResourceAdmin/${article._id}`}
+                  className="text-black-600 hover:text-gray-600 text-2xl"
+                  title="View Details"
+                >
+                  <PiDotsThreeCircleFill size={20} />
+                </Link>
                 <button
                   onClick={() => handleDelete(article._id)}
                   className="text-black-900 hover:text-red-600 text-2xl"
                 >
-                  <MdDelete className="text-[25px]" />
+                  <MdDelete size={20} />
                 </button>
               </div>
             </div>

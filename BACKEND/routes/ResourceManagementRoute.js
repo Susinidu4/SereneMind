@@ -1,57 +1,91 @@
 import express from "express";
 import ResourseManagement from "../models/Resourse_management.js";
 import Feedback from "../models/Feedback.js";
+import multer from "multer";
+import path from "path";
 
 const router = express.Router();
 
-// Setup multer for file uploads
-// const storage = multer.diskStorage({
-//     destination: (req, file, cb) => {
-//       cb(null, "uploads/"); // where to save uploaded files
-//     },
-//     filename: (req, file, cb) => {
-//       cb(null, Date.now() + path.extname(file.originalname)); // file name
-//     },
-//   });
+// Configure storage for uploaded files
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "uploads/"); // where to save uploaded files
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname)); // unique file name
+    },
+});
 
-//   const upload = multer({ storage: storage });
-
-// POST route for submitting form data (without image upload)
-router.post("/addResource", async (req, res) => {
-  try {
-    const {
-      admin_id,
-      title,
-      description,
-      content,
-      reference,
-      auther_name,  // Fixed spelling
-      auther_designation, // Fixed spelling
-    } = req.body;
-
-    // Check for missing fields
-    if (!admin_id || !title || !description || !content || !auther_name || !auther_designation) {
-      return res.status(400).json({ error: "All fields are required." });
+// File filter to accept only images
+const fileFilter = (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
+    if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error('Only image files are allowed!'), false);
     }
+};
 
-    // Create a new resource document
-    const newResource = new ResourseManagement({
-      admin_id,
-      title,
-      description,
-      content,
-      reference,
-      auther_name,
-      auther_designation,
-    });
+const upload = multer({ 
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: {
+        fileSize: 1024 * 1024 * 5 // 5MB file size limit
+    }
+});
 
-    // Save to the database
-    await newResource.save();
+// POST route for submitting form data with SINGLE image upload
+router.post("/addResource", upload.single('image'), async (req, res) => {
+  try {
+      const {
+          admin_id,
+          title,
+          description,
+          content,
+          reference,
+          auther_name,
+          auther_designation,
+      } = req.body;
 
-    res.status(201).json({ message: "Resource added successfully!" });
+      // Check for missing fields
+      if (!admin_id || !title || !description || !content || !auther_name || !auther_designation) {
+          // If there's an uploaded file but validation failed, remove it
+          if (req.file) {
+              fs.unlinkSync(req.file.path);
+          }
+          return res.status(400).json({ error: "All fields are required." });
+      }
+
+      // Create a new resource document with image path if available
+      const newResource = new ResourseManagement({
+          admin_id,
+          title,
+          description,
+          content,
+          reference,
+          auther_name,
+          auther_designation,
+          image: req.file ? req.file.filename : null // Save the filename if image was uploaded
+      });
+
+      // Save to the database
+      await newResource.save();
+
+      res.status(201).json({ 
+          message: "Resource added successfully!",
+          imagePath: req.file ? req.file.filename : null
+      });
   } catch (error) {
-    console.error("Error adding resource:", error.message, error);
-    res.status(500).json({ error: error.message || "Failed to add resource." });
+      console.error("Error adding resource:", error.message, error);
+      
+      // If there was an error and a file was uploaded, remove it
+      if (req.file) {
+          fs.unlinkSync(req.file.path);
+      }
+      
+      res.status(500).json({ 
+          error: error.message || "Failed to add resource." 
+      });
   }
 });
 
@@ -168,6 +202,31 @@ router.get("/ratings/:resource_id", async (req, res) => {
         console.error("Error fetching ratings:", error);
         res.status(500).json({ message: "Server error" });
     }
+});
+
+
+
+
+// Update Resource
+router.put("/updateResource/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedData = req.body;
+
+    const updatedResource = await ResourseManagement.findByIdAndUpdate(id, updatedData, {
+      new: true, // Returns updated document
+      runValidators: true, // Ensures validation rules are applied
+    });
+
+    if (!updatedResource) {
+      return res.status(404).json({ message: "Resource not found" });
+    }
+
+    res.status(200).json(updatedResource);
+  } catch (error) {
+    console.error("Error updating resource:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 
