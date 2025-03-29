@@ -53,7 +53,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-
 // Get all activities for a user
 router.get("/:user_id", async (req, res) => {
   try {
@@ -68,6 +67,63 @@ router.get("/:user_id", async (req, res) => {
   } catch (error) {
     console.error("Error fetching user activities:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Get data by user_id and plane_id
+router.get('/users/:user_id/planes/:plane_id', async (req, res) => {
+  try {
+    const { user_id, plane_id } = req.params;
+
+    // Find all documents for the user that contain days with the specified plane_id
+    const activities = await ActivityTracking.aggregate([
+      {
+        $match: {
+          user_id: user_id,
+          "Day.plane_id": plane_id
+        }
+      },
+      {
+        $unwind: "$Day" // Split each day into separate documents
+      },
+      {
+        $match: {
+          "Day.plane_id": plane_id // Filter to only keep matching plane_id entries
+        }
+      },
+      {
+        $group: {
+          _id: "$_id", // Group back by original document ID
+          user_id: { $first: "$user_id" },
+          createdAt: { $first: "$createdAt" },
+          updatedAt: { $first: "$updatedAt" },
+          Days: { 
+            $push: "$Day" // Rebuild array with only matching days
+          }
+        }
+      }
+    ]);
+
+    if (!activities || activities.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No activities found for this user and plane combination"
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      count: activities.length,
+      data: activities
+    });
+
+  } catch (error) {
+    console.error("Error fetching activities:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message
+    });
   }
 });
 
@@ -115,6 +171,52 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+
+//delete data using user id and plane id
+router.delete('/users/:user_id/planes/:plane_id', async (req, res) => {
+  try {
+    const { user_id, plane_id } = req.params;
+
+    // Validate parameters
+    if (!user_id || !plane_id) {
+      return res.status(400).json({ 
+        message: 'Both user_id and plane_id are required' 
+      });
+    }
+
+    // Find the document that contains both the user_id and plane_id
+    const document = await ActivityTracking.findOne({
+      user_id,
+      'Day.plane_id': plane_id
+    });
+
+    if (!document) {
+      return res.status(404).json({ 
+        message: 'No matching document found with the specified user_id and plane_id' 
+      });
+    }
+
+    // Delete the entire document
+    const result = await ActivityTracking.deleteOne({ _id: document._id });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ 
+        message: 'Document could not be deleted' 
+      });
+    }
+
+    res.status(200).json({ 
+      message: 'Document deleted successfully',
+      deletedCount: result.deletedCount
+    });
+  } catch (error) {
+    console.error('Error deleting document:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
+
 //update data by id (use main _id)
 router.put('/:id', async (req, res) => {
   try {
@@ -161,6 +263,128 @@ router.put('/:id', async (req, res) => {
     });
   }
 });
+
+
+//update data by user id and plane id
+router.put('/users/:user_id/planes/:plane_id', async (req, res) => {
+  try {
+    const { user_id, plane_id } = req.params;
+    const { progress, note } = req.body;
+
+    // Validate all required fields for replacement
+    if (progress === undefined || note === undefined) {
+      return res.status(400).json({ 
+        message: 'Both progress and note are required for full replacement' 
+      });
+    }
+
+    const result = await ActivityTracking.updateOne(
+      { 
+        user_id,
+        'Day.plane_id': plane_id 
+      },
+      { 
+        $set: { 
+          'Day.$.progress': progress,
+          'Day.$.note': note
+        } 
+      }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ 
+        message: 'User or day entry not found' 
+      });
+    }
+
+    res.status(200).json({ 
+      message: 'Day entry fully replaced',
+      updated: result.modifiedCount > 0
+    });
+  } catch (error) {
+    console.error('Error replacing day entry:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+//Route for Daily Notes (Table Data)
+router.get("/progress/notes/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Fetch the activity tracking for the specific user
+    const activityTracking = await ActivityTracking.findOne({ user_id: id });
+    
+    if (!activityTracking) {
+      return res.status(404).json({ message: "No activities found for this user" });
+    }
+
+    // Extract daily notes
+    const dailyNotes = activityTracking.Day.map((day) => ({
+      time: day.time,
+      date: day.date,
+      activity: day.activity,
+      note: day.note,
+    }));
+
+    // Send response with daily notes
+    res.status(200).json({ notes: dailyNotes });
+  } catch (error) {
+    console.error("Error fetching daily notes:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+//Route for Overall Progress (Pie Chart Data)
+router.get("/progress/overall/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Fetch the activity tracking for the specific user
+    const activityTracking = await ActivityTracking.findOne({ user_id: id });
+    
+    if (!activityTracking) {
+      return res.status(404).json({ message: "No activities found for this user" });
+    }
+
+    // Calculate total progress
+    const totalProgress = (activityTracking.Day.reduce((sum, day) => sum + day.progress, 0) / activityTracking.Day.length).toFixed(2);
+
+    // Send response with the overall progress data
+    res.status(200).json({ totalPercentage: totalProgress });
+  } catch (error) {
+    console.error("Error fetching overall progress:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+//Route for Daily Progress (Bar Chart Data)
+router.get("/progress/daily/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Fetch the activity tracking for the specific user
+    const activityTracking = await ActivityTracking.findOne({ user_id: id });
+    
+    if (!activityTracking) {
+      return res.status(404).json({ message: "No activities found for this user" });
+    }
+
+    // Map the daily progress data to include only activity and progress
+    const progressData = activityTracking.Day.map((day) => ({
+      activity: day.activity,  // The activity (could be a title or type)
+      progress: day.progress,  // The progress percentage for that activity
+    }));
+
+    // Send response with the simplified daily progress data
+    res.status(200).json({ days: progressData });
+  } catch (error) {
+    console.error("Error fetching daily progress:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
 
 export default router;
 

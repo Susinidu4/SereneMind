@@ -26,6 +26,7 @@ export const Mood_Tracking = () => {
   const buttonData = JSON.parse(localStorage.getItem('buttonStatus'))
 
   // Get current date
+ try{
   const currentDate = (new Date()).toISOString().split('T')[0];
   const expireDate =  buttonData.expireDate.split('T')[0];
   console.log(expireDate)
@@ -34,6 +35,9 @@ export const Mood_Tracking = () => {
   if (buttonData.expireDate && currentDate >= expireDate) {
     localStorage.removeItem('buttonStatus');
   }
+ }catch (error) {
+  console.error("Error parsing date:", error);
+}
 
   // Redirect if user is not logged in or is admin
   if (!userData) {
