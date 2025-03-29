@@ -2,6 +2,7 @@ import express from "express";
 import MoodJournaling from "../models/Mood_journaling.js";
 import multer from "multer";
 import path from "path";
+import mongoose from "mongoose";
 
 const router = express.Router();
 
