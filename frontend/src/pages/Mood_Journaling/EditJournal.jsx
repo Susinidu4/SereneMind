@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 export const EditJournal = ({ journal, onClose }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(journal || {});
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -188,12 +189,20 @@ export const EditJournal = ({ journal, onClose }) => {
                       const value = Number(e.target.value);
                       if (value >= 1 && value <= 10) {
                         handleChange(e);
+                        setErrorMessage("");
+                      } else {
+                        setErrorMessage(
+                          "Mood intensity must be between 1 and 10"
+                        );
                       }
                     }}
                     className="w-full border rounded p-2"
                     min="1"
                     max="10"
                   />
+                  {errorMessage && (
+                    <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
+                  )}
                 </div>
               </div>
 
@@ -354,7 +363,31 @@ export const EditJournal = ({ journal, onClose }) => {
                   </ul>
                 </div>
               </div>
-              
+              {journal.image &&
+                journal.image.length > 0 &&
+                journal.image[0] && (
+                  <div className="mt-4 bg-[#AEDBD8] p-4 rounded-lg shadow-md">
+                    <h3 className="font-semibold">Journal Images:</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+                      {journal.image.map(
+                        (img, index) =>
+                          img && (
+                            <div key={index} className="relative">
+                              <img
+                                src={
+                                  img.startsWith("blob:")
+                                    ? img
+                                    : `http://localhost:5000/uploads/${img}`
+                                }
+                                alt={`Journal Entry ${index + 1}`}
+                                className="w-full h-auto rounded-lg"
+                              />
+                            </div>
+                          )
+                      )}
+                    </div>
+                  </div>
+                )}
             </div>
           )}
         </div>
