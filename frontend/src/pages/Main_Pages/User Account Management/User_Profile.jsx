@@ -11,6 +11,7 @@ import { EditJournal } from "../../Mood_Journaling/EditJournal";
 import { Header } from "../../../components/Header";
 import { ActivityProgress } from "../../Activity_Tracking/ActivityProgress";
 import Profile_banner from "../../../assets/Images/Profile_banner.png";
+import profile from "../../../assets/Images/profile.png";
 import { jsPDF } from "jspdf";
 import { Header_2 } from "../../../components/Header_2";
 import { FaSearch } from "react-icons/fa";
@@ -145,7 +146,7 @@ export const User_Profile = () => {
   const handleDownloadPDF = () => {
     const doc = new jsPDF();
     let y = 10;
-    doc.setFontSize(16);
+    doc.setFontSize(14);
     doc.text("Journal Entries", 10, y);
     y += 10;
 
@@ -155,37 +156,37 @@ export const User_Profile = () => {
 
       if (journal) {
         // Display journal details in PDF
-        doc.setFontSize(12);
+        doc.setFontSize(10);
         doc.text(
           `Date: ${new Date(journal.createdAt).toLocaleString()}`,
           10,
           y
         );
-        y += 10;
+        y += 8;
 
         doc.text(`Overall Mood: ${journal.Overall_mood}`, 10, y);
-        y += 10;
+        y += 8;
 
         doc.text(`Mood Intensity: ${journal.mood_intensity}`, 10, y);
-        y += 10;
+        y += 8;
 
         doc.text(`Emotion: ${journal.emotion.join(", ")}`, 10, y);
-        y += 10;
+        y += 8;
 
         doc.text(`Mood Trigger: ${journal.mood_trigger}`, 10, y);
-        y += 10;
+        y += 8;
 
         doc.text(`Cope Mood: ${journal.cope_mood}`, 10, y);
-        y += 10;
+        y += 8;
 
         doc.text(`Notes: ${journal.notes}`, 10, y);
-        y += 10;
+        y += 8;
 
         doc.text(`Reflection: ${journal.reflection}`, 10, y);
-        y += 10;
+        y += 8;
 
         // Add space between each journal entry
-        y += 10;
+        y += 8;
       }
     });
 
@@ -214,20 +215,24 @@ export const User_Profile = () => {
       <main className="flex-grow mx-20">
         <div className={GlobalStyle.fontNunito}>
           {/* Cover Photo */}
-          <div className="relative h-60 bg-green-600 rounded-t-3xl overflow-hidden">
+          <div className="relative h-90 bg-green-600 rounded-t-3xl overflow-hidden">
             <img
               src={user?.coverPhoto || Profile_banner}
               alt="Cover"
-              className="w-full h-full object-cover"
+              className="w-full h-100px object-cover"
             />
           </div>
 
           {/* Profile Section */}
           <div className="absolute flex items-center p-6 -mt-20">
             <div>
-              <IoPersonCircle
-                className="text-gray-600"
-                style={{ width: "200px", height: "200px" }}
+              <img
+                src={user?.profilePhoto || profile}
+                alt="Profile"
+                className="w-50 h-50 object-cover rounded-full"
+              // <IoPersonCircle
+              //   className="text-gray-600"
+              //   style={{ width: "200px", height: "200px" }}
               />
             </div>
           </div>

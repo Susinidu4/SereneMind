@@ -11,7 +11,7 @@ const moodJournalingSchema = new Schema(
         cope_mood: { type: String, required: true },
         notes: { type: String, required: true },
         reflection: { type: String, required: true },
-        image: { type: [String], required: false },
+        image: { type: [String], required: true },
     },
     {
         collection: "Mood_journaling",

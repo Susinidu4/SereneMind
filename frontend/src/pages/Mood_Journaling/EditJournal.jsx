@@ -3,7 +3,7 @@ import { IoMdCloseCircle } from "react-icons/io";
 import GlobalStyle from "../../assets/Prototype/GlobalStyle";
 import { FaEdit } from "react-icons/fa";
 import axios from "axios";
-import Swal from "sweetalert2"; 
+import Swal from "sweetalert2";
 
 export const EditJournal = ({ journal, onClose }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -75,13 +75,13 @@ export const EditJournal = ({ journal, onClose }) => {
       }
     } catch (error) {
       // Show error alert for exceptions
-    Swal.fire({
-      title: "Error!",
-      text: "An error occurred while updating the journal.",
-      icon: "error",
-      confirmButtonColor: "#005457",
-      confirmButtonText: "OK",
-    });
+      Swal.fire({
+        title: "Error!",
+        text: "An error occurred while updating the journal.",
+        icon: "error",
+        confirmButtonColor: "#005457",
+        confirmButtonText: "OK",
+      });
     }
   };
 
@@ -133,29 +133,68 @@ export const EditJournal = ({ journal, onClose }) => {
         <div className="max-h-[80vh] overflow-y-auto">
           {isEditing ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-10">
-              <div>
-                <label className="block text-lg font-semibold">
-                  Overall Mood:
-                </label>
-                <input
-                  type="text"
-                  name="Overall_mood"
-                  value={formData.Overall_mood}
-                  onChange={handleChange}
-                  className="w-full border rounded p-2"
-                />
+              <div className="col-span-2">
+                <div>
+                  <label className="block text-lg font-semibold">
+                    Overall Mood:
+                  </label>
+
+                  {/* Display selected mood separately */}
+                  <div className="w-full border rounded p-2 mb-2">
+                    <p className="text-md font-semibold">
+                      {formData.Overall_mood || "None"}
+                    </p>
+                  </div>
+
+                  {/* Radio buttons for mood selection */}
+                  <div className="w-full border rounded p-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                    {[
+                      "Very Happy",
+                      "Happy",
+                      "Neutral",
+                      "Sad",
+                      "Very Sad",
+                      "Stressed",
+                      "Angry",
+                      "Anxious",
+                      "Tired",
+                    ].map((mood) => (
+                      <label key={mood} className="block text-[14px]">
+                        <input
+                          type="radio"
+                          name="Overall_mood"
+                          value={mood}
+                          checked={formData.Overall_mood === mood}
+                          onChange={handleChange}
+                          className="mr-2"
+                        />
+                        {mood}
+                      </label>
+                    ))}
+                  </div>
+                </div>
               </div>
-              <div>
-                <label className="block text-lg font-semibold">
-                  Mood Intensity:
-                </label>
-                <input
-                  type="number"
-                  name="mood_intensity"
-                  value={formData.mood_intensity}
-                  onChange={handleChange}
-                  className="w-full border rounded p-2"
-                />
+
+              <div className="col-span-2">
+                <div>
+                  <label className="block text-lg font-semibold">
+                    Mood Intensity:
+                  </label>
+                  <input
+                    type="number"
+                    name="mood_intensity"
+                    value={formData.mood_intensity}
+                    onChange={(e) => {
+                      const value = Number(e.target.value);
+                      if (value >= 1 && value <= 10) {
+                        handleChange(e);
+                      }
+                    }}
+                    className="w-full border rounded p-2"
+                    min="1"
+                    max="10"
+                  />
+                </div>
               </div>
 
               <div className="col-span-2">
@@ -315,6 +354,7 @@ export const EditJournal = ({ journal, onClose }) => {
                   </ul>
                 </div>
               </div>
+              
             </div>
           )}
         </div>
