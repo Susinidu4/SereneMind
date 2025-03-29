@@ -143,6 +143,28 @@ router.delete("/deleteResource/:id", async (req, res) => {
   }
 });
 
+// Update Resource
+router.put("/updateResource/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedData = req.body;
+
+    const updatedResource = await ResourseManagement.findByIdAndUpdate(id, updatedData, {
+      new: true, // Returns updated document
+      runValidators: true, // Ensures validation rules are applied
+    });
+
+    if (!updatedResource) {
+      return res.status(404).json({ message: "Resource not found" });
+    }
+
+    res.status(200).json(updatedResource);
+  } catch (error) {
+    console.error("Error updating resource:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 
 // Route to insert feedback data
 router.post("/add-feedback", async (req, res) => {
@@ -202,31 +224,6 @@ router.get("/ratings/:resource_id", async (req, res) => {
         console.error("Error fetching ratings:", error);
         res.status(500).json({ message: "Server error" });
     }
-});
-
-
-
-
-// Update Resource
-router.put("/updateResource/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const updatedData = req.body;
-
-    const updatedResource = await ResourseManagement.findByIdAndUpdate(id, updatedData, {
-      new: true, // Returns updated document
-      runValidators: true, // Ensures validation rules are applied
-    });
-
-    if (!updatedResource) {
-      return res.status(404).json({ message: "Resource not found" });
-    }
-
-    res.status(200).json(updatedResource);
-  } catch (error) {
-    console.error("Error updating resource:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
 });
 
 
