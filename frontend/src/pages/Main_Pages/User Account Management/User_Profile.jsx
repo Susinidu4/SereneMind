@@ -146,7 +146,7 @@ export const User_Profile = () => {
   const handleDownloadPDF = () => {
     const doc = new jsPDF();
     let y = 10;
-    doc.setFontSize(16);
+    doc.setFontSize(14);
     doc.text("Journal Entries", 10, y);
     y += 10;
 
@@ -156,37 +156,37 @@ export const User_Profile = () => {
 
       if (journal) {
         // Display journal details in PDF
-        doc.setFontSize(12);
+        doc.setFontSize(10);
         doc.text(
           `Date: ${new Date(journal.createdAt).toLocaleString()}`,
           10,
           y
         );
-        y += 10;
+        y += 8;
 
         doc.text(`Overall Mood: ${journal.Overall_mood}`, 10, y);
-        y += 10;
+        y += 8;
 
         doc.text(`Mood Intensity: ${journal.mood_intensity}`, 10, y);
-        y += 10;
+        y += 8;
 
         doc.text(`Emotion: ${journal.emotion.join(", ")}`, 10, y);
-        y += 10;
+        y += 8;
 
         doc.text(`Mood Trigger: ${journal.mood_trigger}`, 10, y);
-        y += 10;
+        y += 8;
 
         doc.text(`Cope Mood: ${journal.cope_mood}`, 10, y);
-        y += 10;
+        y += 8;
 
         doc.text(`Notes: ${journal.notes}`, 10, y);
-        y += 10;
+        y += 8;
 
         doc.text(`Reflection: ${journal.reflection}`, 10, y);
-        y += 10;
+        y += 8;
 
         // Add space between each journal entry
-        y += 10;
+        y += 8;
       }
     });
 
