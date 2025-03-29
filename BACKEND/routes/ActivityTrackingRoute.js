@@ -307,6 +307,83 @@ router.put('/users/:user_id/planes/:plane_id', async (req, res) => {
   }
 });
 
+//Route for Daily Notes (Table Data)
+router.get("/progress/notes/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Fetch the activity tracking for the specific user
+    const activityTracking = await ActivityTracking.findOne({ user_id: id });
+    
+    if (!activityTracking) {
+      return res.status(404).json({ message: "No activities found for this user" });
+    }
+
+    // Extract daily notes
+    const dailyNotes = activityTracking.Day.map((day) => ({
+      time: day.time,
+      date: day.date,
+      activity: day.activity,
+      note: day.note,
+    }));
+
+    // Send response with daily notes
+    res.status(200).json({ notes: dailyNotes });
+  } catch (error) {
+    console.error("Error fetching daily notes:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+//Route for Overall Progress (Pie Chart Data)
+router.get("/progress/overall/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Fetch the activity tracking for the specific user
+    const activityTracking = await ActivityTracking.findOne({ user_id: id });
+    
+    if (!activityTracking) {
+      return res.status(404).json({ message: "No activities found for this user" });
+    }
+
+    // Calculate total progress
+    const totalProgress = (activityTracking.Day.reduce((sum, day) => sum + day.progress, 0) / activityTracking.Day.length).toFixed(2);
+
+    // Send response with the overall progress data
+    res.status(200).json({ totalPercentage: totalProgress });
+  } catch (error) {
+    console.error("Error fetching overall progress:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+//Route for Daily Progress (Bar Chart Data)
+router.get("/progress/daily/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Fetch the activity tracking for the specific user
+    const activityTracking = await ActivityTracking.findOne({ user_id: id });
+    
+    if (!activityTracking) {
+      return res.status(404).json({ message: "No activities found for this user" });
+    }
+
+    // Map the daily progress data to include only activity and progress
+    const progressData = activityTracking.Day.map((day) => ({
+      activity: day.activity,  // The activity (could be a title or type)
+      progress: day.progress,  // The progress percentage for that activity
+    }));
+
+    // Send response with the simplified daily progress data
+    res.status(200).json({ days: progressData });
+  } catch (error) {
+    console.error("Error fetching daily progress:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 
 
 export default router;
