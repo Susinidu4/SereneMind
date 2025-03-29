@@ -5,8 +5,15 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 dotenv.config();
+import path from 'path';
+import { fileURLToPath } from 'url'; // <-- Add this
+import { dirname } from 'path';      // <-- Add this
 
+// Reconstruct __dirname for ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
+// import ImageUploadRouter from './routes/imageUploadRoute.js'; // Import the new route
 
 //yasindu's code
 import UserRouter from './routes/UserRoute.js';
@@ -72,9 +79,16 @@ app.use("/api/activity_tracking", ActivityTrackingRoute);
 
 app.use("/api/resource_management", ResourceManagement);
 
-
+// Add this below your existing routes
+// app.use('/api/image', ImageUploadRouter);
 
 
 app.listen(PORT, () => {
     console.log(`Server is up and running on port number: ${PORT}`);
 });
+
+// Serve static files from the 'uploads' directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+
+

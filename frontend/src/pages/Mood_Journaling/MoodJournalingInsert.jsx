@@ -3,16 +3,11 @@ import GlobalStyle from "../../assets/Prototype/GlobalStyle";
 import { Header } from "../../components/Header";
 import { Footer } from "../../components/Footer";
 import { FaUpload, FaTimes } from "react-icons/fa";
-import { IoIosCloseCircle } from "react-icons/io";
 import axios from "axios"; 
 import Swal from "sweetalert2";
 
-
 export const MoodJournalingInsert = () => {
-
-  const user = JSON.parse(localStorage.getItem("userData"))
-
-
+  const user = JSON.parse(localStorage.getItem("userData"));
   const [selectedValue, setSelectedValue] = useState(null);
   const [remark, setRemark] = useState("");
   const [remark2, setRemark2] = useState("");
@@ -22,7 +17,6 @@ export const MoodJournalingInsert = () => {
   const [overallMood, setOverallMood] = useState("");
   const [emotions, setEmotions] = useState([]);
 
-// Helper function to get current date in YYYY-MM-DD format
   const getCurrentDate = () => {
     const now = new Date();
     const year = now.getFullYear();
@@ -31,39 +25,40 @@ export const MoodJournalingInsert = () => {
     return `${year}-${month}-${day}`;
   };
 
-  // Helper function to get current time in 12-hour format
   const getCurrentTime = () => {
     const now = new Date();
     let hours = now.getHours();
     const minutes = String(now.getMinutes()).padStart(2, "0");
     const period = hours >= 12 ? "PM" : "AM";
-
-    // Convert hours from 24-hour format to 12-hour format
     hours = hours % 12;
-    hours = hours ? hours : 12; // Handle the case for 0 hours (midnight)
-
+    hours = hours ? hours : 12;
     return `${String(hours).padStart(2, "0")}:${minutes} ${period}`;
   };
 
-  // Handle image uploads
   const handleImageChange = (e) => {
     if (e.target.files) {
       const newImages = Array.from(e.target.files);
+      if (selectedImages.length + newImages.length > 5) {
+        Swal.fire({
+          icon: "error",
+          title: "Too many images",
+          text: "You can upload a maximum of 5 images",
+          confirmButtonColor: "#d33",
+        });
+        return;
+      }
       setSelectedImages([...selectedImages, ...newImages]);
     }
   };
 
-  // Handle mood intensity selection
   const handleMoodIntensityChange = (event) => {
     setSelectedValue(event.target.value);
   };
 
-  // Handle overall mood selection
   const handleOverallMoodChange = (event) => {
     setOverallMood(event.target.value);
   };
 
-   // Handle emotion checkbox changes
   const handleEmotionChange = (event) => {
     const { value, checked } = event.target;
     if (checked) {
@@ -73,7 +68,6 @@ export const MoodJournalingInsert = () => {
     }
   };
 
-  // Remove an uploaded image
   const handleRemoveImage = (indexToRemove) => {
     const updatedImages = selectedImages.filter(
       (_, index) => index !== indexToRemove
@@ -81,33 +75,36 @@ export const MoodJournalingInsert = () => {
     setSelectedImages(updatedImages);
   };
 
-  // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const formData = {
-
-      user_id: user.id, 
-
-      Overall_mood: overallMood,
-      mood_intensity: selectedValue,
-      emotion: emotions.join(", "), 
-      mood_trigger: remark,
-      cope_mood: remark2,
-      notes: remark3,
-      reflection: remark4,
-      image: selectedImages.map((image) => URL.createObjectURL(image)), 
-    };
-
-    console.log("Form data:", formData); 
+    // Create FormData to handle file uploads
+    const formData = new FormData();
+    formData.append("user_id", user.id);
+    formData.append("Overall_mood", overallMood);
+    formData.append("mood_intensity", selectedValue);
+    formData.append("emotion", emotions.join(", "));
+    formData.append("mood_trigger", remark);
+    formData.append("cope_mood", remark2);
+    formData.append("notes", remark3);
+    formData.append("reflection", remark4);
+    
+    // Append each image file
+    selectedImages.forEach((image) => {
+      formData.append("images", image);
+    });
 
     try {
-      // Submit form data to the backend
       const response = await axios.post(
         "http://localhost:5000/api/mood_journaling/mood-journal-insert", 
-        formData // Ensure formData contains all necessary fields
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
-      console.log("Response:", response); 
+      
       Swal.fire({
         icon: "success",
         title: "Mood Journal Entry Added!",
@@ -115,7 +112,7 @@ export const MoodJournalingInsert = () => {
         confirmButtonColor: "#45553D",
       });
 
-      // Reset form fields after successful submission
+      // Reset form
       setOverallMood(""); 
       setSelectedValue(null); 
       setEmotions([]); 
@@ -125,34 +122,20 @@ export const MoodJournalingInsert = () => {
       setRemark4(""); 
       setSelectedImages([]); 
     } catch (error) {
-      // Handle any errors that occur during submission
-      console.error("Error submitting form:", error); 
-      
-    Swal.fire({
-      icon: "error",
-      title: "Submission Failed",
-      text: "Failed to submit mood journal entry. Please try again.",
-      confirmButtonColor: "#d33",
-    });
+      console.error("Error submitting form:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Submission Failed",
+        text: error.response?.data?.message || "Failed to submit mood journal entry. Please try again.",
+        confirmButtonColor: "#d33",
+      });
     }
   };
 
   const emotionsList = [
-    "Joyful",
-    "Excited",
-    "Relaxed",
-    "Grateful",
-    "Frustrated",
-    "Lonely",
-    "Confused",
-    "Irritated",
-    "Confident",
-    "Overwhelmed",
-    "Nervous",
-    "Guilty",
-    "Helpless",
-    "Hopeful",
-    "Motivated",
+    "Joyful", "Excited", "Relaxed", "Grateful", "Frustrated",
+    "Lonely", "Confused", "Irritated", "Confident", "Overwhelmed",
+    "Nervous", "Guilty", "Helpless", "Hopeful", "Motivated",
   ];
 
   return (
@@ -182,9 +165,7 @@ export const MoodJournalingInsert = () => {
                 <label className={`font-semibold ${GlobalStyle.headingSmall}`}>
                   Overall Mood : How are you feeling right now ?
                 </label>
-                <label
-                  className={`${GlobalStyle.headingSmall} flex flex-col space-y-4 pt-6`}
-                >
+                <label className={`${GlobalStyle.headingSmall} flex flex-col space-y-4 pt-6`}>
                   {[
                     { label: "Very Happy", value: "Very Happy" },
                     { label: "Happy", value: "Happy" },
@@ -196,16 +177,14 @@ export const MoodJournalingInsert = () => {
                     { label: "Anxious", value: "Anxious" },
                     { label: "Tired", value: "Tired" },
                   ].map((option) => (
-                    <div
-                      key={option.value}
-                      className="flex items-center space-x-2 px-8"
-                    >
+                    <div key={option.value} className="flex items-center space-x-2 px-8">
                       <input
                         type="radio"
                         name="overallMood"
                         value={option.value}
                         className="w-4 h-4 accent-[#45553D] focus:ring-0"
                         required
+                        checked={overallMood === option.value}
                         onChange={handleOverallMoodChange}
                       />
                       <span>{option.label}</span>
@@ -218,8 +197,7 @@ export const MoodJournalingInsert = () => {
               {/* Mood Intensity */}
               <div>
                 <label className={`font-semibold ${GlobalStyle.headingSmall}`}>
-                  Mood Intensity : On a scale of 1 (low) to 10 (high), how
-                  intense is your mood ?
+                  Mood Intensity : On a scale of 1 (low) to 10 (high), how intense is your mood ?
                 </label>
                 <div className="flex gap-4 px-8 pt-6">
                   {Array.from({ length: 10 }, (_, index) => index + 1).map(
@@ -255,15 +233,13 @@ export const MoodJournalingInsert = () => {
                 <div className={GlobalStyle.headingSmall}>
                   <div className="grid grid-cols-5 gap-6 px-8 pt-6">
                     {emotionsList.map((emotion, index) => (
-                      <label
-                        key={index}
-                        className="flex items-center space-x-2"
-                      >
+                      <label key={index} className="flex items-center space-x-2">
                         <input
                           type="checkbox"
                           name="emotions"
                           value={emotion}
                           className="h-4 w-4"
+                          checked={emotions.includes(emotion)}
                           onChange={handleEmotionChange}
                         />
                         <span className="ml-4">{emotion}</span>
@@ -347,10 +323,7 @@ export const MoodJournalingInsert = () => {
                 <div className="mb-6">
                   <label className={`font-semibold ${GlobalStyle.headingSmall}`}>Snaps</label>
                   <div className="w-full px-8 pt-6">
-                    <label
-                      htmlFor="image-upload"
-                      className="cursor-pointer w-full"
-                    >
+                    <label htmlFor="image-upload" className="cursor-pointer w-full">
                       <input
                         id="image-upload"
                         type="file"
@@ -363,7 +336,7 @@ export const MoodJournalingInsert = () => {
                         <div className="px-4 flex-grow truncate">
                           {selectedImages.length > 0
                             ? `${selectedImages.length} files selected`
-                            : "Select files"}
+                            : "Select files (max 5)"}
                         </div>
                         <div className="flex items-center justify-center bg-gray-100 h-full border-l border-gray-300 px-5">
                           <FaUpload className="text-gray-600" />
@@ -384,10 +357,9 @@ export const MoodJournalingInsert = () => {
                           alt={`Uploaded ${index + 1}`}
                           className="w-full h-32 object-cover"
                         />
-                        {/* Remove Button */}
                         <button
                           onClick={() => handleRemoveImage(index)}
-                          className="absolute top-1 right-1 text-white  p-1 text-xs"
+                          className="absolute top-1 right-1 text-white p-1 text-xs"
                         >
                           <FaTimes className="text-red-500 w-5 h-5" />
                         </button>

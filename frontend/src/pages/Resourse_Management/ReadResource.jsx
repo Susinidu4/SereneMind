@@ -11,7 +11,7 @@ import { useParams } from "react-router-dom";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 export const ReadResource = () => {
-  const user = JSON.parse(localStorage.getItem("userData"))
+  const user = JSON.parse(localStorage.getItem("userData"));
   const { id } = useParams(); // Get resource ID from the URL
   const [resource, setResource] = useState(null); // Store the fetched resource
   const [rating, setRating] = useState(0); // State to store the selected rating
@@ -19,30 +19,28 @@ export const ReadResource = () => {
 
   const [buttonStatus, setButtonStatus] = useState(false);
 
-
   useEffect(() => {
-      const user = JSON.parse(localStorage.getItem("userData"));
-      if (user && user.role === "user") {
-        setButtonStatus(true);
-      }
-    }, []); // Empty dependency array means this runs once on mount
+    const user = JSON.parse(localStorage.getItem("userData"));
+    if (user && user.role === "user") {
+      setButtonStatus(true);
+    }
+  }, []); // Empty dependency array means this runs once on mount
 
   const [averageRating, setAverageRating] = useState(0);
 
-
-useEffect(() => {
-  const fetchAverageRating = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/api/resource_management/ratings/${id}`
-      );
-      setAverageRating(response.data.averageRating || 0);
-    } catch (error) {
-      console.error("Error fetching average rating:", error);
-    }
-  };
-  fetchAverageRating();
-}, [id]);
+  useEffect(() => {
+    const fetchAverageRating = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/resource_management/ratings/${id}`
+        );
+        setAverageRating(response.data.averageRating || 0);
+      } catch (error) {
+        console.error("Error fetching average rating:", error);
+      }
+    };
+    fetchAverageRating();
+  }, [id]);
 
   // Fetch resource data when the component mounts
   useEffect(() => {
@@ -58,9 +56,7 @@ useEffect(() => {
       }
     };
     fetchResource();
-    
   }, [id]); // Dependency array ensures the effect runs when `id` changes
-
 
   // Function to handle rating submission
   const handleSubmit = async () => {
@@ -103,23 +99,23 @@ useEffect(() => {
       });
     }
   };
-  
-    const renderStars = (rating) => {
-      const fullStars = Math.floor(rating);
-      const halfStar = rating % 1 !== 0;
-      const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
-      return (
-        <div className="flex text-yellow-500">
-          {[...Array(fullStars)].map((_, index) => (
-            <FaStar key={index} />
-          ))}
-          {halfStar && <FaStarHalfAlt />}
-          {[...Array(emptyStars)].map((_, index) => (
-            <FaRegStar key={index} />
-          ))}
-        </div>
-      );
-    };
+
+  const renderStars = (rating) => {
+    const fullStars = Math.floor(rating);
+    const halfStar = rating % 1 !== 0;
+    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+    return (
+      <div className="flex text-yellow-500">
+        {[...Array(fullStars)].map((_, index) => (
+          <FaStar key={index} />
+        ))}
+        {halfStar && <FaStarHalfAlt />}
+        {[...Array(emptyStars)].map((_, index) => (
+          <FaRegStar key={index} />
+        ))}
+      </div>
+    );
+  };
 
   // Show loading state while fetching resource data
   if (!resource) {
@@ -152,10 +148,9 @@ useEffect(() => {
 
               {/* Rating Placeholder */}
               <div className="flex space-x-1 text-xl">
-              {renderStars(averageRating)}
+                {renderStars(averageRating)}
               </div>
             </div>
-
             <div>
               <h2 className={`${GlobalStyle.headingMedium} underline pt-8`}>
                 {resource.title}
@@ -164,21 +159,25 @@ useEffect(() => {
                 {resource.description}
               </p>
             </div>
-
+            
             {/* Banner */}
             <div>
-              <img
-                src={banner1}
-                alt="Resource Image"
-                className="mx-auto mt-10"
-              />
+              {resource.image && (
+                <img
+                  src={`http://localhost:5000/uploads/${resource.image}`}
+                  alt="Resource Content"
+                  className="mx-auto mt-10 max-w-full h-auto"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = banner1; // fallback image
+                  }}
+                />
+              )}
             </div>
-
             {/* Article Body */}
             <div className="mt-6 text-justify">
               <p className={GlobalStyle.paragraph}>{resource.content}</p>
             </div>
-
             {/* References and Footer Actions */}
             <div className={GlobalStyle.headingSmall}>
               <p>
@@ -192,11 +191,11 @@ useEffect(() => {
               <div className="flex gap-4 justify-end pt-8 pb-6">
                 {buttonStatus && (
                   <button
-                  className={`${GlobalStyle.buttonPrimary} flex items-center gap-2`}
-                >
-                  <MdDownload size={20} />
-                  <span>Download</span>
-                </button>
+                    className={`${GlobalStyle.buttonPrimary} flex items-center gap-2`}
+                  >
+                    <MdDownload size={20} />
+                    <span>Download</span>
+                  </button>
                 )}
               </div>
             </div>
@@ -234,11 +233,11 @@ useEffect(() => {
             <div className="flex justify-center mt-6">
               {buttonStatus && (
                 <button
-                onClick={handleSubmit}
-                className="bg-gradient-to-t from-[#007579] to-[#00B4A6] text-white px-6 py-2 rounded-full shadow-md hover:scale-105 transition-transform duration-300"
-              >
-                Submit Rating
-              </button>
+                  onClick={handleSubmit}
+                  className="bg-gradient-to-t from-[#007579] to-[#00B4A6] text-white px-6 py-2 rounded-full shadow-md hover:scale-105 transition-transform duration-300"
+                >
+                  Submit Rating
+                </button>
               )}
             </div>
           </div>

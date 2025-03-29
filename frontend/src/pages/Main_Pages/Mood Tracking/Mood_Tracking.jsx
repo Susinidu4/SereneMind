@@ -25,22 +25,13 @@ export const Mood_Tracking = () => {
   const userData = JSON.parse(localStorage.getItem('userData'));
   const buttonData = JSON.parse(localStorage.getItem('buttonStatus'))
 
-  // Get current date
-  const currentDate = (new Date()).toISOString().split('T')[0];
-  const expireDate =  buttonData.expireDate.split('T')[0];
-  console.log(expireDate)
-  
-  // Remove buttonStatus if expired
-  if (buttonData.expireDate && currentDate >= expireDate) {
-    localStorage.removeItem('buttonStatus');
-  }
-
-  // Redirect if user is not logged in or is admin
-  if (!userData) {
-    window.location.href = '/login';
-  } else if (user.role === "admin") {
-    window.location.href = '/admindashboard';
-  }
+ 
+// Redirect if user is not logged in or is admin
+if (!userData) {
+  window.location.href = '/login';
+} else if (user.role === "admin") {
+  window.location.href = '/admindashboard';
+}
   
  
 
@@ -114,18 +105,7 @@ export const Mood_Tracking = () => {
     
     try {
       const response = await fetch(`http://localhost:5000/mood/analyze/${user.id}`);
-
-      if(currentDate < expireDate) {
-        Swal.fire({
-          position: "center",
-          icon: "info",
-          title: "You have already generated suggestions for today",
-          showConfirmButton: false,
-          timer: 1500,
-        })
-
-        return
-      }
+      
       
       if (!response.ok) {
         throw new Error("Failed to get mood analysis");
