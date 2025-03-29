@@ -6,6 +6,7 @@ import GlobalStyle from "../../assets/Prototype/GlobalStyle";
 import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 
 export const SelfCarePlanes = () => {
+  const [allPlanes, setAllPlanes] = useState([]); // Store all plane records
   const [suggestions, setSuggestions] = useState([]);
   const [suggestionIds, setSuggestionIds] = useState([]);
   const user = JSON.parse(localStorage.getItem('userData')) || {};
@@ -27,7 +28,7 @@ export const SelfCarePlanes = () => {
 
   useEffect(() => {
     const fetchPlanes = async () => {
-      if (!user.id) return; // Prevent API call if user ID is missing
+      if (!user.id) return;
 
       try {
         const response = await fetch(`http://localhost:5000/suggestions/user/${user.id}`);
@@ -36,16 +37,21 @@ export const SelfCarePlanes = () => {
         const data = await response.json();
         console.log("Fetched Planes:", data.data);
 
-        if (Array.isArray(data.data)) {
-          const ids = data.data.map(item => item._id).filter(Boolean);
-          setSuggestionIds(ids);
-        }
+        // Store all plane records
+        setAllPlanes(data.data || []);
 
-        let rawSuggestions = data.data[0]?.suggestions || [];
+        // Extract all suggestions from all planes
+        const allSuggestions = data.data.flatMap(plane => 
+          plane.suggestions.map(suggestion => ({
+            ...suggestion,
+            planeId: plane._id, // Store the parent plane ID
+            completed: suggestion.completed ?? Math.floor(Math.random() * 101),
+          }))
+        );
 
         // Enrich suggestions with completed & remaining
-        const enrichedSuggestions = rawSuggestions.map(suggestion => {
-          let completed = suggestion.completed ?? Math.floor(Math.random() * 101);
+        const enrichedSuggestions = allSuggestions.map(suggestion => {
+          let completed = suggestion.completed;
           return {
             ...suggestion,
             completed: isNaN(completed) ? 0 : completed,
@@ -53,7 +59,8 @@ export const SelfCarePlanes = () => {
           };
         });
 
-        setSuggestions(enrichedSuggestions); // ✅ Update state properly
+        setSuggestions(enrichedSuggestions);
+        setSuggestionIds(data.data.map(plane => plane._id));
 
       } catch (error) {
         console.error('Error fetching planes:', error);
@@ -69,9 +76,10 @@ export const SelfCarePlanes = () => {
       <main className="flex-grow mx-20">
         <div className={GlobalStyle.fontNunito}>
           <h1 className={`${GlobalStyle.headingLarge}`}>Self Care Activities</h1>
+    
         </div>
 
-        <div className="px-4 flex justify-center mt-20">
+        <div className="px-4 flex justify-center mt-10">
           <div className='grid-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-20'>
             {suggestions.length > 0 ? suggestions.map((suggestion, index) => {
               console.log(`Rendering: ${suggestion.title} | Completed: ${suggestion.completed} | Remaining: ${suggestion.remaining}`);
@@ -90,7 +98,7 @@ export const SelfCarePlanes = () => {
 
               return (
                 <Link 
-                  to={`/Activity_Tracking/ActivityTracking/plane/${suggestionIds[index]}/${suggestion.id}`} 
+                  to={`/Activity_Tracking/ActivityTracking/plane/${suggestion.planeId}/${suggestion.id}`} 
                   key={index}
                 >
                   <div className="plane-cards my-6 bg-[#C0D5D5] w-[600px] h-[400px] p-4 flex flex-col items-center shadow-lg rounded-xl">
