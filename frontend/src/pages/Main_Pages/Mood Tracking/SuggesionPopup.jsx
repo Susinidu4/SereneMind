@@ -20,7 +20,7 @@ export const SuggesionPopup = ({ suggestions, onClose }) => {
   // Initialize random suggestions when component mounts or suggestions prop changes
   useEffect(() => {
     if (suggestions?.suggestions) {
-      const random = getRandomSuggestions(suggestions.suggestions, 6);
+      const random = getRandomSuggestions(suggestions.suggestions, 1);
       setRandomSuggestions(random);
     }
   }, [suggestions]);
@@ -62,8 +62,8 @@ export const SuggesionPopup = ({ suggestions, onClose }) => {
         type: "success",
       });
       Swal.fire({
-        title: "Login Successful!",
-        text: "Login successfully!",
+        title: "Save Successful!",
+        text: "Saved successfully!",
         icon: "success",
       });
        //set expire date for 1 week
