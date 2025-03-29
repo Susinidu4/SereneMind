@@ -20,7 +20,7 @@ export const SuggesionPopup = ({ suggestions, onClose }) => {
   // Initialize random suggestions when component mounts or suggestions prop changes
   useEffect(() => {
     if (suggestions?.suggestions) {
-      const random = getRandomSuggestions(suggestions.suggestions, 6);
+      const random = getRandomSuggestions(suggestions.suggestions, 1);
       setRandomSuggestions(random);
     }
   }, [suggestions]);
