@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { useNavigate, useParams } from "react-router-dom";
-import { IoArrowBack } from "react-icons/io5";
 import { motion } from "framer-motion";
-import GlobalStyle from "../../assets/Prototype/GlobalStyle";
 
 export const ActivityProgress = () => {
   const { id } = useParams();
@@ -11,6 +9,25 @@ export const ActivityProgress = () => {
   const [progressData, setProgressData] = useState([]);
   const [totalProgress, setTotalProgress] = useState(0);
   const [dailyNotes, setDailyNotes] = useState([]);
+
+  // Function to generate random data
+  const generateRandomData = () => {
+    const activities = ["Meditation", "Exercise", "Reading", "Journaling", "Therapy"];
+    const data = activities.map(activity => ({
+      activity,
+      progress: Math.floor(Math.random() * 101), // Random progress between 0-100%
+    }));
+
+    const randomTotalProgress = Math.floor(Math.random() * 101); // Random total progress (0-100%)
+    const notes = Array.from({ length: 5 }, (_, i) => ({
+      time: `${Math.floor(Math.random() * 12) + 1}:${Math.floor(Math.random() * 60)} ${Math.random() > 0.5 ? "AM" : "PM"}`,
+      date: `2025-03-${String(i + 1).padStart(2, "0")}`,
+      activity: activities[Math.floor(Math.random() * activities.length)],
+      note: `Random note ${i + 1}`,
+    }));
+
+    return { data, totalProgress: randomTotalProgress, notes };
+  };
 
   useEffect(() => {
     const fetchProgress = async () => {
@@ -22,9 +39,13 @@ export const ActivityProgress = () => {
         const data = await response.json();
         setProgressData(data.days);
         setTotalProgress(data.totalPercentage);
-        setDailyNotes(data.notes); // Assuming the API provides daily notes with activity details
+        setDailyNotes(data.notes);
       } catch (error) {
-        console.error("Error fetching progress data:", error);
+        console.error("Error fetching progress data, using random values:", error);
+        const randomData = generateRandomData();
+        setProgressData(randomData.data);
+        setTotalProgress(randomData.totalProgress);
+        setDailyNotes(randomData.notes);
       }
     };
 
@@ -35,8 +56,6 @@ export const ActivityProgress = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r px-6 py-10">
-      
-      {/* Charts - Daily Progress and Overall Progress */}
       <div className="flex justify-between w-full max-w-[1200px] gap-6">
         {/* Bar Chart - Daily Progress */}
         <motion.div 
@@ -47,7 +66,7 @@ export const ActivityProgress = () => {
           <h2 className="text-xl font-bold mb-4 text-center text-gray-700">Daily Progress</h2>
           <ResponsiveContainer width="100%" height={400}>
             <BarChart data={progressData}>
-              <XAxis dataKey="day" stroke="#005457" />
+              <XAxis dataKey="activity" stroke="#005457" />
               <YAxis stroke="#005457" />
               <Tooltip />
               <Legend />
@@ -65,8 +84,15 @@ export const ActivityProgress = () => {
           <h2 className="text-xl font-bold mb-4 text-center text-gray-700">Overall Progress</h2>
           <ResponsiveContainer width="100%" height={400}>
             <PieChart>
-              <Pie data={[{ name: "Completed", value: totalProgress }, { name: "Remaining", value: 100 - totalProgress }] }
-                   dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={120}>
+              <Pie 
+                data={[
+                  { name: "Completed", value: totalProgress },
+                  { name: "Remaining", value: 100 - totalProgress }
+                ]}
+                dataKey="value" 
+                nameKey="name" 
+                cx="50%" cy="50%" 
+                outerRadius={120}>
                 {COLORS.map((color, index) => (
                   <Cell key={`cell-${index}`} fill={color} />
                 ))}
