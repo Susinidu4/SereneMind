@@ -19,21 +19,18 @@ const emotionMap = {
   "🤢": "feeling sick",
   "🥳": "feeling excited",
   "😕": "feeling confused",
-}
+};
 
 export const Mood_Tracking = () => {
-  const userData = JSON.parse(localStorage.getItem('userData'));
-  const buttonData = JSON.parse(localStorage.getItem('buttonStatus'))
+  const userData = JSON.parse(localStorage.getItem("userData"));
+  const buttonData = JSON.parse(localStorage.getItem("buttonStatus"));
 
- 
-// Redirect if user is not logged in or is admin
-if (!userData) {
-  window.location.href = '/login';
-} else if (user.role === "admin") {
-  window.location.href = '/admindashboard';
-}
-  
- 
+  // Redirect if user is not logged in or is admin
+  if (!userData) {
+    window.location.href = "/login";
+  } else if (user.role === "admin") {
+    window.location.href = "/admindashboard";
+  }
 
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -54,7 +51,6 @@ if (!userData) {
     setLoading(true);
     setError(null);
 
-
     try {
       const response = await fetch("http://localhost:5000/mood/", {
         method: "POST",
@@ -67,7 +63,7 @@ if (!userData) {
           createdAt: new Date().toISOString(),
         }),
       });
-      
+
       if (!response.ok) {
         throw new Error("Failed to save mood");
       }
@@ -75,7 +71,7 @@ if (!userData) {
       const data = await response.json();
       console.log("Mood saved successfully:", data);
       setSelectedEmoji(null);
-      
+
       Swal.fire({
         position: "top-end",
         icon: "success",
@@ -99,22 +95,21 @@ if (!userData) {
   };
 
   const handleGenerate = async () => {
-  
     setLoading(true);
     setError(null);
-    
+
     try {
-      const response = await fetch(`http://localhost:5000/mood/analyze/${user.id}`);
-      
-      
+      const response = await fetch(
+        `http://localhost:5000/mood/analyze/${user.id}`
+      );
+
       if (!response.ok) {
         throw new Error("Failed to get mood analysis");
       }
-  
+
       const data = await response.json();
       setSuggestion(data);
       setShowSuggestionPopup(true);
-      
     } catch (err) {
       setError(err.message);
       Swal.fire({
@@ -133,10 +128,23 @@ if (!userData) {
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
       <Header_2 />
-      <main className={`flex-grow mx-20 ${GlobalStyle.fontNunito}`} style={{fontFamily: "Nunito"}}>
+      <main
+        className={`flex-grow mx-20 ${GlobalStyle.fontNunito}`}
+        style={{ fontFamily: "Nunito" }}
+      >
+        <div>
+          <h1 className="text-4xl font-bold">Mood Tracking</h1>
+          <p>
+            <b className="text-red-500">*</b> To create a personalized self-care plan, please select and upload
+            your mood for the day. You need to upload at least 10 different
+            moods for a comprehensive analysis. Remember, you can generate only
+            one self-care plan per day. This plan will help guide you in
+            maintaining and improving your mental well-being.
+          </p>
+        </div>
         <div className="flex flex-col items-center p-20">
           <div className="py-10">
-            <button 
+            <button
               onClick={handleGenerate}
               className={`${GlobalStyle.buttonPrimary} w-full`}
               disabled={loading}
@@ -184,11 +192,11 @@ if (!userData) {
       </main>
 
       <Footer />
-      
+
       {showSuggestionPopup && (
-        <SuggesionPopup 
-          suggestions={suggestion} 
-          onClose={() => setShowSuggestionPopup(false)} 
+        <SuggesionPopup
+          suggestions={suggestion}
+          onClose={() => setShowSuggestionPopup(false)}
         />
       )}
     </div>
