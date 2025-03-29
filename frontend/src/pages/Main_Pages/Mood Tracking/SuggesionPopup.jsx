@@ -62,8 +62,8 @@ export const SuggesionPopup = ({ suggestions, onClose }) => {
         type: "success",
       });
       Swal.fire({
-        title: "Login Successful!",
-        text: "Login successfully!",
+        title: "Save Successful!",
+        text: "Saved successfully!",
         icon: "success",
       });
        //set expire date for 1 week
