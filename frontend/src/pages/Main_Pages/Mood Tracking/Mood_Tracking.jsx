@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { Header } from "../../../components/Header";
 import { Footer } from "../../../components/Footer";
@@ -37,6 +37,32 @@ export const Mood_Tracking = () => {
   const [error, setError] = useState(null);
   const [suggestion, setSuggestion] = useState(null);
   const [showSuggestionPopup, setShowSuggestionPopup] = useState(false);
+  const [moodData, setMoodData] = useState([]);
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  useEffect(() => {
+    const fetchMoodData = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/mood/user/${user.id}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch mood data");
+        }
+        const data = await response.json();
+        setMoodData(data);
+      } catch (err) {
+        console.error("Error fetching mood data:", err);
+      }
+    };
+    
+    fetchMoodData();
+  }, [user.id, loading]); // Re-fetch when loading changes (after save)
+
+  // Calculate unique emojis count
+  const uniqueEmojisCount = () => {
+    const uniqueEmojis = new Set();
+    moodData.forEach(mood => uniqueEmojis.add(mood.emoji));
+    return uniqueEmojis.size;
+  };
 
   const handleEmojiClick = (emoji) => {
     setSelectedEmoji(emoji);
@@ -95,7 +121,19 @@ export const Mood_Tracking = () => {
   };
 
   const handleGenerate = async () => {
+    const uniqueCount = uniqueEmojisCount();
+    if (uniqueCount < 10) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Not Enough Unique Data',
+        text: `You need to submit at least 10 different emojis to generate suggestions. You currently have ${uniqueCount} unique emojis.`,
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
     setLoading(true);
+    setIsGenerating(true);
     setError(null);
 
     try {
@@ -122,8 +160,12 @@ export const Mood_Tracking = () => {
       console.error("Error getting mood analysis:", err);
     } finally {
       setLoading(false);
+      setIsGenerating(false);
     }
   };
+
+  const uniqueCount = uniqueEmojisCount();
+  const totalCount = moodData.length;
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
@@ -141,15 +183,21 @@ export const Mood_Tracking = () => {
             one self-care plan per day. This plan will help guide you in
             maintaining and improving your mental well-being.
           </p>
+          <p className="mt-2 text-gray-600">
+            You have submitted {totalCount} moods with {uniqueCount} unique emojis so far.
+            {uniqueCount < 10 && (
+              <span className="text-red-500"> {10 - uniqueCount} more unique emojis needed to generate suggestions.</span>
+            )}
+          </p>
         </div>
         <div className="flex flex-col items-center p-20">
           <div className="py-10">
             <button
               onClick={handleGenerate}
-              className={`${GlobalStyle.buttonPrimary} w-full`}
-              disabled={loading}
+              className={`${GlobalStyle.buttonPrimary} w-full ${uniqueCount < 10 ? 'opacity-50 cursor-not-allowed' : ''}`}
+              disabled={loading || uniqueCount < 10}
             >
-              {loading ? "Generating..." : "Generate Suggestions"}
+              {isGenerating ? "Generating..." : "Generate Suggestions"}
             </button>
           </div>
           <div className="p-8 rounded-lg bg-[#005457] shadow-gray-400 shadow-lg w-full max-w-md">
