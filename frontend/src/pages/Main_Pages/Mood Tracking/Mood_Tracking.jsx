@@ -1,8 +1,12 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
 import { Header } from "../../../components/Header";
 import { Footer } from "../../../components/Footer";
+import GlobalStyle from "../../../assets/Prototype/GlobalStyle";
+import { SuggesionPopup } from "./SuggesionPopup";
+import { Header_2 } from "../../../components/Header_2";
+
+const user = JSON.parse(localStorage.getItem("userData"));
 
 const emotionMap = {
   "😊": "happy",
@@ -15,21 +19,27 @@ const emotionMap = {
   "🤢": "feeling sick",
   "🥳": "feeling excited",
   "😕": "feeling confused",
-};
+}
 
 export const Mood_Tracking = () => {
-  const user = JSON.parse(localStorage.getItem("userData"));
+  const userData = JSON.parse(localStorage.getItem('userData'));
+  const buttonData = JSON.parse(localStorage.getItem('buttonStatus'))
 
-  try {
-    if (!user) {
-      window.location.href = "/";
-    }
-  } catch (err) {
-    console.error("Error checking user role:", err);
-  }
+ 
+// Redirect if user is not logged in or is admin
+if (!userData) {
+  window.location.href = '/login';
+} else if (user.role === "admin") {
+  window.location.href = '/admindashboard';
+}
+  
+ 
+
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [suggestion, setSuggestion] = useState(null);
+  const [showSuggestionPopup, setShowSuggestionPopup] = useState(false);
 
   const handleEmojiClick = (emoji) => {
     setSelectedEmoji(emoji);
@@ -44,6 +54,7 @@ export const Mood_Tracking = () => {
     setLoading(true);
     setError(null);
 
+
     try {
       const response = await fetch("http://localhost:5000/mood/", {
         method: "POST",
@@ -53,26 +64,67 @@ export const Mood_Tracking = () => {
         body: JSON.stringify({
           emoji: selectedEmoji,
           user_id: user.id,
-          createdAt: new Date().toISOString(), // Add timestamp
+          createdAt: new Date().toISOString(),
         }),
       });
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "Your work has been saved",
-        showConfirmButton: false,
-        timer: 1500,
-      });
+      
       if (!response.ok) {
         throw new Error("Failed to save mood");
       }
 
       const data = await response.json();
       console.log("Mood saved successfully:", data);
-      setSelectedEmoji(null); // Reset selected emoji after saving
+      setSelectedEmoji(null);
+      
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Your mood has been saved",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     } catch (err) {
       setError(err.message);
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: "Failed to save mood",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       console.error("Error saving mood:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGenerate = async () => {
+  
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetch(`http://localhost:5000/mood/analyze/${user.id}`);
+      
+      
+      if (!response.ok) {
+        throw new Error("Failed to get mood analysis");
+      }
+  
+      const data = await response.json();
+      setSuggestion(data);
+      setShowSuggestionPopup(true);
+      
+    } catch (err) {
+      setError(err.message);
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: "Failed to get suggestions",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      console.error("Error getting mood analysis:", err);
     } finally {
       setLoading(false);
     }
@@ -80,11 +132,20 @@ export const Mood_Tracking = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
-      <Header />
-      <main className="flex-grow mx-20">
-        <div className=" flex flex-col items-center p-20">
-          <div className="p-8 rounded-lg shadow-lg w-full max-w-md">
-            <h1 className="text-2xl font-bold mb-6 text-center">
+      <Header_2 />
+      <main className={`flex-grow mx-20 ${GlobalStyle.fontNunito}`} style={{fontFamily: "Nunito"}}>
+        <div className="flex flex-col items-center p-20">
+          <div className="py-10">
+            <button 
+              onClick={handleGenerate}
+              className={`${GlobalStyle.buttonPrimary} w-full`}
+              disabled={loading}
+            >
+              {loading ? "Generating..." : "Generate Suggestions"}
+            </button>
+          </div>
+          <div className="p-8 rounded-lg bg-[#005457] shadow-gray-400 shadow-lg w-full max-w-md">
+            <h1 className="text-2xl text-white font-bold mb-6 text-center">
               Select Your Mood
             </h1>
             <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
@@ -95,7 +156,7 @@ export const Mood_Tracking = () => {
                   className={`flex justify-center items-center text-4xl p-4 bg-white rounded-lg shadow-md hover:bg-gray-200 transition-colors ${
                     selectedEmoji === emoji ? "ring-2 ring-blue-500" : ""
                   }`}
-                  disabled={loading} // Disable buttons while loading
+                  disabled={loading}
                 >
                   {emoji}
                 </button>
@@ -109,11 +170,12 @@ export const Mood_Tracking = () => {
               </p>
               <p className="text-gray-600">{emotionMap[selectedEmoji]}</p>
               <button
+                type="submit"
                 onClick={handleSave}
-                className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:bg-blue-300"
-                disabled={loading} // Disable save button while loading
+                className={`${GlobalStyle.buttonPrimary} w-full`}
+                disabled={loading}
               >
-                {loading ? "Saving..." : "Save Mood"}
+                {loading ? "Saving..." : "Save"}
               </button>
             </div>
           )}
@@ -122,6 +184,13 @@ export const Mood_Tracking = () => {
       </main>
 
       <Footer />
+      
+      {showSuggestionPopup && (
+        <SuggesionPopup 
+          suggestions={suggestion} 
+          onClose={() => setShowSuggestionPopup(false)} 
+        />
+      )}
     </div>
   );
 };

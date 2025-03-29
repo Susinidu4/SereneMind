@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+import { Header } from "../../../components/Header";
+import GlobalStyle from "../../../assets/Prototype/GlobalStyle";
+import { Header_2 } from "../../../components/Header_2";
 
 
 
@@ -134,8 +137,11 @@ export const Update_User = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+    <div className="flex flex-col items-center min-h-full bg-[#FFFDF7]" style={{fontFamily:"'Nunito"}}>
+
+      <Header_2 />
+     <main className="flex mx-20 justify-center items-center">
+     <div className={`bg-[#E9F1F1] p-8 rounded-lg shadow-lg w-full`}>
         <h2 className="text-2xl font-bold mb-6 text-center">Update User</h2>
         {message && (
           <p
@@ -148,7 +154,7 @@ export const Update_User = () => {
         )}
 
         {/* Update User Details Section */}
-        <form onSubmit={handleUserSubmit} className="space-y-4 mb-8">
+        <form onSubmit={handleUserSubmit} className="space-y-4 mb-8 min-h-full w-[400px]">
           <h3 className="text-xl font-semibold mb-4">Update User Details</h3>
           <div>
             <input
@@ -158,7 +164,7 @@ export const Update_User = () => {
               value={userData.name}
               onChange={handleUserChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="bg-[#FFFDF7] w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             />
             {errors.name && (
               <p className="text-red-500 text-sm mt-1">{errors.name}</p>
@@ -172,7 +178,7 @@ export const Update_User = () => {
               value={userData.email}
               onChange={handleUserChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="bg-[#FFFDF7] w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
           <div>
@@ -182,59 +188,21 @@ export const Update_User = () => {
               value={userData.dob}
               onChange={handleUserChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="bg-[#FFFDF7] w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             />
             {errors.dob && (
               <p className="text-red-500 text-sm mt-1">{errors.dob}</p>
             )}
           </div>
           <button
-            type="submit"
-            className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
-            Update Details
-          </button>
+              type="submit"
+              className={`${GlobalStyle.buttonPrimary} w-full`}           >
+              Update Details
+            </button>
         </form>
 
-        {/* Update Password Section */}
-        <form onSubmit={handlePasswordSubmit} className="space-y-4">
-          <h3 className="text-xl font-semibold mb-4">Update Password</h3>
-          <div>
-            <input
-              type="password"
-              name="password"
-              placeholder="New Password"
-              value={passwordData.password}
-              onChange={handlePasswordChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            />
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-            )}
-          </div>
-          <div>
-            <input
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              value={passwordData.confirmPassword}
-              onChange={handlePasswordChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            />
-            {errors.confirmPassword && (
-              <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
-            )}
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
-            Update Password
-          </button>
-        </form>
       </div>
+     </main>
     </div>
   );
 };
