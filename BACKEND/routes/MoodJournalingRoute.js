@@ -1,12 +1,42 @@
 import express from "express";
 import MoodJournaling from "../models/Mood_journaling.js";
-import mongoose from "mongoose"; 
+import multer from "multer";
+import path from "path";
+import mongoose from "mongoose";
 
 const router = express.Router();
 
+// Configure multer storage
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/'); // Make sure this directory exists
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ 
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit per file
+    files: 5 // Maximum of 5 files
+  },
+  fileFilter: (req, file, cb) => {
+    const filetypes = /jpeg|jpg|png|gif/;
+    const mimetype = filetypes.test(file.mimetype);
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    
+    if (mimetype && extname) {
+      return cb(null, true);
+    }
+    cb(new Error('Only images (jpeg, jpg, png, gif) are allowed'));
+  }
+});
 
 // Route to insert data into the database
-router.post("/mood-journal-insert", async (req, res) => {
+router.post("/mood-journal-insert", upload.array('images', 5), async (req, res) => {
     try {
         // Destructure the data from the request body
         const {
@@ -17,24 +47,24 @@ router.post("/mood-journal-insert", async (req, res) => {
             mood_trigger,
             cope_mood,
             notes,
-            reflection,
-            image
+            reflection
         } = req.body;
 
-        // Ensure image is an array
-        const imageArray = Array.isArray(image) ? image : [image];
+        // Get uploaded files
+        const files = req.files; // Removed TypeScript type assertion
+        const imagePaths = files.map(file => file.filename);
 
         // Create a new MoodJournaling document
         const newEntry = new MoodJournaling({
-            user_id : "UID-6599",
-            Overall_mood : Overall_mood,
-            mood_intensity : mood_intensity,
-            emotion : emotion,
-            mood_trigger : mood_trigger,
-            cope_mood: cope_mood,
-            notes : notes,
-            reflection : reflection,
-            image: image
+            user_id,
+            Overall_mood,
+            mood_intensity,
+            emotion,
+            mood_trigger,
+            cope_mood,
+            notes,
+            reflection,
+            image: imagePaths
         });
 
         // Save the document to the database

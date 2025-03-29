@@ -1,65 +1,91 @@
 import React, { useState } from "react";
-import axios from "axios"; // Don't forget to import axios
-import Swal from "sweetalert2"; // Import Swal for alert
+import axios from "axios";
+import Swal from "sweetalert2";
 import GlobalStyle from "../../../assets/Prototype/GlobalStyle";
-import { FaUpload } from "react-icons/fa";
+import { FaUpload, FaTimes } from "react-icons/fa";
 
 export const AddNew = () => {
   // State to handle form data
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [content, setContent] = useState("");
-  // const [selectedImages, setSelectedImages] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
   const [auther_name, setAuthorName] = useState("");
   const [auther_designation, setAuthorDesignation] = useState("");
   const [reference, setReference] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const admin_id = "AID-2425";
 
-  // const handleImageChange = (e) => {
-  //   if (e.target.files) {
-  //     const newImages = Array.from(e.target.files);
-  //     setSelectedImages([...selectedImages, ...newImages]);
-  //   }
-  // };
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedImage(e.target.files[0]);
+    }
+  };
+
+  const removeImage = () => {
+    setSelectedImage(null);
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsSubmitting(true);
 
-    const formData = {
-      admin_id: admin_id,
-      title: title,
-      description: description,
-      content: content,
-      // image: selectedImages.map((image) => URL.createObjectURL(image)),
-      reference: reference,
-      auther_name: auther_name,
-      auther_designation: auther_designation,
-    };
+    // Create FormData object to handle file upload
+    const formData = new FormData();
+    formData.append("admin_id", admin_id);
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("content", content);
+    formData.append("reference", reference);
+    formData.append("auther_name", auther_name);
+    formData.append("auther_designation", auther_designation);
 
-    console.log("Form data:", formData);
+    // Append the image if selected
+    if (selectedImage) {
+      formData.append("image", selectedImage);
+    }
 
     try {
       // Submit form data to the backend
       const response = await axios.post(
-        "http://localhost:5000/api/resource_management/addResource", // Correct backend URL
-        formData
+        "http://localhost:5000/api/resource_management/addResource",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
+
       console.log("Response:", response);
       Swal.fire({
         icon: "success",
-        title: "Mood Journal Entry Added!",
-        text: "Your mood journal has been successfully recorded.",
-        confirmButtonColor: "#45553D",
+        title: "Resource Added!",
+        text: "Your resource has been successfully saved.",
+        confirmButtonColor: "#005457",
       });
+
+      // Reset form
+      setTitle("");
+      setDescription("");
+      setContent("");
+      setSelectedImage(null);
+      setAuthorName("");
+      setAuthorDesignation("");
+      setReference("");
     } catch (error) {
       console.error("Error submitting form:", error);
       Swal.fire({
         icon: "error",
         title: "Submission Failed",
-        text: "Failed to submit mood journal entry. Please try again.",
+        text:
+          error.response?.data?.error ||
+          "Failed to submit resource. Please try again.",
         confirmButtonColor: "#d33",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -77,6 +103,7 @@ export const AddNew = () => {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className={`${GlobalStyle.inputText} w-full`}
+                required
               />
             </div>
 
@@ -85,10 +112,25 @@ export const AddNew = () => {
               <label className={GlobalStyle.remarkTopic}>Description :</label>
               <textarea
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={(e) => {
+                  // Limit to 250 characters
+                  if (e.target.value.length <= 250) {
+                    setDescription(e.target.value);
+                  }
+                }}
                 className={`${GlobalStyle.remark} w-full`}
                 rows="5"
+                required
+                maxLength={250} // HTML attribute for additional safety
               ></textarea>
+              <div className="text-right text-sm text-gray-500 mt-1">
+                Character count: {description.length}/250
+                {description.length >= 250 && (
+                  <span className="text-red-500 ml-2">
+                    Maximum character limit reached
+                  </span>
+                )}
+              </div>
             </div>
 
             {/* Content */}
@@ -99,12 +141,13 @@ export const AddNew = () => {
                 onChange={(e) => setContent(e.target.value)}
                 className={`${GlobalStyle.remark} w-full`}
                 rows="10"
+                required
               ></textarea>
             </div>
 
-            {/* Image upload
+            {/* Image upload - Single image only */}
             <div className="mb-6">
-              <label className={GlobalStyle.remarkTopic}>Snaps</label>
+              <label className={GlobalStyle.remarkTopic}>Image</label>
               <div className="w-full">
                 <label htmlFor="image-upload" className="cursor-pointer w-full">
                   <input
@@ -113,21 +156,38 @@ export const AddNew = () => {
                     accept="image/*"
                     onChange={handleImageChange}
                     className="hidden"
-                    multiple
                   />
                   <div className="flex items-center rounded-[10px] border-2 border-[#005457] bg-white overflow-hidden h-14">
                     <div className="px-4 flex-grow truncate">
-                      {selectedImages.length > 0
-                        ? `${selectedImages.length} files selected`
-                        : "Select files"}
+                      {selectedImage
+                        ? selectedImage.name
+                        : "Select an image file (JPEG, PNG, GIF)"}
                     </div>
                     <div className="flex items-center justify-center bg-gray-100 h-full border-l border-gray-300 px-5">
                       <FaUpload className="text-gray-600" />
                     </div>
                   </div>
                 </label>
+
+                {/* Image preview */}
+                {selectedImage && (
+                  <div className="mt-4 relative w-48 h-48">
+                    <img
+                      src={URL.createObjectURL(selectedImage)}
+                      alt="Preview"
+                      className="w-full h-full object-contain border rounded"
+                    />
+                    <button
+                      type="button"
+                      onClick={removeImage}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                    >
+                      <FaTimes size={12} />
+                    </button>
+                  </div>
+                )}
               </div>
-            </div> */}
+            </div>
 
             {/* Author Name */}
             <div className="mb-6">
@@ -138,6 +198,7 @@ export const AddNew = () => {
                 value={auther_name}
                 onChange={(e) => setAuthorName(e.target.value)}
                 className={`${GlobalStyle.inputText} w-full`}
+                required
               />
             </div>
 
@@ -150,6 +211,7 @@ export const AddNew = () => {
                 value={auther_designation}
                 onChange={(e) => setAuthorDesignation(e.target.value)}
                 className={`${GlobalStyle.inputText} w-full`}
+                required
               />
             </div>
 
@@ -166,8 +228,12 @@ export const AddNew = () => {
 
             {/* Submit button */}
             <div className="flex justify-end">
-              <button type="submit" className={GlobalStyle.buttonPrimary}>
-                Submit
+              <button
+                type="submit"
+                className={GlobalStyle.buttonPrimary}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Uploading..." : "Submit"}
               </button>
             </div>
           </form>

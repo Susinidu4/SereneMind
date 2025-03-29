@@ -27,15 +27,13 @@ import { EditJournal } from './pages/Mood_Journaling/EditJournal';
 
 import { OnlineResource } from './pages/Resourse_Management/OnlineResource';
 import { ReadResource } from './pages/Resourse_Management/ReadResource';
+import { DisplayResourceAdmin } from './pages/Resourse_Management/DisplayResourceAdmin';
 
 {/* Oshi */}
 import { ActivityTracking } from './pages/Activity_Tracking/ActivityTracking';
 import { SelfCarePlanes } from './pages/Activity_Tracking/SelfCarePlanes';
-
-
-
 import { ActivityProgress } from './pages/Activity_Tracking/ActivityProgress';
-
+import { ActivityUpdate } from './pages/Activity_Tracking/ActivityUpdate';
 
 
 
@@ -76,13 +74,16 @@ function App() {
         <Route path="/MoodJournaling/EditJournaling" element={<EditJournal/>} />
 
         {/* Activity Tracking */}
-        <Route path="/Activity_Tracking/ActivityTracking/:id" element={<ActivityTracking />} />
+        <Route path="/Activity_Tracking/ActivityTracking/plane/:suggesionId/:id" element={<ActivityTracking />} />
         <Route path="/selfcareplanes" element={<SelfCarePlanes />} />
         <Route path="/activityProgress" element={<ActivityProgress />} />
+        <Route path="/activityUpdate" element={<ActivityUpdate />} />
+
 
         {/* Resource Management */}
         <Route path="/ResourceManagement/OnlineResource" element={<OnlineResource/>} />
-        <Route path="/ResourceManagement/ReadResource" element={<ReadResource/>} />
+        <Route path="/ResourceManagement/ReadResource/:id" element={<ReadResource />} />
+        <Route path="/ResourceManagement/DisplayResourceAdmin/:id" element={<DisplayResourceAdmin />} />
 
 
 
