@@ -60,7 +60,6 @@ This feature connects users with similar emotional journeys, enabling group-base
 | **Node.js + Express**      | Backend REST APIs                                 |
 | **MongoDB**                | Database                                          |
 | **JWT**                    | Authentication                                    |
-| **Python (Flask/FastAPI)** | AI microservice (mood analysis & recommendations) |
 | **Chart.js / Recharts**    | Mood & activity visualizations                    |
 | **Trello**                 | Project Management                                |
 | **Git + GitHub**           | Version Control                                   |
