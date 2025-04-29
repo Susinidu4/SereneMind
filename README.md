@@ -46,8 +46,6 @@ SereneMind is designed to help users understand, reflect on, and improve their m
 
 ## 🌟 Novel Component
 
-> **Socially Adaptive AI for Collaborative Self-Care**
-
 This feature connects users with similar emotional journeys, enabling group-based challenges, support circles, and AI-moderated conversations — a community-driven mental health experience not commonly found in existing apps.
 
 ---
@@ -66,61 +64,6 @@ This feature connects users with similar emotional journeys, enabling group-base
 
 ---
 
-## 🗂 Project Structure (Simplified)
-
-```
-serenemind/
-├── client/                 # React frontend
-│   ├── src/components/
-│   ├── src/pages/
-│   └── src/App.js
-├── server/                 # Node + Express backend
-│   ├── controllers/
-│   ├── routes/
-│   └── app.js
-├── ml-service/             # AI-based recommendation service
-│   └── mood_predictor.py
-├── README.md
-└── package.json
-```
-
----
-
-## ⚙️ Setup & Installation
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/your-username/serenemind.git
-cd serenemind
-```
-
-### 2. Set Up Backend
-
-```bash
-cd server
-npm install
-npm run dev
-```
-
-### 3. Set Up Frontend
-
-```bash
-cd client
-npm install
-npm start
-```
-
-### 4. (Optional) Run ML Microservice
-
-```bash
-cd ml-service
-pip install -r requirements.txt
-python mood_predictor.py
-```
-
----
-
 ## 👥 Contributors
 
 | Name      | Role                                 |
@@ -129,12 +72,6 @@ python mood_predictor.py
 | Oshini    | Self-Care Tracking, UI/UX            |
 | Susinidu  | Mood Journal Management, Auth        |
 | Yasindu   | AI-Based Mood Tracking, Auth         |
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
