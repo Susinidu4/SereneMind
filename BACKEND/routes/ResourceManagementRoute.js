@@ -227,5 +227,42 @@ router.get("/ratings/:resource_id", async (req, res) => {
 });
 
 
+// Route to get feedback summary
+router.get("/summary", async (req, res) => {
+  try {
+    const feedbackData = await Feedback.aggregate([
+      {
+        $group: {
+          _id: "$ratings",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const totalRatings = feedbackData.reduce((sum, data) => sum + data.count, 0);
+    const averageRating =
+      (
+        await Feedback.aggregate([
+          {
+            $group: {
+              _id: null,
+              average: { $avg: "$ratings" },
+            },
+          },
+        ])
+      )[0]?.average || 0;
+
+    const summary = {
+      ratingsDistribution: feedbackData.sort((a, b) => b._id - a._id),
+      totalRatings,
+      averageRating: averageRating.toFixed(1),
+    };
+
+    res.status(200).json(summary);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching feedback summary", error });
+  }
+});
+
 
 export default router;
