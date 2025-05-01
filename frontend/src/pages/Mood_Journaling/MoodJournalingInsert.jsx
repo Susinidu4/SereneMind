@@ -336,7 +336,7 @@ export const MoodJournalingInsert = () => {
                         <div className="px-4 flex-grow truncate">
                           {selectedImages.length > 0
                             ? `${selectedImages.length} files selected`
-                            : "Select files (max 5)"}
+                            : "Select files (max 2)"}
                         </div>
                         <div className="flex items-center justify-center bg-gray-100 h-full border-l border-gray-300 px-5">
                           <FaUpload className="text-gray-600" />
