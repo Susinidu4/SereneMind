@@ -12,7 +12,7 @@ export const Insights = () => {
   useEffect(() => {
     const fetchSummary = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/feedback/summary");
+        const response = await axios.get("http://localhost:5000/api/resource_management/summary");
         setSummary(response.data);
       } catch (error) {
         console.error("Error fetching feedback summary:", error);
