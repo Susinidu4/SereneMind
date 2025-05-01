@@ -23,7 +23,7 @@ export const ActivityProgress = () => {
       time: `${Math.floor(Math.random() * 12) + 1}:${Math.floor(Math.random() * 60)} ${Math.random() > 0.5 ? "AM" : "PM"}`,
       date: `2025-03-${String(i + 1).padStart(2, "0")}`,
       activity: activities[Math.floor(Math.random() * activities.length)],
-      note: `Random note ${i + 1}`,
+      note: `Done `,
     }));
 
     return { data, totalProgress: randomTotalProgress, notes };
