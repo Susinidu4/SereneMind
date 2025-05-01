@@ -15,6 +15,7 @@ import profile from "../../../assets/Images/profile.png";
 import { jsPDF } from "jspdf";
 import { Header_2 } from "../../../components/Header_2";
 import { FaSearch } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export const User_Profile = () => {
   const user_data = JSON.parse(localStorage.getItem("userData"));
@@ -239,6 +240,7 @@ export const User_Profile = () => {
 
           {/* User Details */}
           <div className="p-6 mt-40">
+           
             <table className="w-full">
               <tbody>
                 <tr>
@@ -257,6 +259,11 @@ export const User_Profile = () => {
                 </tr>
               </tbody>
             </table>
+
+            <div className="flex gap-4 mt-4">
+             <Link to={`/update-user/${user?._id}`} > <button className="bg-[#005457] text-white py-2 px-4 rounded">Edit Profile</button></Link>
+             <Link to={`/update-user-password/${user?._id}`} ><button className="bg-[#005457] text-white py-2 px-4 rounded">Change Password</button></Link>
+            </div>
           </div>
 
           <div className="flex items-center justify-center mt-20">

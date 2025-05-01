@@ -132,12 +132,16 @@ export const User_Login = () => {
             </div>
             <button
               type="submit"
-              className={`${GlobalStyle.buttonPrimary} w-full`}           >
+              className={`${GlobalStyle.buttonPrimary} w-full`}>
               LOGIN
             </button>
 
             <Link to={`/usersignup`}>
               <p className="text-center mt-4 font-bold">Don't have an account? <span className="text-[#92C9B1]">Sign Up</span></p>
+            </Link>
+
+            <Link to={`/forgotpassword`}>
+              <p className="text-center mt-4 font-bold">Forgot Password? <span className="text-[#92C9B1]">Click Here</span></p>
             </Link>
           </form>
         </div>

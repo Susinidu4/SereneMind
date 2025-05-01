@@ -13,6 +13,8 @@ import { Admin_Dashboard } from './pages/Main_Pages/Admin/Admin_Dashboard';
 import { Sample } from './pages/Main_Pages/Mood Tracking/Sample';
 import { Update_User } from './pages/Main_Pages/User Account Management/Update_User';
 import { Password_Update } from './pages/Main_Pages/User Account Management/Password_Update';
+import { Forgot_Password } from './pages/Main_Pages/User Account Management/Forgot_Password';
+import { Reset_Password } from './pages/Main_Pages/User Account Management/Reset_Password';
 
 {/* mood tracking */}
 import { Mood_History_Calendar } from './pages/Main_Pages/Mood Tracking/Mood_History_Calendar';
@@ -34,6 +36,7 @@ import { ActivityTracking } from './pages/Activity_Tracking/ActivityTracking';
 import { SelfCarePlanes } from './pages/Activity_Tracking/SelfCarePlanes';
 import { ActivityProgress } from './pages/Activity_Tracking/ActivityProgress';
 import { ActivityUpdate } from './pages/Activity_Tracking/ActivityUpdate';
+
 
 
 
@@ -67,6 +70,8 @@ function App() {
         <Route path="/admindashboard" element={<Admin_Dashboard/>} />
         <Route path="/update-user/:id" element={<Update_User/>} />
         <Route path="/update-user-password/:id" element={<Password_Update/>} />
+        <Route path="/forgotpassword" element={<Forgot_Password/>} />
+        <Route path="/reset-password/:token" element={<Reset_Password/>} />
 
         {/* Mood Journaling */}
         <Route path="/MoodJournaling/InstructionPage" element={<InstructionPage/>} />
