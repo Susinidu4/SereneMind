@@ -15,6 +15,7 @@ import profile from "../../../assets/Images/profile.png";
 import { jsPDF } from "jspdf";
 import { Header_2 } from "../../../components/Header_2";
 import { FaSearch } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export const User_Profile = () => {
   const user_data = JSON.parse(localStorage.getItem("userData"));
@@ -146,8 +147,12 @@ export const User_Profile = () => {
   const handleDownloadPDF = () => {
     const doc = new jsPDF();
     let y = 10;
+
+    doc.setFont("helvetica", "bold"); // Set font to bold
     doc.setFontSize(14);
     doc.text("Journal Entries", 10, y);
+
+    doc.setFont("helvetica", "normal"); // Reset to normal if needed afterward
     y += 10;
 
     // Loop through selected journal IDs
@@ -155,13 +160,15 @@ export const User_Profile = () => {
       const journal = journalHistory.find((item) => item._id === journalId);
 
       if (journal) {
-        // Display journal details in PDF
         doc.setFontSize(10);
-        doc.text(
-          `Date: ${new Date(journal.createdAt).toLocaleString()}`,
-          10,
-          y
-        );
+
+        // Bold Date Text
+        const dateText = `Date: ${new Date(
+          journal.createdAt
+        ).toLocaleString()}`;
+        doc.setFont("helvetica", "bold");
+        doc.text(dateText, 10, y);
+        doc.setFont("helvetica", "normal"); // Reset to normal after date
         y += 8;
 
         doc.text(`Overall Mood: ${journal.Overall_mood}`, 10, y);
@@ -186,7 +193,7 @@ export const User_Profile = () => {
         y += 8;
 
         // Add space between each journal entry
-        y += 8;
+        y += 12;
       }
     });
 
@@ -199,10 +206,7 @@ export const User_Profile = () => {
       .toLocaleString("en-US", {
         year: "numeric",
         month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
+        day: "numeric", 
       })
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
@@ -230,9 +234,9 @@ export const User_Profile = () => {
                 src={user?.profilePhoto || profile}
                 alt="Profile"
                 className="w-50 h-50 object-cover rounded-full"
-              // <IoPersonCircle
-              //   className="text-gray-600"
-              //   style={{ width: "200px", height: "200px" }}
+                // <IoPersonCircle
+                //   className="text-gray-600"
+                //   style={{ width: "200px", height: "200px" }}
               />
             </div>
           </div>
@@ -257,6 +261,20 @@ export const User_Profile = () => {
                 </tr>
               </tbody>
             </table>
+
+            <div className="flex gap-4 mt-4">
+              <Link to={`/update-user/${user?._id}`}>
+                {" "}
+                <button className="bg-[#005457] text-white py-2 px-4 rounded">
+                  Edit Profile
+                </button>
+              </Link>
+              <Link to={`/update-user-password/${user?._id}`}>
+                <button className="bg-[#005457] text-white py-2 px-4 rounded">
+                  Change Password
+                </button>
+              </Link>
+            </div>
           </div>
 
           <div className="flex items-center justify-center mt-20">

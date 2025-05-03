@@ -6,8 +6,9 @@ const userSchema = new mongoose.Schema({
     email: { type: String },
     password: { type: String },
     role: { type: String, default: 'user' },
-    dob:{type:String}
-
+    dob:{type:String},
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date }
 }, { timestamps: true });
 
 userSchema.pre('save', function(next) {

@@ -5,6 +5,8 @@ import { Footer } from "../../components/Footer";
 import { FaUpload, FaTimes } from "react-icons/fa";
 import axios from "axios"; 
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+
 
 export const MoodJournalingInsert = () => {
   const user = JSON.parse(localStorage.getItem("userData"));
@@ -16,6 +18,8 @@ export const MoodJournalingInsert = () => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [overallMood, setOverallMood] = useState("");
   const [emotions, setEmotions] = useState([]);
+  const navigate = useNavigate();
+
 
   const getCurrentDate = () => {
     const now = new Date();
@@ -121,6 +125,10 @@ export const MoodJournalingInsert = () => {
       setRemark3(""); 
       setRemark4(""); 
       setSelectedImages([]); 
+
+      // Navigate to journal page
+    navigate("/MoodJournaling/InstructionPage");
+
     } catch (error) {
       console.error("Error submitting form:", error);
       Swal.fire({
@@ -336,7 +344,7 @@ export const MoodJournalingInsert = () => {
                         <div className="px-4 flex-grow truncate">
                           {selectedImages.length > 0
                             ? `${selectedImages.length} files selected`
-                            : "Select files (max 5)"}
+                            : "Select files (max 2)"}
                         </div>
                         <div className="flex items-center justify-center bg-gray-100 h-full border-l border-gray-300 px-5">
                           <FaUpload className="text-gray-600" />
