@@ -4,51 +4,81 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Header } from "../../components/Header";
 import { Footer } from "../../components/Footer";
 import bg_image1 from "../../assets/Images/tracking.png";
-import { FaEdit, FaTrash } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import axios from "axios";
-import { ActivityUpdate } from "./ActivityUpdate"; // Adjust path as needed
-import { icons } from "lucide-react";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
 
 export const ActivityTracking = () => {
   const { id, suggesionId } = useParams();
   const user = JSON.parse(localStorage.getItem("userData"));
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
   const [selectedDay, setSelectedDay] = useState(null);
   const [note, setNote] = useState("");
   const [actualTime, setActualTime] = useState("");
   const [plane, setPlane] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [completedDays, setCompletedDays] = useState({});
+  const [existingLogs, setExistingLogs] = useState([]);
 
   useEffect(() => {
-    const fetchPlane = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/suggestions/${id}`);
-        if (!response.ok) {
+        // Fetch plan data
+        const planResponse = await fetch(`http://localhost:5000/suggestions/${id}`);
+        if (!planResponse.ok) {
           throw new Error("Failed to fetch plan");
         }
-        const data = await response.json();
-        setPlane(data);
+        const planData = await planResponse.json();
+        setPlane(planData);
+
+        // Fetch existing logs for this user and plan
+        const logsResponse = await axios.get(
+          `http://localhost:5000/api/activity_tracking/logs/${user.id}/${id}`
+        );
+        const logsData = logsResponse.data;
+        setExistingLogs(logsData);
+
+        // Mark days that already have logs as completed
+        const completed = {};
+        logsData.forEach(log => {
+          completed[log.day] = true;
+        });
+        setCompletedDays(completed);
+
+        // Also check localStorage for any locally saved completions
+        const savedCompletedDays = localStorage.getItem(
+          `completedDays-${user.id}-${id}`
+        );
+        if (savedCompletedDays) {
+          const localCompleted = JSON.parse(savedCompletedDays);
+          // Merge with server data
+          Object.keys(localCompleted).forEach(day => {
+            completed[day] = true;
+          });
+          setCompletedDays(completed);
+        }
       } catch (error) {
-        console.error("Error fetching plan:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
-    fetchPlane();
-
-    const savedCompletedDays = localStorage.getItem(
-      `completedDays-${user.id}-${id}`
-    );
-    if (savedCompletedDays) {
-      setCompletedDays(JSON.parse(savedCompletedDays));
-    }
+    fetchData();
   }, [id, user.id]);
 
   const openModal = (day) => {
+    // Check if this day already has a log
+    const hasExistingLog = existingLogs.some(log => log.day === day);
+    if (hasExistingLog) {
+      Swal.fire({
+        title: "Already Submitted",
+        text: "You've already submitted a log for this day.",
+        icon: "info"
+      });
+      return;
+    }
+
     setSelectedDay(day);
     setShowModal(true);
     setNote("");
@@ -65,6 +95,17 @@ export const ActivityTracking = () => {
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
+      // Check again in case the state hasn't updated
+      const hasExistingLog = existingLogs.some(log => log.day === selectedDay);
+      if (hasExistingLog) {
+        Swal.fire({
+          title: "Error!",
+          text: "A log already exists for this day.",
+          icon: "error"
+        });
+        return;
+      }
+
       const response = await axios.post(
         `http://localhost:5000/api/activity_tracking/log/${user.id}`,
         {
@@ -72,13 +113,25 @@ export const ActivityTracking = () => {
           note: note,
           plane_id: id,
           day: selectedDay,
-          suggestion_id: suggesionId // Add the suggestion_id from params
+          suggestion_id: suggesionId
         }
       );
-  
+
       if (response.status === 200) {
+        // Update local state
         const updatedCompletedDays = { ...completedDays, [selectedDay]: true };
         setCompletedDays(updatedCompletedDays);
+        
+        // Update existing logs
+        setExistingLogs([...existingLogs, {
+          day: selectedDay,
+          progress: actualTime,
+          note: note,
+          plane_id: id,
+          suggestion_id: suggesionId
+        }]);
+        
+        // Save to localStorage
         localStorage.setItem(
           `completedDays-${user.id}-${id}`,
           JSON.stringify(updatedCompletedDays)
@@ -96,63 +149,11 @@ export const ActivityTracking = () => {
       console.error("Error saving activity log:", error);
       Swal.fire({
         title: "Error!",
-        text: "Failed to save activity",
+        text: error.response?.data?.message || "Failed to save activity",
         icon: "error"
       });
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  const handleEdit = (day) => {
-    setSelectedDay(day);
-    setShowEditModal(true);
-  };
-
-  const handleUpdate = () => {
-    // You might want to add logic here to refresh data
-    setShowEditModal(false);
-  };
-  const handleDelete = async (day) => {
-    try {
-      // Show confirmation dialog
-      const result = await Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
-      });
-
-      if (result.isConfirmed) {
-        // Make DELETE request to your API
-        const response = await axios.delete(
-          `http://localhost:5000/api/activity_tracking/users/${user.id}/planes/${id}`
-        );
-
-        if (response.status === 200) {
-          // Update local state
-          const updatedCompletedDays = { ...completedDays };
-          delete updatedCompletedDays[day];
-          setCompletedDays(updatedCompletedDays);
-          localStorage.setItem(
-            `completedDays-${user.id}-${id}`,
-            JSON.stringify(updatedCompletedDays)
-          );
-
-          // Show success message
-          Swal.fire("Deleted!", "Your activity has been deleted.", "success");
-        }
-      }
-    } catch (error) {
-      console.error("Error deleting activity:", error);
-      Swal.fire({
-        title: "Error!",
-        text: "Failed to delete mood.",
-        icon: "error",
-      });
     }
   };
 
@@ -170,6 +171,13 @@ export const ActivityTracking = () => {
           <div
             className={`${GlobalStyle.pageContainer} h-[820px] px-10 py-5 mx-auto`}
           >
+            <div>
+              <Link to={`/activitytrackingHistory/${suggesionId}`}>
+                <button className="bg-[#005457] text-white px-4 py-2 rounded">
+                  Activity History
+                </button>
+              </Link>
+            </div>
             <div className="flex justify-between items-center pt-10">
               <p className={GlobalStyle.headingMedium}>{plane.title}</p>
               <p className={GlobalStyle.headingMedium}>Duration: 1 Week</p>
@@ -182,41 +190,22 @@ export const ActivityTracking = () => {
             </div>
             <p className={GlobalStyle.headingSmall}>{plane.plane}</p>
             <div className="mt-6 space-y-5">
-              {[...Array(7)].map((_, index) => (
-                <div
-                  key={index}
-                  className={`flex justify-between items-center border p-3 rounded-md shadow-sm cursor-pointer transition ${
-                    completedDays[index + 1] ? "bg-green-300" : "bg-gray-50"
-                  }`}
-                  onClick={() => openModal(index + 1)}
-                >
-                  <span>Day {index + 1}</span>
-                  {completedDays[index + 1] ? (
-                    <div className="flex gap-3">
-                      <button
-                        className="p-2 rounded-full text-[#007579] hover:text-[#005457] hover:bg-[#AEDBD8] transition"
-                        title="Edit"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEdit(index + 1);
-                        }}
-                      >
-                        <FaEdit size={15} />
-                      </button>
-                      <button
-                        className="p-2 rounded-full text-[#007579] hover:text-[#005457] hover:bg-red-100 transition"
-                        title="Delete"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(index + 1);
-                        }}
-                      >
-                        <FaTrash size={15} />
-                      </button>
-                    </div>
-                  ) : null}
-                </div>
-              ))}
+              {[...Array(7)].map((_, index) => {
+                const day = index + 1;
+                const isCompleted = completedDays[day];
+                return (
+                  <div
+                    key={index}
+                    className={`flex justify-between items-center border p-3 rounded-md shadow-sm cursor-pointer transition ${
+                      isCompleted ? "bg-green-300" : "bg-gray-50 hover:bg-gray-100"
+                    }`}
+                    onClick={() => openModal(day)}
+                  >
+                    <span>Day {day}</span>
+                    {isCompleted && <span className="text-green-800">✓ Completed</span>}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </main>
@@ -292,17 +281,6 @@ export const ActivityTracking = () => {
             </div>
           </div>
         </div>
-      )}
-
-      {showEditModal && (
-        <ActivityUpdate
-          selectedDay={selectedDay}
-          plane={plane}
-          user={user}
-          id={id}
-          onClose={() => setShowEditModal(false)}
-          onUpdate={handleUpdate}
-        />
       )}
     </div>
   );

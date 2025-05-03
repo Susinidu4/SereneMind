@@ -447,7 +447,7 @@ router.post("/log/:user_id", async (req, res) => {
   }
 });
 
-//delete day schema using id
+// Delete a specific day entry
 router.delete('/day/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -456,7 +456,7 @@ router.delete('/day/:id', async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid activity tracking ID format'
+        message: 'Invalid day entry ID format'
       });
     }
 
@@ -489,6 +489,7 @@ router.delete('/day/:id', async (req, res) => {
     });
   }
 });
+
 
 //fetch data from suggestion id
 router.get('/suggestion/:id', async (req, res) => {
@@ -528,6 +529,62 @@ router.get('/suggestion/:id', async (req, res) => {
   }
 });
 
+// Update a specific day entry
+router.put('/day/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { progress, note } = req.body;
+
+    // Validate input
+    if (!progress || !note) {
+      return res.status(400).json({
+        success: false,
+        message: "Progress and note are required"
+      });
+    }
+
+    // Validate MongoDB ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid day entry ID format'
+      });
+    }
+
+    // Find and update the day entry
+    const updatedActivity = await ActivityTracking.findOneAndUpdate(
+      { "Day._id": id },
+      { 
+        $set: { 
+          "Day.$.progress": progress,
+          "Day.$.note": note
+        } 
+      },
+      { new: true }
+    );
+
+    if (!updatedActivity) {
+      return res.status(404).json({
+        success: false,
+        message: 'Day entry not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Day entry updated successfully',
+      data: updatedActivity
+    });
+
+  } catch (error) {
+    console.error('Error updating day entry:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: error.message
+    });
+  }
+});
 export default router;
 
 

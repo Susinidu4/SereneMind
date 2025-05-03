@@ -264,10 +264,6 @@ export const User_Profile = () => {
               </tbody>
             </table>
 
-            <div className="flex gap-4 mt-4">
-             <Link to={`/update-user/${user?._id}`} > <button className="bg-[#005457] text-white py-2 px-4 rounded">Edit Profile</button></Link>
-             <Link to={`/update-user-password/${user?._id}`} ><button className="bg-[#005457] text-white py-2 px-4 rounded">Change Password</button></Link>
-            </div>
           </div>
 
           <div className="flex items-center justify-center mt-20">
