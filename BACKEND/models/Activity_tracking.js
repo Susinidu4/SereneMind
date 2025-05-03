@@ -7,13 +7,13 @@ const daySchema = new mongoose.Schema(
       plane_id : {type: String, required:true},
       day: { type: String},
   },
-  { _id: false }
 );
 
 const ActivityTrackingSchema = new mongoose.Schema(
   {
     user_id: { type: String, required: true },
     Day: [daySchema],
+    suggestion_id: { type: String },
   },
   {
     collection: "Activity_tracking",

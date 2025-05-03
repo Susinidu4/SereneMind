@@ -12,7 +12,7 @@ import { icons } from "lucide-react";
 import Swal from "sweetalert2";
 
 export const ActivityTracking = () => {
-  const { id, suggestionId } = useParams();
+  const { id, suggesionId } = useParams();
   const user = JSON.parse(localStorage.getItem("userData"));
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
@@ -66,29 +66,39 @@ export const ActivityTracking = () => {
     setIsSubmitting(true);
     try {
       const response = await axios.post(
-        `http://localhost:5000/api/activity_tracking/addlog/${user.id}`,
+        `http://localhost:5000/api/activity_tracking/log/${user.id}`,
         {
-          Day: [
-            {
-              progress: actualTime,
-              note: note,
-              plane_id: id,
-            },
-          ],
+          progress: actualTime,
+          note: note,
+          plane_id: id,
+          day: selectedDay,
+          suggestion_id: suggesionId // Add the suggestion_id from params
         }
       );
-
-      if (response.status === 201) {
+  
+      if (response.status === 200) {
         const updatedCompletedDays = { ...completedDays, [selectedDay]: true };
         setCompletedDays(updatedCompletedDays);
         localStorage.setItem(
           `completedDays-${user.id}-${id}`,
           JSON.stringify(updatedCompletedDays)
         );
+        
+        Swal.fire({
+          title: "Success!",
+          text: "Activity logged successfully",
+          icon: "success"
+        });
+        
         closeModal();
       }
     } catch (error) {
       console.error("Error saving activity log:", error);
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to save activity",
+        icon: "error"
+      });
     } finally {
       setIsSubmitting(false);
     }
