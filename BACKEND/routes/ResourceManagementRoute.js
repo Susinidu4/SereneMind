@@ -143,6 +143,28 @@ router.delete("/deleteResource/:id", async (req, res) => {
   }
 });
 
+// Update Resource
+router.put("/updateResource/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedData = req.body;
+
+    const updatedResource = await ResourseManagement.findByIdAndUpdate(id, updatedData, {
+      new: true, // Returns updated document
+      runValidators: true, // Ensures validation rules are applied
+    });
+
+    if (!updatedResource) {
+      return res.status(404).json({ message: "Resource not found" });
+    }
+
+    res.status(200).json(updatedResource);
+  } catch (error) {
+    console.error("Error updating resource:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 
 // Route to insert feedback data
 router.post("/add-feedback", async (req, res) => {
@@ -205,30 +227,42 @@ router.get("/ratings/:resource_id", async (req, res) => {
 });
 
 
-
-
-// Update Resource
-router.put("/updateResource/:id", async (req, res) => {
+// Route to get feedback summary
+router.get("/summary", async (req, res) => {
   try {
-    const { id } = req.params;
-    const updatedData = req.body;
+    const feedbackData = await Feedback.aggregate([
+      {
+        $group: {
+          _id: "$ratings",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
 
-    const updatedResource = await ResourseManagement.findByIdAndUpdate(id, updatedData, {
-      new: true, // Returns updated document
-      runValidators: true, // Ensures validation rules are applied
-    });
+    const totalRatings = feedbackData.reduce((sum, data) => sum + data.count, 0);
+    const averageRating =
+      (
+        await Feedback.aggregate([
+          {
+            $group: {
+              _id: null,
+              average: { $avg: "$ratings" },
+            },
+          },
+        ])
+      )[0]?.average || 0;
 
-    if (!updatedResource) {
-      return res.status(404).json({ message: "Resource not found" });
-    }
+    const summary = {
+      ratingsDistribution: feedbackData.sort((a, b) => b._id - a._id),
+      totalRatings,
+      averageRating: averageRating.toFixed(1),
+    };
 
-    res.status(200).json(updatedResource);
+    res.status(200).json(summary);
   } catch (error) {
-    console.error("Error updating resource:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: "Error fetching feedback summary", error });
   }
 });
-
 
 
 export default router;

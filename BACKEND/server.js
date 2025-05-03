@@ -65,23 +65,23 @@ connection.once("open", () => {
 // Routes
 // app.use("/api/routeName", Router);
 
-//yasindu's code
+//yasindu
 app.use('/user', UserRouter);
 app.use('/admin', AdminRouter);
 app.use('/mood', MoodLogRouter);
 app.use('/suggestions', SuggesionRouter);
 
+//Susinidu
 app.use("/api/mood_journaling", MoodJournaling);
-
 
 //Oshi
 app.use("/api/activity_tracking", ActivityTrackingRoute);
 
+//ishara
 app.use("/api/resource_management", ResourceManagement);
 
 // Add this below your existing routes
 // app.use('/api/image', ImageUploadRouter);
-
 
 app.listen(PORT, () => {
     console.log(`Server is up and running on port number: ${PORT}`);

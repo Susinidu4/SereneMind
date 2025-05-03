@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
+import jsPDF from "jspdf";
 
 export const ReadResource = () => {
   const user = JSON.parse(localStorage.getItem("userData"));
@@ -17,7 +18,7 @@ export const ReadResource = () => {
   const [rating, setRating] = useState(0); // State to store the selected rating
   const [submitted, setSubmitted] = useState(false); // State to track if rating is submitted
 
-  const [buttonStatus, setButtonStatus] = useState(false);
+  const [buttonStatus, setButtonStatus] = useState(false);  
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("userData"));
@@ -117,6 +118,45 @@ export const ReadResource = () => {
     );
   };
 
+  // Function to handle PDF download
+  const handleDownloadPDF = () => {
+    if (!resource) return;
+
+    const doc = new jsPDF();
+
+    // Add title
+    doc.setFont("Poppins", "bold");
+    doc.setFontSize(16);
+    doc.text(resource.title, 10, 10);
+
+    // Add author information
+    doc.setFont("Poppins", "normal");
+    doc.setFontSize(12);
+    doc.text(`Author: ${resource.auther_name}`, 10, 20);
+    doc.text(`Designation: ${resource.auther_designation}`, 10, 30);
+
+    // Add description
+    doc.setFontSize(12);
+    doc.text("Description:", 10, 40);
+    doc.setFontSize(10);
+    doc.text(resource.description, 10, 50, { maxWidth: 190 });
+
+    // Add references
+    doc.setFontSize(12);
+    doc.text("References:", 10, 70);
+    doc.setFontSize(10);
+    doc.text(resource.reference, 10, 80, { maxWidth: 190 });
+
+    // Add content
+    doc.setFontSize(12);
+    doc.text("Content:", 10, 110);
+    doc.setFontSize(10);
+    doc.text(resource.content, 10, 120, { maxWidth: 190 });
+
+    // Save the document
+    doc.save(`${resource.title || "Resource"}.pdf`);
+  };
+
   // Show loading state while fetching resource data
   if (!resource) {
     return <div>Loading...</div>;
@@ -191,6 +231,7 @@ export const ReadResource = () => {
               <div className="flex gap-4 justify-end pt-8 pb-6">
                 {buttonStatus && (
                   <button
+                  onClick={handleDownloadPDF}
                     className={`${GlobalStyle.buttonPrimary} flex items-center gap-2`}
                   >
                     <MdDownload size={20} />
