@@ -244,6 +244,10 @@ export const User_Profile = () => {
             <table className="w-full">
               <tbody>
                 <tr>
+                  <td className="text-2xl font-semibold w-1/3">User ID</td>
+                  <td className="text-xl pl-4">: {user?._id}</td>
+                </tr>
+                <tr>
                   <td className="text-2xl font-semibold w-1/3">UserName</td>
                   <td className="text-xl pl-4">: {user?.name}</td>
                 </tr>

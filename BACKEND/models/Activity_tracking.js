@@ -4,7 +4,8 @@ const daySchema = new mongoose.Schema(
   {
       progress: { type: Number, required: true },
       note: { type: String, required: true },
-      plane_id : {type: String, required:true}
+      plane_id : {type: String, required:true},
+      day: { type: String},
   },
   { _id: false }
 );
