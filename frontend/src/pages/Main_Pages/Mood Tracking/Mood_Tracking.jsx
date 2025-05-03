@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { Header } from "../../../components/Header";
 import { Footer } from "../../../components/Footer";
@@ -19,27 +19,50 @@ const emotionMap = {
   "🤢": "feeling sick",
   "🥳": "feeling excited",
   "😕": "feeling confused",
-}
+};
 
 export const Mood_Tracking = () => {
-  const userData = JSON.parse(localStorage.getItem('userData'));
-  const buttonData = JSON.parse(localStorage.getItem('buttonStatus'))
+  const userData = JSON.parse(localStorage.getItem("userData"));
+  const buttonData = JSON.parse(localStorage.getItem("buttonStatus"));
 
- 
-// Redirect if user is not logged in or is admin
-if (!userData) {
-  window.location.href = '/login';
-} else if (user.role === "admin") {
-  window.location.href = '/admindashboard';
-}
-  
- 
+  // Redirect if user is not logged in or is admin
+  if (!userData) {
+    window.location.href = "/login";
+  } else if (user.role === "admin") {
+    window.location.href = "/admindashboard";
+  }
 
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [suggestion, setSuggestion] = useState(null);
   const [showSuggestionPopup, setShowSuggestionPopup] = useState(false);
+  const [moodData, setMoodData] = useState([]);
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  useEffect(() => {
+    const fetchMoodData = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/mood/user/${user.id}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch mood data");
+        }
+        const data = await response.json();
+        setMoodData(data);
+      } catch (err) {
+        console.error("Error fetching mood data:", err);
+      }
+    };
+    
+    fetchMoodData();
+  }, [user.id, loading]); // Re-fetch when loading changes (after save)
+
+  // Calculate unique emojis count
+  const uniqueEmojisCount = () => {
+    const uniqueEmojis = new Set();
+    moodData.forEach(mood => uniqueEmojis.add(mood.emoji));
+    return uniqueEmojis.size;
+  };
 
   const handleEmojiClick = (emoji) => {
     setSelectedEmoji(emoji);
@@ -54,7 +77,6 @@ if (!userData) {
     setLoading(true);
     setError(null);
 
-
     try {
       const response = await fetch("http://localhost:5000/mood/", {
         method: "POST",
@@ -67,7 +89,7 @@ if (!userData) {
           createdAt: new Date().toISOString(),
         }),
       });
-      
+
       if (!response.ok) {
         throw new Error("Failed to save mood");
       }
@@ -75,7 +97,7 @@ if (!userData) {
       const data = await response.json();
       console.log("Mood saved successfully:", data);
       setSelectedEmoji(null);
-      
+
       Swal.fire({
         position: "top-end",
         icon: "success",
@@ -99,22 +121,33 @@ if (!userData) {
   };
 
   const handleGenerate = async () => {
-  
+    const uniqueCount = uniqueEmojisCount();
+    if (uniqueCount < 10) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Not Enough Unique Data',
+        text: `You need to submit at least 10 different emojis to generate suggestions. You currently have ${uniqueCount} unique emojis.`,
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
     setLoading(true);
+    setIsGenerating(true);
     setError(null);
-    
+
     try {
-      const response = await fetch(`http://localhost:5000/mood/analyze/${user.id}`);
-      
-      
+      const response = await fetch(
+        `http://localhost:5000/mood/analyze/${user.id}`
+      );
+
       if (!response.ok) {
         throw new Error("Failed to get mood analysis");
       }
-  
+
       const data = await response.json();
       setSuggestion(data);
       setShowSuggestionPopup(true);
-      
     } catch (err) {
       setError(err.message);
       Swal.fire({
@@ -127,21 +160,44 @@ if (!userData) {
       console.error("Error getting mood analysis:", err);
     } finally {
       setLoading(false);
+      setIsGenerating(false);
     }
   };
+
+  const uniqueCount = uniqueEmojisCount();
+  const totalCount = moodData.length;
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
       <Header_2 />
-      <main className={`flex-grow mx-20 ${GlobalStyle.fontNunito}`} style={{fontFamily: "Nunito"}}>
+      <main
+        className={`flex-grow mx-20 ${GlobalStyle.fontNunito}`}
+        style={{ fontFamily: "Nunito" }}
+      >
+        <div>
+          <h1 className="text-4xl font-bold">Mood Tracking</h1>
+          <p>
+            <b className="text-red-500">*</b> To create a personalized self-care plan, please select and upload
+            your mood for the day. You need to upload at least 10 different
+            moods for a comprehensive analysis. Remember, you can generate only
+            one self-care plan per day. This plan will help guide you in
+            maintaining and improving your mental well-being.
+          </p>
+          <p className="mt-2 text-gray-600">
+            You have submitted {totalCount} moods with {uniqueCount} unique emojis so far.
+            {uniqueCount < 10 && (
+              <span className="text-red-500"> {10 - uniqueCount} more unique emojis needed to generate suggestions.</span>
+            )}
+          </p>
+        </div>
         <div className="flex flex-col items-center p-20">
           <div className="py-10">
-            <button 
+            <button
               onClick={handleGenerate}
-              className={`${GlobalStyle.buttonPrimary} w-full`}
-              disabled={loading}
+              className={`${GlobalStyle.buttonPrimary} w-full ${uniqueCount < 10 ? 'opacity-50 cursor-not-allowed' : ''}`}
+              disabled={loading || uniqueCount < 10}
             >
-              {loading ? "Generating..." : "Generate Suggestions"}
+              {isGenerating ? "Generating..." : "Generate Suggestions"}
             </button>
           </div>
           <div className="p-8 rounded-lg bg-[#005457] shadow-gray-400 shadow-lg w-full max-w-md">
@@ -184,11 +240,11 @@ if (!userData) {
       </main>
 
       <Footer />
-      
+
       {showSuggestionPopup && (
-        <SuggesionPopup 
-          suggestions={suggestion} 
-          onClose={() => setShowSuggestionPopup(false)} 
+        <SuggesionPopup
+          suggestions={suggestion}
+          onClose={() => setShowSuggestionPopup(false)}
         />
       )}
     </div>

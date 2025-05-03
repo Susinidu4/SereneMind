@@ -5,6 +5,8 @@ import { Footer } from "../../components/Footer";
 import { FaUpload, FaTimes } from "react-icons/fa";
 import axios from "axios"; 
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+
 
 export const MoodJournalingInsert = () => {
   const user = JSON.parse(localStorage.getItem("userData"));
@@ -16,6 +18,8 @@ export const MoodJournalingInsert = () => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [overallMood, setOverallMood] = useState("");
   const [emotions, setEmotions] = useState([]);
+  const navigate = useNavigate();
+
 
   const getCurrentDate = () => {
     const now = new Date();
@@ -121,6 +125,10 @@ export const MoodJournalingInsert = () => {
       setRemark3(""); 
       setRemark4(""); 
       setSelectedImages([]); 
+
+      // Navigate to journal page
+    navigate("/MoodJournaling/InstructionPage");
+
     } catch (error) {
       console.error("Error submitting form:", error);
       Swal.fire({
