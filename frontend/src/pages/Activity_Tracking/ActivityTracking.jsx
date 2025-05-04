@@ -21,60 +21,75 @@ export const ActivityTracking = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [completedDays, setCompletedDays] = useState({});
   const [existingLogs, setExistingLogs] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const initializeData = async () => {
       try {
-        // Fetch plan data
-        const planResponse = await fetch(`http://localhost:5000/suggestions/${id}`);
-        if (!planResponse.ok) {
-          throw new Error("Failed to fetch plan");
-        }
+        setIsLoading(true);
+
+        // 1. First load from localStorage immediately to show something to the user
+        const savedCompletedDays = localStorage.getItem(
+          `completedDays-${user.id}-${id}`
+        );
+        const localCompleted = savedCompletedDays
+          ? JSON.parse(savedCompletedDays)
+          : {};
+        setCompletedDays(localCompleted);
+
+        // 2. Fetch plan data
+        const planResponse = await fetch(
+          `http://localhost:5000/suggestions/${id}`
+        );
+        if (!planResponse.ok) throw new Error("Failed to fetch plan");
         const planData = await planResponse.json();
         setPlane(planData);
 
-        // Fetch existing logs for this user and plan
+        // 3. Fetch server logs
         const logsResponse = await axios.get(
           `http://localhost:5000/api/activity_tracking/logs/${user.id}/${id}`
         );
         const logsData = logsResponse.data;
         setExistingLogs(logsData);
 
-        // Mark days that already have logs as completed
-        const completed = {};
-        logsData.forEach(log => {
-          completed[log.day] = true;
+        // 4. Create definitive completed days by combining server and local data
+        const serverCompleted = {};
+        logsData.forEach((log) => {
+          serverCompleted[log.day] = true;
         });
-        setCompletedDays(completed);
 
-        // Also check localStorage for any locally saved completions
-        const savedCompletedDays = localStorage.getItem(
-          `completedDays-${user.id}-${id}`
+        // Merge with local completed days (server data takes precedence)
+        const definitiveCompleted = {
+          ...localCompleted,
+          ...serverCompleted,
+        };
+
+        setCompletedDays(definitiveCompleted);
+
+        // Update localStorage to match the definitive state
+        localStorage.setItem(
+          `completedDays-${user.id}-${id}`,
+          JSON.stringify(definitiveCompleted)
         );
-        if (savedCompletedDays) {
-          const localCompleted = JSON.parse(savedCompletedDays);
-          // Merge with server data
-          Object.keys(localCompleted).forEach(day => {
-            completed[day] = true;
-          });
-          setCompletedDays(completed);
-        }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error initializing data:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchData();
+    initializeData();
   }, [id, user.id]);
 
   const openModal = (day) => {
-    // Check if this day already has a log
-    const hasExistingLog = existingLogs.some(log => log.day === day);
+    if (isLoading) return;
+
+    const hasExistingLog = existingLogs.some((log) => log.day === day);
     if (hasExistingLog) {
       Swal.fire({
         title: "Already Submitted",
         text: "You've already submitted a log for this day.",
-        icon: "info"
+        icon: "info",
       });
       return;
     }
@@ -95,13 +110,14 @@ export const ActivityTracking = () => {
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
-      // Check again in case the state hasn't updated
-      const hasExistingLog = existingLogs.some(log => log.day === selectedDay);
+      const hasExistingLog = existingLogs.some(
+        (log) => log.day === selectedDay
+      );
       if (hasExistingLog) {
         Swal.fire({
           title: "Error!",
           text: "A log already exists for this day.",
-          icon: "error"
+          icon: "error",
         });
         return;
       }
@@ -113,36 +129,38 @@ export const ActivityTracking = () => {
           note: note,
           plane_id: id,
           day: selectedDay,
-          suggestion_id: suggesionId
+          suggestion_id: suggesionId,
         }
       );
 
       if (response.status === 200) {
-        // Update local state
-        const updatedCompletedDays = { ...completedDays, [selectedDay]: true };
-        setCompletedDays(updatedCompletedDays);
-        
-        // Update existing logs
-        setExistingLogs([...existingLogs, {
+        const newLog = {
           day: selectedDay,
           progress: actualTime,
           note: note,
           plane_id: id,
-          suggestion_id: suggesionId
-        }]);
-        
-        // Save to localStorage
+          suggestion_id: suggesionId,
+        };
+
+        const updatedCompletedDays = { ...completedDays, [selectedDay]: true };
+        const updatedLogs = [...existingLogs, newLog];
+
+        // Update all states atomically
+        setCompletedDays(updatedCompletedDays);
+        setExistingLogs(updatedLogs);
+
+        // Persist to localStorage
         localStorage.setItem(
           `completedDays-${user.id}-${id}`,
           JSON.stringify(updatedCompletedDays)
         );
-        
+
         Swal.fire({
           title: "Success!",
           text: "Activity logged successfully",
-          icon: "success"
+          icon: "success",
         });
-        
+
         closeModal();
       }
     } catch (error) {
@@ -150,12 +168,28 @@ export const ActivityTracking = () => {
       Swal.fire({
         title: "Error!",
         text: error.response?.data?.message || "Failed to save activity",
-        icon: "error"
+        icon: "error",
       });
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
+        <Header />
+        <main className="flex-grow flex items-center justify-center">
+          <div className="text-center">
+            <p className={GlobalStyle.headingMedium}>
+              Loading your activity data...
+            </p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
@@ -196,13 +230,17 @@ export const ActivityTracking = () => {
                 return (
                   <div
                     key={index}
-                    className={`flex justify-between items-center border p-3 rounded-md shadow-sm cursor-pointer transition ${
-                      isCompleted ? "bg-green-300" : "bg-gray-50 hover:bg-gray-100"
+                    className={`flex justify-between items-center border p-3 rounded-md shadow-sm transition ${
+                      isCompleted
+                        ? "bg-green-300 cursor-not-allowed"
+                        : "bg-gray-50 hover:bg-gray-100 cursor-pointer"
                     }`}
-                    onClick={() => openModal(day)}
+                    onClick={isCompleted ? undefined : () => openModal(day)}
                   >
                     <span>Day {day}</span>
-                    {isCompleted && <span className="text-green-800">✓ Completed</span>}
+                    {isCompleted && (
+                      <span className="text-green-800">✓ Completed</span>
+                    )}
                   </div>
                 );
               })}
