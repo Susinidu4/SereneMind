@@ -3,6 +3,9 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import GlobalStyle from "../../../assets/Prototype/GlobalStyle";
 import { FaUpload, FaTimes } from "react-icons/fa";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+
 
 export const AddNew = () => {
   // State to handle form data
@@ -133,17 +136,38 @@ export const AddNew = () => {
               </div>
             </div>
 
-            {/* Content */}
-            <div className="mb-6">
-              <label className={GlobalStyle.remarkTopic}>Content :</label>
-              <textarea
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                className={`${GlobalStyle.remark} w-full`}
-                rows="10"
-                required
-              ></textarea>
-            </div>
+            {/* Content - Rich Text Editor */}
+<div className="mb-6">
+  <label className={GlobalStyle.remarkTopic}>Content :</label>
+  <div className="bg-white border border-gray-300 rounded-lg shadow-sm">
+    <ReactQuill
+      theme="snow"
+      value={content}
+      onChange={setContent}
+      modules={{
+        toolbar: [
+          [{ header: [1, 2, false] }],
+          ["bold", "italic", "underline"],
+          [{ list: "ordered" }, { list: "bullet" }],
+          ["link"],
+          ["clean"],
+        ],
+      }}
+      formats={[
+        "header",
+        "bold",
+        "italic",
+        "underline",
+        "list",
+        "bullet",
+        "link",
+      ]}
+      className="min-h-[200px] rounded-b-lg"
+    />
+  </div>
+</div>
+
+
 
             {/* Image upload - Single image only */}
             <div className="mb-6">
