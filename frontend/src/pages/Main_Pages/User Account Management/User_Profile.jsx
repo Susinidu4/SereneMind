@@ -246,6 +246,10 @@ export const User_Profile = () => {
             <table className="w-full">
               <tbody>
                 <tr>
+                  <td className="text-2xl font-semibold w-1/3">User ID</td>
+                  <td className="text-xl pl-4">: {user?._id}</td>
+                </tr>
+                <tr>
                   <td className="text-2xl font-semibold w-1/3">UserName</td>
                   <td className="text-xl pl-4">: {user?.name}</td>
                 </tr>
@@ -262,6 +266,7 @@ export const User_Profile = () => {
               </tbody>
             </table>
 
+
             <div className="flex gap-4 mt-4">
               <Link to={`/update-user/${user?._id}`}>
                 {" "}
@@ -275,6 +280,7 @@ export const User_Profile = () => {
                 </button>
               </Link>
             </div>
+
           </div>
 
           <div className="flex items-center justify-center mt-20">

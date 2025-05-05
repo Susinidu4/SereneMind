@@ -36,6 +36,7 @@ import { ActivityTracking } from './pages/Activity_Tracking/ActivityTracking';
 import { SelfCarePlanes } from './pages/Activity_Tracking/SelfCarePlanes';
 import { ActivityProgress } from './pages/Activity_Tracking/ActivityProgress';
 import { ActivityUpdate } from './pages/Activity_Tracking/ActivityUpdate';
+import { Activity_Tracking_History } from './pages/Activity_Tracking/Activity_Tracking_History';
 
 
 
@@ -83,6 +84,7 @@ function App() {
         <Route path="/selfcareplanes" element={<SelfCarePlanes />} />
         <Route path="/activityProgress" element={<ActivityProgress />} />
         <Route path="/activityUpdate" element={<ActivityUpdate />} />
+        <Route path="/activitytrackingHistory/:id" element={<Activity_Tracking_History />} />
 
 
         {/* Resource Management */}

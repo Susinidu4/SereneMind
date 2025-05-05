@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { MdArrowBack } from "react-icons/md";
-import { FaEdit, FaSave } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
 import { Header } from "../../components/Header";
 import { Footer } from "../../components/Footer";
 import GlobalStyle from "../../assets/Prototype/GlobalStyle";
 import Swal from "sweetalert2";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 export const DisplayResourceAdmin = () => {
   const { id } = useParams();
@@ -40,36 +42,37 @@ export const DisplayResourceAdmin = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleContentChange = (value) => {
+    setFormData({ ...formData, content: value });
+  };
 
+  const handleSave = async () => {
+    try {
+      await axios.put(
+        `http://localhost:5000/api/resource_management/updateResource/${id}`,
+        formData
+      );
+      setResource(formData);
+      setIsEditing(false);
 
-const handleSave = async () => {
-  try {
-    await axios.put(
-      `http://localhost:5000/api/resource_management/updateResource/${id}`,
-      formData
-    );
-    setResource(formData);
-    setIsEditing(false);
+      Swal.fire({
+        icon: "success",
+        title: "Updated!",
+        text: "Resource details updated successfully.",
+        confirmButtonColor: "#005457",
+      });
+    } catch (err) {
+      console.error("Error updating resource:", err);
+      setError("Failed to update resource. Please try again.");
 
-    Swal.fire({
-      icon: "success",
-      title: "Updated!",
-      text: "Resource details updated successfully.",
-      confirmButtonColor: "#005457",
-    });
-  } catch (err) {
-    console.error("Error updating resource:", err);
-    setError("Failed to update resource. Please try again.");
-
-    Swal.fire({
-      icon: "error",
-      title: "Update Failed",
-      text: "Something went wrong. Please try again.",
-      confirmButtonColor: "#005457",
-    });
-  }
-};
-
+      Swal.fire({
+        icon: "error",
+        title: "Update Failed",
+        text: "Something went wrong. Please try again.",
+        confirmButtonColor: "#005457",
+      });
+    }
+  };
 
   if (error) {
     return (
@@ -105,11 +108,11 @@ const handleSave = async () => {
                   </button>
                   {isEditing ? (
                     <button
-                    className={`${GlobalStyle.buttonPrimary} px-2 py-1 text-sm ml-auto`}
-                    onClick={handleSave}
-                  >
-                    Save
-                  </button>
+                      className={`${GlobalStyle.buttonPrimary} px-2 py-1 text-sm ml-auto`}
+                      onClick={handleSave}
+                    >
+                      Save
+                    </button>
                   ) : (
                     <button
                       className="rounded-full text-[#007579] hover:text-[#005457] hover:bg-[#AEDBD8] text-2xl p-3"
@@ -124,7 +127,6 @@ const handleSave = async () => {
                   {[
                     "title",
                     "description",
-                    "content",
                     "auther_name",
                     "auther_designation",
                     "reference",
@@ -149,9 +151,32 @@ const handleSave = async () => {
                     </div>
                   ))}
 
+                  {/* Content Field with Rich Text Editor */}
+                  <div>
+                    <label className={GlobalStyle.headingSmall}>CONTENT</label>
+                    {isEditing ? (
+                      <ReactQuill
+                        theme="snow"
+                        value={formData.content || ""}
+                        onChange={handleContentChange}
+                        className="bg-white"
+                      />
+                    ) : (
+                      <div className="bg-gray-50 p-4 rounded border border-gray-200">
+                        <div
+                          className="prose max-w-full"
+                          dangerouslySetInnerHTML={{
+                            __html: resource.content || "Not specified",
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Image Section */}
                   <div>
                     <label className={GlobalStyle.headingSmall}>Images</label>
-                    {resource.image && resource.image.length > 0 ? (
+                    {resource.image ? (
                       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                         <img
                           src={`http://localhost:5000/uploads/${resource.image}`}

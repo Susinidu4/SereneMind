@@ -5,7 +5,6 @@ import mongoose from "mongoose";
 const router = express.Router();
 
 
-
 // Create a new activity tracking entry with user_id from params
 router.post("/addlog/:user_id", async (req, res) => {
     try {
@@ -171,7 +170,6 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-
 //delete data using user id and plane id
 router.delete('/users/:user_id/planes/:plane_id', async (req, res) => {
   try {
@@ -214,8 +212,6 @@ router.delete('/users/:user_id/planes/:plane_id', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-
 
 //update data by id (use main _id)
 router.put('/:id', async (req, res) => {
@@ -385,7 +381,210 @@ router.get("/progress/daily/:id", async (req, res) => {
 });
 
 
+// Create or update activity log for a specific day
+router.post("/log/:user_id", async (req, res) => {
+  try {
+    const { user_id } = req.params;
+    const { progress, note, plane_id, day, suggestion_id } = req.body;
 
+    // Validate input
+    if (!progress || !note || !plane_id || !day) {
+      return res.status(400).json({ 
+        message: "Progress, note, plane_id, and day are required" 
+      });
+    }
+
+    // Find existing document for this user
+    let activity = await ActivityTracking.findOne({ user_id });
+
+    if (!activity) {
+      // Create new document if none exists
+      activity = new ActivityTracking({
+        user_id,
+        suggestion_id,
+        Day: [{
+          progress,
+          note,
+          plane_id,
+          day
+        }]
+      });
+    } else {
+      // Check if day entry already exists
+      const dayIndex = activity.Day.findIndex(
+        d => d.day === day && d.plane_id === plane_id
+      );
+
+      if (dayIndex >= 0) {
+        // Update existing entry
+        activity.Day[dayIndex].progress = progress;
+        activity.Day[dayIndex].note = note;
+      } else {
+        // Add new day entry
+        activity.Day.push({
+          progress,
+          note,
+          plane_id,
+          day
+        });
+      }
+    }
+
+    // Save to database
+    const savedActivity = await activity.save();
+
+    res.status(200).json({
+      success: true,
+      data: savedActivity
+    });
+
+  } catch (error) {
+    console.error("Error saving activity log:", error);
+    res.status(500).json({ 
+      success: false,
+      message: "Internal server error" 
+    });
+  }
+});
+
+// Delete a specific day entry
+router.delete('/day/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Validate MongoDB ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid day entry ID format'
+      });
+    }
+
+    // Find and delete the day entry
+    const updatedActivity = await ActivityTracking.findOneAndUpdate(
+      { "Day._id": id },
+      { $pull: { Day: { _id: id } } },
+      { new: true }
+    );
+
+    if (!updatedActivity) {
+      return res.status(404).json({
+        success: false,
+        message: 'Day entry not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Day entry deleted successfully',
+      data: updatedActivity
+    });
+
+  } catch (error) {
+    console.error('Error deleting day entry:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: error.message
+    });
+  }
+});
+
+
+//fetch data from suggestion id
+router.get('/suggestion/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Validate MongoDB ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid suggestion ID format'
+      });
+    }
+
+    // Find the document with the specified suggestion_id
+    const activity = await ActivityTracking.findOne({ suggestion_id: id });
+
+    if (!activity) {
+      return res.status(404).json({
+        success: false,
+        message: 'Activity tracking document not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: activity
+    });
+
+  } catch (error) {
+    console.error('Error fetching activity tracking:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: error.message
+    });
+  }
+});
+
+// Update a specific day entry
+router.put('/day/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { progress, note } = req.body;
+
+    // Validate input
+    if (!progress || !note) {
+      return res.status(400).json({
+        success: false,
+        message: "Progress and note are required"
+      });
+    }
+
+    // Validate MongoDB ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid day entry ID format'
+      });
+    }
+
+    // Find and update the day entry
+    const updatedActivity = await ActivityTracking.findOneAndUpdate(
+      { "Day._id": id },
+      { 
+        $set: { 
+          "Day.$.progress": progress,
+          "Day.$.note": note
+        } 
+      },
+      { new: true }
+    );
+
+    if (!updatedActivity) {
+      return res.status(404).json({
+        success: false,
+        message: 'Day entry not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Day entry updated successfully',
+      data: updatedActivity
+    });
+
+  } catch (error) {
+    console.error('Error updating day entry:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: error.message
+    });
+  }
+});
 export default router;
 
 

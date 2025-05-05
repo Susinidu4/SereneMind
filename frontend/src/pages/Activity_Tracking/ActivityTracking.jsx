@@ -4,52 +4,100 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Header } from "../../components/Header";
 import { Footer } from "../../components/Footer";
 import bg_image1 from "../../assets/Images/tracking.png";
-import { FaEdit, FaTrash } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import axios from "axios";
-import { ActivityUpdate } from "./ActivityUpdate"; // Adjust path as needed
-import { icons } from "lucide-react";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
 
 export const ActivityTracking = () => {
-  const { id, suggestionId } = useParams();
+  const { id, suggesionId } = useParams();
   const user = JSON.parse(localStorage.getItem("userData"));
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
   const [selectedDay, setSelectedDay] = useState(null);
   const [note, setNote] = useState("");
   const [actualTime, setActualTime] = useState("");
   const [plane, setPlane] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [completedDays, setCompletedDays] = useState({});
+
+  const [existingLogs, setExistingLogs] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const [errorMessage, setErrorMessage] = useState("");
 
+
   useEffect(() => {
-    const fetchPlane = async () => {
+    const initializeData = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/suggestions/${id}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch plan");
-        }
-        const data = await response.json();
-        setPlane(data);
+        setIsLoading(true);
+
+        // 1. First load from localStorage immediately to show something to the user
+        const savedCompletedDays = localStorage.getItem(
+          `completedDays-${user.id}-${id}`
+        );
+        const localCompleted = savedCompletedDays
+          ? JSON.parse(savedCompletedDays)
+          : {};
+        setCompletedDays(localCompleted);
+
+        // 2. Fetch plan data
+        const planResponse = await fetch(
+          `http://localhost:5000/suggestions/${id}`
+        );
+        if (!planResponse.ok) throw new Error("Failed to fetch plan");
+        const planData = await planResponse.json();
+        setPlane(planData);
+
+        // 3. Fetch server logs
+        const logsResponse = await axios.get(
+          `http://localhost:5000/api/activity_tracking/logs/${user.id}/${id}`
+        );
+        const logsData = logsResponse.data;
+        setExistingLogs(logsData);
+
+        // 4. Create definitive completed days by combining server and local data
+        const serverCompleted = {};
+        logsData.forEach((log) => {
+          serverCompleted[log.day] = true;
+        });
+
+        // Merge with local completed days (server data takes precedence)
+        const definitiveCompleted = {
+          ...localCompleted,
+          ...serverCompleted,
+        };
+
+        setCompletedDays(definitiveCompleted);
+
+        // Update localStorage to match the definitive state
+        localStorage.setItem(
+          `completedDays-${user.id}-${id}`,
+          JSON.stringify(definitiveCompleted)
+        );
       } catch (error) {
-        console.error("Error fetching plan:", error);
+        console.error("Error initializing data:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchPlane();
-
-    const savedCompletedDays = localStorage.getItem(
-      `completedDays-${user.id}-${id}`
-    );
-    if (savedCompletedDays) {
-      setCompletedDays(JSON.parse(savedCompletedDays));
-    }
+    initializeData();
   }, [id, user.id]);
 
   const openModal = (day) => {
+    if (isLoading) return;
+
+    const hasExistingLog = existingLogs.some((log) => log.day === day);
+    if (hasExistingLog) {
+      Swal.fire({
+        title: "Already Submitted",
+        text: "You've already submitted a log for this day.",
+        icon: "info",
+      });
+      return;
+    }
+
     setSelectedDay(day);
     setShowModal(true);
     setNote("");
@@ -66,86 +114,86 @@ export const ActivityTracking = () => {
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
+      const hasExistingLog = existingLogs.some(
+        (log) => log.day === selectedDay
+      );
+      if (hasExistingLog) {
+        Swal.fire({
+          title: "Error!",
+          text: "A log already exists for this day.",
+          icon: "error",
+        });
+        return;
+      }
+
       const response = await axios.post(
-        `http://localhost:5000/api/activity_tracking/addlog/${user.id}`,
+        `http://localhost:5000/api/activity_tracking/log/${user.id}`,
         {
-          Day: [
-            {
-              progress: actualTime,
-              note: note,
-              plane_id: id,
-            },
-          ],
+          progress: actualTime,
+          note: note,
+          plane_id: id,
+          day: selectedDay,
+          suggestion_id: suggesionId,
         }
       );
 
-      if (response.status === 201) {
+      if (response.status === 200) {
+        const newLog = {
+          day: selectedDay,
+          progress: actualTime,
+          note: note,
+          plane_id: id,
+          suggestion_id: suggesionId,
+        };
+
         const updatedCompletedDays = { ...completedDays, [selectedDay]: true };
+        const updatedLogs = [...existingLogs, newLog];
+
+        // Update all states atomically
         setCompletedDays(updatedCompletedDays);
+        setExistingLogs(updatedLogs);
+
+        // Persist to localStorage
         localStorage.setItem(
           `completedDays-${user.id}-${id}`,
           JSON.stringify(updatedCompletedDays)
         );
+
+        Swal.fire({
+          title: "Success!",
+          text: "Activity logged successfully",
+          icon: "success",
+        });
+
         closeModal();
       }
     } catch (error) {
       console.error("Error saving activity log:", error);
+      Swal.fire({
+        title: "Error!",
+        text: error.response?.data?.message || "Failed to save activity",
+        icon: "error",
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleEdit = (day) => {
-    setSelectedDay(day);
-    setShowEditModal(true);
-  };
-
-  const handleUpdate = () => {
-    // You might want to add logic here to refresh data
-    setShowEditModal(false);
-  };
-  const handleDelete = async (day) => {
-    try {
-      // Show confirmation dialog
-      const result = await Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
-      });
-
-      if (result.isConfirmed) {
-        // Make DELETE request to your API
-        const response = await axios.delete(
-          `http://localhost:5000/api/activity_tracking/users/${user.id}/planes/${id}`
-        );
-
-        if (response.status === 200) {
-          // Update local state
-          const updatedCompletedDays = { ...completedDays };
-          delete updatedCompletedDays[day];
-          setCompletedDays(updatedCompletedDays);
-          localStorage.setItem(
-            `completedDays-${user.id}-${id}`,
-            JSON.stringify(updatedCompletedDays)
-          );
-
-          // Show success message
-          Swal.fire("Deleted!", "Your activity has been deleted.", "success");
-        }
-      }
-    } catch (error) {
-      console.error("Error deleting activity:", error);
-      Swal.fire({
-        title: "Error!",
-        text: "Failed to delete mood.",
-        icon: "error",
-      });
-    }
-  };
+  if (isLoading) {
+    return (
+      <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
+        <Header />
+        <main className="flex-grow flex items-center justify-center">
+          <div className="text-center">
+            <p className={GlobalStyle.headingMedium}>
+              Loading your activity data...
+            </p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
@@ -161,6 +209,13 @@ export const ActivityTracking = () => {
           <div
             className={`${GlobalStyle.pageContainer} h-[820px] px-10 py-5 mx-auto`}
           >
+            <div>
+              <Link to={`/activitytrackingHistory/${suggesionId}`}>
+                <button className="bg-[#005457] text-white px-4 py-2 rounded">
+                  Activity History
+                </button>
+              </Link>
+            </div>
             <div className="flex justify-between items-center pt-10">
               <p className={GlobalStyle.headingMedium}>{plane.title}</p>
               <p className={GlobalStyle.headingMedium}>Duration: 1 Week</p>
@@ -173,41 +228,26 @@ export const ActivityTracking = () => {
             </div>
             <p className={GlobalStyle.headingSmall}>{plane.plane}</p>
             <div className="mt-6 space-y-5">
-              {[...Array(7)].map((_, index) => (
-                <div
-                  key={index}
-                  className={`flex justify-between items-center border p-3 rounded-md shadow-sm cursor-pointer transition ${
-                    completedDays[index + 1] ? "bg-green-300" : "bg-gray-50"
-                  }`}
-                  onClick={() => openModal(index + 1)}
-                >
-                  <span>Day {index + 1}</span>
-                  {completedDays[index + 1] ? (
-                    <div className="flex gap-3">
-                      <button
-                        className="p-2 rounded-full text-[#007579] hover:text-[#005457] hover:bg-[#AEDBD8] transition"
-                        title="Edit"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEdit(index + 1);
-                        }}
-                      >
-                        <FaEdit size={15} />
-                      </button>
-                      <button
-                        className="p-2 rounded-full text-[#007579] hover:text-[#005457] hover:bg-red-100 transition"
-                        title="Delete"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(index + 1);
-                        }}
-                      >
-                        <FaTrash size={15} />
-                      </button>
-                    </div>
-                  ) : null}
-                </div>
-              ))}
+              {[...Array(7)].map((_, index) => {
+                const day = index + 1;
+                const isCompleted = completedDays[day];
+                return (
+                  <div
+                    key={index}
+                    className={`flex justify-between items-center border p-3 rounded-md shadow-sm transition ${
+                      isCompleted
+                        ? "bg-green-300 cursor-not-allowed"
+                        : "bg-gray-50 hover:bg-gray-100 cursor-pointer"
+                    }`}
+                    onClick={isCompleted ? undefined : () => openModal(day)}
+                  >
+                    <span>Day {day}</span>
+                    {isCompleted && (
+                      <span className="text-green-800">✓ Completed</span>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </main>
@@ -297,17 +337,6 @@ export const ActivityTracking = () => {
             </div>
           </div>
         </div>
-      )}
-
-      {showEditModal && (
-        <ActivityUpdate
-          selectedDay={selectedDay}
-          plane={plane}
-          user={user}
-          id={id}
-          onClose={() => setShowEditModal(false)}
-          onUpdate={handleUpdate}
-        />
       )}
     </div>
   );
