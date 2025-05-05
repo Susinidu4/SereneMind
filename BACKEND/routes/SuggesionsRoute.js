@@ -4,6 +4,7 @@ import Suggesion from "../models/Suggesion.js";
 
 const router = express.Router();
 
+//get all menthial health suggestions from the data set
 router.get("/", async (req, res) => {
   res.json(mentalHealthSuggestions);
 });
@@ -142,6 +143,31 @@ router.get('/all/suggestions', async (req, res) => {
     });
   }
 });
+
+//get suggestion by id
+router.get('/suggestion/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const suggestion = await Suggesion.findById(id).lean();
+    if (!suggestion) {
+      return res.status(404).json({
+        success: false,
+        message: 'Suggestion not found'
+      });
+    }
+    res.status(200).json({
+      success: true,
+      data: suggestion
+    });
+  } catch (error) {
+    console.error('Error fetching suggestion:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: error.message
+    });
+  }
+    })
 
 //delete sugeesion by id
 router.delete('/:id', async (req, res) => {

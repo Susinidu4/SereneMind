@@ -39,6 +39,7 @@ export const Mood_Tracking = () => {
   const [showSuggestionPopup, setShowSuggestionPopup] = useState(false);
   const [moodData, setMoodData] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [todayMoodCount, setTodayMoodCount] = useState(0);
 
   useEffect(() => {
     const fetchMoodData = async () => {
@@ -49,6 +50,14 @@ export const Mood_Tracking = () => {
         }
         const data = await response.json();
         setMoodData(data);
+        
+        // Calculate today's mood count
+        const today = new Date().toISOString().split('T')[0];
+        const todayMoods = data.filter(mood => {
+          const moodDate = new Date(mood.createdAt).toISOString().split('T')[0];
+          return moodDate === today;
+        });
+        setTodayMoodCount(todayMoods.length);
       } catch (err) {
         console.error("Error fetching mood data:", err);
       }
@@ -121,13 +130,13 @@ export const Mood_Tracking = () => {
   };
 
   const handleGenerate = async () => {
-    const uniqueCount = uniqueEmojisCount();
-    if (uniqueCount < 10) {
+    if (todayMoodCount < 10) {
       Swal.fire({
-        icon: 'error',
-        title: 'Not Enough Unique Data',
-        text: `You need to submit at least 10 different emojis to generate suggestions. You currently have ${uniqueCount} unique emojis.`,
-        confirmButtonText: 'OK'
+        position: "top-end",
+        icon: "error",
+        title: `You need ${10 - todayMoodCount} more mood entries today to generate a suggestion`,
+        showConfirmButton: false,
+        timer: 2000,
       });
       return;
     }
@@ -148,6 +157,15 @@ export const Mood_Tracking = () => {
       const data = await response.json();
       setSuggestion(data);
       setShowSuggestionPopup(true);
+
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Suggestion Generated",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      
     } catch (err) {
       setError(err.message);
       Swal.fire({
@@ -163,9 +181,6 @@ export const Mood_Tracking = () => {
       setIsGenerating(false);
     }
   };
-
-  const uniqueCount = uniqueEmojisCount();
-  const totalCount = moodData.length;
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
@@ -183,22 +198,26 @@ export const Mood_Tracking = () => {
             one self-care plan per day. This plan will help guide you in
             maintaining and improving your mental well-being.
           </p>
-          <p className="mt-2 text-gray-600">
-            You have submitted {totalCount} moods with {uniqueCount} unique emojis so far.
-            {uniqueCount < 10 && (
-              <span className="text-red-500"> {10 - uniqueCount} more unique emojis needed to generate suggestions.</span>
-            )}
+          <p className="mt-2 text-blue-600">
+            Today's mood entries: {todayMoodCount}/10
           </p>
         </div>
         <div className="flex flex-col items-center p-20">
           <div className="py-10">
             <button
               onClick={handleGenerate}
-              className={`${GlobalStyle.buttonPrimary} w-full ${uniqueCount < 10 ? 'opacity-50 cursor-not-allowed' : ''}`}
-              disabled={loading || uniqueCount < 10}
+              disabled={todayMoodCount < 10 || loading}
+              className={`${GlobalStyle.buttonPrimary} w-full ${
+                todayMoodCount < 10 ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
               {isGenerating ? "Generating..." : "Generate Suggestions"}
             </button>
+            {todayMoodCount < 10 && (
+              <p className="text-red-500 text-center mt-2">
+                You need {10 - todayMoodCount} more mood entries today to generate suggestions
+              </p>
+            )}
           </div>
           <div className="p-8 rounded-lg bg-[#005457] shadow-gray-400 shadow-lg w-full max-w-md">
             <h1 className="text-2xl text-white font-bold mb-6 text-center">
