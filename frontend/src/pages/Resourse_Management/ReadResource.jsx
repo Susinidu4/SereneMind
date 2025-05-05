@@ -10,6 +10,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 import jsPDF from "jspdf";
+import { htmlToText } from "html-to-text";
 
 export const ReadResource = () => {
   const user = JSON.parse(localStorage.getItem("userData"));
@@ -18,7 +19,7 @@ export const ReadResource = () => {
   const [rating, setRating] = useState(0); // State to store the selected rating
   const [submitted, setSubmitted] = useState(false); // State to track if rating is submitted
 
-  const [buttonStatus, setButtonStatus] = useState(false);  
+  const [buttonStatus, setButtonStatus] = useState(false);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("userData"));
@@ -199,7 +200,7 @@ export const ReadResource = () => {
                 {resource.description}
               </p>
             </div>
-            
+
             {/* Banner */}
             <div>
               {resource.image && (
@@ -215,9 +216,30 @@ export const ReadResource = () => {
               )}
             </div>
             {/* Article Body */}
-            <div className="mt-6 text-justify">
-              <p className={GlobalStyle.paragraph}>{resource.content}</p>
-            </div>
+
+            <pre className={`${GlobalStyle.paragraph} whitespace-pre-wrap`}>
+              {htmlToText(resource.content, {
+                wordwrap: false,
+                selectors: [
+                  {
+                    selector: "a",
+                    options: { ignoreHref: true },
+                  },
+                  {
+                    selector: "ul",
+                    format: "block",
+                  },
+                  {
+                    selector: "li",
+                    format: "inline",
+                    options: {
+                      itemPrefix: "• ", // Use bullet symbol
+                    },
+                  },
+                ],
+              })}
+            </pre>
+
             {/* References and Footer Actions */}
             <div className={GlobalStyle.headingSmall}>
               <p>
@@ -231,7 +253,7 @@ export const ReadResource = () => {
               <div className="flex gap-4 justify-end pt-8 pb-6">
                 {buttonStatus && (
                   <button
-                  onClick={handleDownloadPDF}
+                    onClick={handleDownloadPDF}
                     className={`${GlobalStyle.buttonPrimary} flex items-center gap-2`}
                   >
                     <MdDownload size={20} />
