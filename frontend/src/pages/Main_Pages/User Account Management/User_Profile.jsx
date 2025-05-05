@@ -267,7 +267,7 @@ export const User_Profile = () => {
             </table>
 
 
-            <div className="flex gap-4 mt-4">
+            {/* <div className="flex gap-4 mt-4">
               <Link to={`/update-user/${user?._id}`}>
                 {" "}
                 <button className="bg-[#005457] text-white py-2 px-4 rounded">
@@ -279,7 +279,7 @@ export const User_Profile = () => {
                   Change Password
                 </button>
               </Link>
-            </div>
+            </div> */}
 
           </div>
 
