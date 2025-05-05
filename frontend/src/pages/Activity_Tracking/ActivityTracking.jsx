@@ -20,8 +20,12 @@ export const ActivityTracking = () => {
   const [plane, setPlane] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [completedDays, setCompletedDays] = useState({});
+
   const [existingLogs, setExistingLogs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [errorMessage, setErrorMessage] = useState("");
+
 
   useEffect(() => {
     const initializeData = async () => {
@@ -290,9 +294,23 @@ export const ActivityTracking = () => {
               className="w-full border p-2 mt-2 rounded-md bg-white"
               placeholder="Enter actual time spent"
               value={actualTime}
-              onChange={(e) => setActualTime(e.target.value)}
+              onChange={(e) => {
+                const value = parseInt(e.target.value, 10);
+                if (!isNaN(value) && value <= 60) {
+                  setActualTime(value);
+                  setErrorMessage("");
+                } else if (e.target.value === "") {
+                  setActualTime("");
+                  setErrorMessage("");
+                } else {
+                  setErrorMessage("Value cannot exceed 60 minutes");
+                }
+              }}
               disabled={completedDays[selectedDay]}
             />
+            {errorMessage && (
+              <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
+            )}
 
             <div className="flex justify-end space-x-3 mt-4">
               <br />
