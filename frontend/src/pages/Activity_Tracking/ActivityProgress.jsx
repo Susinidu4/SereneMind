@@ -10,7 +10,6 @@ export const ActivityProgress = () => {
   const [totalProgress, setTotalProgress] = useState(0);
   const [dailyNotes, setDailyNotes] = useState([]);
 
-<<<<<<< HEAD
   // Static data for the charts
   const staticData = {
     data: [
@@ -28,25 +27,6 @@ export const ActivityProgress = () => {
       { time: "6:45 PM", date: "2025-03-04", activity: "Journaling", note: "Reflected on daily achievements" },
       { time: "10:30 AM", date: "2025-03-05", activity: "Therapy", note: "Session about stress management" }
     ]
-=======
-  // Function to generate random data
-  const generateRandomData = () => {
-    const activities = ["Meditation", "Exercise", "Reading", "Journaling", "Therapy"];
-    const data = activities.map(activity => ({
-      activity,
-      progress: Math.floor(Math.random() * 101), // Random progress between 0-100%
-    }));
-
-    const randomTotalProgress = Math.floor(Math.random() * 101); // Random total progress (0-100%)
-    const notes = Array.from({ length: 5 }, (_, i) => ({
-      time: `${Math.floor(Math.random() * 12) + 1}:${Math.floor(Math.random() * 60)} ${Math.random() > 0.5 ? "AM" : "PM"}`,
-      date: `2025-03-${String(i + 1).padStart(2, "0")}`,
-      activity: activities[Math.floor(Math.random() * activities.length)],
-      note: `Done `,
-    }));
-
-    return { data, totalProgress: randomTotalProgress, notes };
->>>>>>> c5040cd4117eee17f50597c4cd9bb93f5ca3a82e
   };
 
   useEffect(() => {
