@@ -8,6 +8,10 @@ import Swal from "sweetalert2";
 export const EditJournal = ({ journal, onClose }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(journal || {});
+  const [errorMessage, setErrorMessage] = useState("");
+  const [images, setImages] = useState(journal?.image || []);
+  const [newImages, setNewImages] = useState([]);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -16,6 +20,25 @@ export const EditJournal = ({ journal, onClose }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  // Update the handleImageRemove function
+  const handleImageRemove = (index) => {
+    // First check if the image exists in newImages
+    if (index >= images.length) {
+      // It's a new image
+      setNewImages((prev) =>
+        prev.filter((_, i) => i !== index - images.length)
+      );
+    } else {
+      // It's an existing image
+      setImages((prev) => prev.filter((_, i) => i !== index));
+    }
+  };
+
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files);
+    setNewImages([...newImages, ...files]);
   };
 
   // Handle checkbox change for emotions
@@ -45,13 +68,38 @@ export const EditJournal = ({ journal, onClose }) => {
   };
 
   const handleSaveClick = async () => {
+    setIsUploading(true);
     try {
+      let updatedImages = [...images];
+
+      // Upload new images if any
+      if (newImages.length > 0) {
+        const uploadFormData = new FormData();
+        newImages.forEach((image) => {
+          uploadFormData.append("images", image);
+        });
+
+        const uploadResponse = await axios.post(
+          "http://localhost:5000/api/mood_journaling/upload",
+          uploadFormData,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
+
+        updatedImages = [...updatedImages, ...uploadResponse.data.images];
+      }
+
+      // Prepare the final data to send
+      const dataToSend = {
+        ...formData,
+        image: updatedImages,
+      };
+
       const response = await axios.put(
         `http://localhost:5000/api/mood_journaling/update/${journal._id}`,
-        formData
+        dataToSend
       );
+
       if (response.status === 200) {
-        // Show success alert
         Swal.fire({
           title: "Success!",
           text: "Journal updated successfully.",
@@ -59,12 +107,10 @@ export const EditJournal = ({ journal, onClose }) => {
           confirmButtonColor: "#005457",
           confirmButtonText: "OK",
         }).then(() => {
-          // Close the modal and reset editing state
           setIsEditing(false);
           onClose();
         });
       } else {
-        // Show error alert if the response status is not 200
         Swal.fire({
           title: "Error!",
           text: "Failed to update journal.",
@@ -74,7 +120,7 @@ export const EditJournal = ({ journal, onClose }) => {
         });
       }
     } catch (error) {
-      // Show error alert for exceptions
+      console.error("Error updating journal:", error);
       Swal.fire({
         title: "Error!",
         text: "An error occurred while updating the journal.",
@@ -82,6 +128,8 @@ export const EditJournal = ({ journal, onClose }) => {
         confirmButtonColor: "#005457",
         confirmButtonText: "OK",
       });
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -188,12 +236,20 @@ export const EditJournal = ({ journal, onClose }) => {
                       const value = Number(e.target.value);
                       if (value >= 1 && value <= 10) {
                         handleChange(e);
+                        setErrorMessage("");
+                      } else {
+                        setErrorMessage(
+                          "Mood intensity must be between 1 and 10"
+                        );
                       }
                     }}
                     className="w-full border rounded p-2"
                     min="1"
                     max="10"
                   />
+                  {errorMessage && (
+                    <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
+                  )}
                 </div>
               </div>
 
@@ -287,6 +343,35 @@ export const EditJournal = ({ journal, onClose }) => {
                 />
               </div>
 
+              <div className="col-span-2">
+                <label className="block text-lg font-semibold">Images:</label>
+                <div className="w-full border rounded p-2 mb-2">
+                  {images.length > 0 ? (
+                    images.map((img, index) => (
+                      <div key={index} className="relative mb-4">
+                        <img
+                          src={
+                            typeof img === "object"
+                              ? URL.createObjectURL(img)
+                              : `http://localhost:5000/uploads/${img}`
+                          }
+                          alt={`Journal Entry ${index + 1}`}
+                          className="w-full h-auto rounded-lg max-h-40 object-contain"
+                        />
+                        <button
+                          className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full"
+                          onClick={() => handleImageRemove(index)}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <p>No images uploaded.</p>
+                  )}
+                </div>
+              </div>
+
               <div className="flex col-span-2 justify-end mt-4">
                 <button
                   className={`${GlobalStyle.buttonPrimary} px-2 py-1 text-sm ml-auto`}
@@ -354,7 +439,31 @@ export const EditJournal = ({ journal, onClose }) => {
                   </ul>
                 </div>
               </div>
-              
+              {journal.image &&
+                journal.image.length > 0 &&
+                journal.image[0] && (
+                  <div className="mt-4 bg-[#AEDBD8] p-4 rounded-lg shadow-md">
+                    <h3 className="font-semibold">Journal Images:</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+                      {journal.image.map(
+                        (img, index) =>
+                          img && (
+                            <div key={index} className="relative">
+                              <img
+                                src={
+                                  img.startsWith("blob:")
+                                    ? img
+                                    : `http://localhost:5000/uploads/${img}`
+                                }
+                                alt={`Journal Entry ${index + 1}`}
+                                className="w-full h-auto rounded-lg"
+                              />
+                            </div>
+                          )
+                      )}
+                    </div>
+                  </div>
+                )}
             </div>
           )}
         </div>
